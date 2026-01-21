@@ -121,9 +121,14 @@ async def upload_avatar(
     
     return {"message": "Upload avatar thành công", "avatar_url": avatar_url}
 
-from passlib.context import CryptContext
+import bcrypt
 from pydantic import BaseModel as PydanticBaseModel
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 class ChangePasswordRequest(PydanticBaseModel):
     current_password: str
@@ -141,7 +146,7 @@ async def change_password(
     user = await users_col.find_one({"_id": ObjectId(current_user["_id"])})
     
     # Verify current password
-    if not pwd_context.verify(request.current_password, user["hashed_password"]):
+    if not verify_password(request.current_password, user["hashed_password"]):
         raise HTTPException(status_code=400, detail="Mật khẩu hiện tại không đúng")
     
     # Validate new password
@@ -149,7 +154,7 @@ async def change_password(
         raise HTTPException(status_code=400, detail="Mật khẩu mới phải có ít nhất 6 ký tự")
     
     # Hash and save new password
-    new_hashed = pwd_context.hash(request.new_password)
+    new_hashed = hash_password(request.new_password)
     await users_col.update_one(
         {"_id": ObjectId(current_user["_id"])},
         {"$set": {"hashed_password": new_hashed, "updated_at": datetime.utcnow()}}
@@ -511,7 +516,7 @@ async def reset_user_password(
     
     # Default password: 123456
     default_password = "123456"
-    hashed = pwd_context.hash(default_password)
+    hashed = hash_password(default_password)
     
     result = await users_col.update_one(
         {"_id": ObjectId(user_id)},

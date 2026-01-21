@@ -93,10 +93,10 @@ export default function Sidebar() {
                     </div>
                     {!collapsed && (
                         <div className="mt-3">
-                            <span className={`text-xs px-2 py-1 rounded-full ${user?.status === 'ACTIVE' ? 'bg-green-100 text-green-700' :
-                                user?.status === 'PENDING' ? 'bg-orange-100 text-orange-700' : 'bg-yellow-100 text-yellow-700'
+                            <span className={`text-xs px-2 py-1 rounded-full ${user?.status?.toUpperCase() === 'ACTIVE' ? 'bg-green-100 text-green-700' :
+                                user?.status?.toUpperCase() === 'PENDING' ? 'bg-orange-100 text-orange-700' : 'bg-yellow-100 text-yellow-700'
                                 }`}>
-                                {user?.status}
+                                {user?.status?.toLowerCase()}
                             </span>
                         </div>
                     )}

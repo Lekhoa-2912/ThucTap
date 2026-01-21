@@ -1,34 +1,45 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Suspense, lazy } from 'react'
 import { useAuth } from './context/AuthContext'
 
-// Components
+// Components (keep synchronous - small and always needed)
 import Sidebar from './components/Sidebar'
 import ProtectedRoute from './components/ProtectedRoute'
 
-// Pages
-import LoginPage from './pages/LoginPage'
-import LogoutPage from './pages/LogoutPage'
-import ProfileSetupPage from './pages/ProfileSetupPage'
-import FaceEnrollmentPage from './pages/FaceEnrollmentPage'
-import PendingPage from './pages/PendingPage'
-import DashboardPage from './pages/DashboardPage'
-import AttendancePage from './pages/AttendancePage'
-import ChatPage from './pages/ChatPage'
-import ProjectsPage from './pages/ProjectsPage'
-import TasksPage from './pages/TasksPage'
-import PayrollPage from './pages/PayrollPage'
-import AdminUsersPage from './pages/AdminUsersPage'
-import AdminPendingPage from './pages/AdminPendingPage'
-import AdminFaceEnrollPage from './pages/AdminFaceEnrollPage'
-import SettingsPage from './pages/SettingsPage'
-import ProfilePage from './pages/ProfilePage'
-import ProjectDetailPage from './pages/ProjectDetailPage'
-import LeavesPage from './pages/LeavesPage'
-import ReportsPage from './pages/ReportsPage'
-import CalendarPage from './pages/CalendarPage'
-import OvertimePage from './pages/OvertimePage'
-import KPIPage from './pages/KPIPage'
-import ContractsPage from './pages/ContractsPage'
+// Loading component
+const PageLoader = () => (
+    <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+            <div className="spinner mx-auto mb-4"></div>
+            <p className="text-slate-400">Đang tải...</p>
+        </div>
+    </div>
+)
+
+// Lazy load pages - code splitting for faster initial load
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const LogoutPage = lazy(() => import('./pages/LogoutPage'))
+const ProfileSetupPage = lazy(() => import('./pages/ProfileSetupPage'))
+const FaceEnrollmentPage = lazy(() => import('./pages/FaceEnrollmentPage'))
+const PendingPage = lazy(() => import('./pages/PendingPage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const AttendancePage = lazy(() => import('./pages/AttendancePage'))
+const ChatPage = lazy(() => import('./pages/ChatPage'))
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
+const TasksPage = lazy(() => import('./pages/TasksPage'))
+const PayrollPage = lazy(() => import('./pages/PayrollPage'))
+const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage'))
+const AdminPendingPage = lazy(() => import('./pages/AdminPendingPage'))
+const AdminFaceEnrollPage = lazy(() => import('./pages/AdminFaceEnrollPage'))
+const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'))
+const LeavesPage = lazy(() => import('./pages/LeavesPage'))
+const ReportsPage = lazy(() => import('./pages/ReportsPage'))
+const CalendarPage = lazy(() => import('./pages/CalendarPage'))
+const OvertimePage = lazy(() => import('./pages/OvertimePage'))
+const KPIPage = lazy(() => import('./pages/KPIPage'))
+const ContractsPage = lazy(() => import('./pages/ContractsPage'))
 
 // Layout with Sidebar
 function MainLayout({ children }) {
@@ -55,191 +66,193 @@ export default function App() {
     }
 
     return (
-        <Routes>
-            {/* Public Routes */}
-            <Route
-                path="/login"
-                element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />}
-            />
-            <Route path="/logout" element={<LogoutPage />} />
+        <Suspense fallback={<PageLoader />}>
+            <Routes>
+                {/* Public Routes */}
+                <Route
+                    path="/login"
+                    element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />}
+                />
+                <Route path="/logout" element={<LogoutPage />} />
 
-            {/* Onboarding Routes */}
-            <Route
-                path="/setup-profile"
-                element={
-                    isAuthenticated && needsProfileSetup
-                        ? <ProfileSetupPage />
-                        : <Navigate to="/dashboard" />
-                }
-            />
-            <Route
-                path="/face-enrollment"
-                element={
-                    isAuthenticated && needsProfileSetup
-                        ? <FaceEnrollmentPage />
-                        : <Navigate to="/dashboard" />
-                }
-            />
-            <Route
-                path="/pending"
-                element={
-                    isAuthenticated && isPending
-                        ? <PendingPage />
-                        : <Navigate to="/dashboard" />
-                }
-            />
+                {/* Onboarding Routes */}
+                <Route
+                    path="/setup-profile"
+                    element={
+                        isAuthenticated && needsProfileSetup
+                            ? <ProfileSetupPage />
+                            : <Navigate to="/dashboard" />
+                    }
+                />
+                <Route
+                    path="/face-enrollment"
+                    element={
+                        isAuthenticated && needsProfileSetup
+                            ? <FaceEnrollmentPage />
+                            : <Navigate to="/dashboard" />
+                    }
+                />
+                <Route
+                    path="/pending"
+                    element={
+                        isAuthenticated && isPending
+                            ? <PendingPage />
+                            : <Navigate to="/dashboard" />
+                    }
+                />
 
-            {/* Protected Routes with Sidebar Layout */}
-            <Route
-                path="/dashboard"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><DashboardPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/attendance"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><AttendancePage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/chat"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><ChatPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/projects"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><ProjectsPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/projects/:projectId"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><ProjectDetailPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/tasks"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><TasksPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/leaves"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><LeavesPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/reports"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><ReportsPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/calendar"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><CalendarPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/overtime"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><OvertimePage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/kpi"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><KPIPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/contracts"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><ContractsPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/payroll"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><PayrollPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/profile"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout><ProfilePage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
+                {/* Protected Routes with Sidebar Layout */}
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><DashboardPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/attendance"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><AttendancePage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/chat"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><ChatPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/projects"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><ProjectsPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/projects/:projectId"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><ProjectDetailPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/tasks"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><TasksPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/leaves"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><LeavesPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/reports"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><ReportsPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/calendar"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><CalendarPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/overtime"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><OvertimePage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/kpi"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><KPIPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/contracts"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><ContractsPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/payroll"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><PayrollPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <MainLayout><ProfilePage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
 
-            {/* Admin Routes */}
-            <Route
-                path="/admin/users"
-                element={
-                    <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
-                        <MainLayout><AdminUsersPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/pending"
-                element={
-                    <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
-                        <MainLayout><AdminPendingPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/admin/face-enroll/:userId"
-                element={
-                    <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
-                        <MainLayout><AdminFaceEnrollPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-            <Route
-                path="/settings"
-                element={
-                    <ProtectedRoute roles={['SUPER_ADMIN']}>
-                        <MainLayout><SettingsPage /></MainLayout>
-                    </ProtectedRoute>
-                }
-            />
+                {/* Admin Routes */}
+                <Route
+                    path="/admin/users"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
+                            <MainLayout><AdminUsersPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/pending"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
+                            <MainLayout><AdminPendingPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/face-enroll/:userId"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
+                            <MainLayout><AdminFaceEnrollPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/settings"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN']}>
+                            <MainLayout><SettingsPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
 
-            {/* Default Redirect */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
+                {/* Default Redirect */}
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+        </Suspense>
     )
 }

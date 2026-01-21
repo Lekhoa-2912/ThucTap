@@ -54,14 +54,24 @@ export function AuthProvider({ children }) {
     const isAuthenticated = !!token && !!user
 
     const hasRole = (roles) => {
-        if (!user) return false
-        if (typeof roles === 'string') return user.role === roles
-        return roles.includes(user.role)
+        if (!user || !user.role) return false
+
+        // Normalize user role: uppercase and handle team_leader -> LEADER
+        const normalizedUserRole = user.role.toUpperCase().replace('TEAM_LEADER', 'LEADER')
+
+        // Handle single role or array of roles
+        const roleList = typeof roles === 'string' ? [roles] : roles
+
+        // Check if user's normalized role matches any of the required roles
+        return roleList.some(r => {
+            const normalizedRequired = r.toUpperCase().replace('TEAM_LEADER', 'LEADER')
+            return normalizedUserRole === normalizedRequired
+        })
     }
 
-    const isActive = user?.status === 'ACTIVE'
-    const needsProfileSetup = user?.status === 'INIT'
-    const isPending = user?.status === 'PENDING'
+    const isActive = user?.status?.toUpperCase() === 'ACTIVE'
+    const needsProfileSetup = user?.status?.toUpperCase() === 'INIT'
+    const isPending = user?.status?.toUpperCase() === 'PENDING'
 
     return (
         <AuthContext.Provider value={{

@@ -16,8 +16,8 @@ export default function FaceEnrollmentPage() {
     }, [])
 
     const handleSubmit = async () => {
-        if (capturedImages.length < 10) {
-            toast.error(`Cần ít nhất 10 ảnh, bạn mới chụp ${capturedImages.length} ảnh`)
+        if (capturedImages.length < 50) {
+            toast.error(`Cần ít nhất 50 ảnh, bạn mới chụp ${capturedImages.length} ảnh`)
             return
         }
 

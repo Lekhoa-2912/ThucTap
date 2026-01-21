@@ -463,11 +463,11 @@ mongoimport --db goodzwork --collection settings --file settings.json --jsonArra
 
 | Email | Password | Role |
 |-------|----------|------|
-| admin@goodzwork.com | password123 | Super Admin |
-| hr@goodzwork.com | password123 | HR Manager |
-| leader@goodzwork.com | password123 | Leader |
-| employee@goodzwork.com | password123 | Employee |
-| accountant@goodzwork.com | password123 | Accountant |
+| admin@goodzwork.com |  admin123 | Super Admin |
+| hr@goodzwork.com | hr123456 | HR Manager |
+| leader@goodzwork.com | leader123 | Leader |
+| employee@goodzwork.com | emp123456 | Employee |
+| accountant@goodzwork.com | acc123456 | Accountant |
 
 ---
 

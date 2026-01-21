@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { cacheManager, cachedRequest, CACHE_TTL } from '../utils/cache'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -24,6 +25,8 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
+            // Clear cache on logout
+            cacheManager.clear()
             localStorage.removeItem('token')
             localStorage.removeItem('user')
             window.location.href = '/login'
@@ -105,8 +108,11 @@ export const userAPI = {
     resetUserPassword: (userId) =>
         api.put(`/api/users/${userId}/reset-password`),
 
-    adminUpdateUser: (userId, data) =>
-        api.put(`/api/users/${userId}`, data)
+    adminUpdateUser: (userId, data) => {
+        // Invalidate user cache on update
+        cacheManager.invalidatePattern('/api/users')
+        return api.put(`/api/users/${userId}`, data)
+    }
 }
 
 // ============ ATTENDANCE APIs ============
@@ -114,26 +120,62 @@ export const attendanceAPI = {
     checkLocation: (latitude, longitude) =>
         api.post('/api/attendance/check-location', { latitude, longitude }),
 
-    checkIn: (data) =>
-        api.post('/api/attendance/checkin', data),
+    checkIn: (data) => {
+        // Invalidate attendance cache on check-in
+        cacheManager.invalidatePattern('/api/attendance')
+        return api.post('/api/attendance/checkin', data)
+    },
 
-    checkOut: (data) =>
-        api.post('/api/attendance/checkout', data),
+    checkOut: (data) => {
+        // Invalidate attendance cache on check-out
+        cacheManager.invalidatePattern('/api/attendance')
+        return api.post('/api/attendance/checkout', data)
+    },
 
-    getLogs: (startDate, endDate) =>
-        api.get('/api/attendance/logs', { params: { start_date: startDate, end_date: endDate } }),
+    getLogs: (startDate, endDate) => {
+        const cacheKey = cacheManager.generateKey('/api/attendance/logs', { start_date: startDate, end_date: endDate })
+        return cachedRequest(
+            () => api.get('/api/attendance/logs', { params: { start_date: startDate, end_date: endDate } }),
+            cacheKey,
+            CACHE_TTL.MEDIUM
+        )
+    },
 
-    getTodayStatus: () =>
-        api.get('/api/attendance/today'),
+    getTodayStatus: () => {
+        const cacheKey = '/api/attendance/today'
+        return cachedRequest(
+            () => api.get('/api/attendance/today'),
+            cacheKey,
+            CACHE_TTL.SHORT // 30 seconds - changes frequently
+        )
+    },
 
-    getCompanyLocation: () =>
-        api.get('/api/attendance/company-location'),
+    getCompanyLocation: () => {
+        const cacheKey = '/api/attendance/company-location'
+        return cachedRequest(
+            () => api.get('/api/attendance/company-location'),
+            cacheKey,
+            CACHE_TTL.VERY_LONG // 30 minutes - rarely changes
+        )
+    },
 
-    getMonthlyReport: (month, year) =>
-        api.get('/api/attendance/report/monthly', { params: { month, year } }),
+    getMonthlyReport: (month, year) => {
+        const cacheKey = cacheManager.generateKey('/api/attendance/report/monthly', { month, year })
+        return cachedRequest(
+            () => api.get('/api/attendance/report/monthly', { params: { month, year } }),
+            cacheKey,
+            CACHE_TTL.MEDIUM
+        )
+    },
 
-    getTeamReport: (month, year) =>
-        api.get('/api/attendance/report/team', { params: { month, year } })
+    getTeamReport: (month, year) => {
+        const cacheKey = cacheManager.generateKey('/api/attendance/report/team', { month, year })
+        return cachedRequest(
+            () => api.get('/api/attendance/report/team', { params: { month, year } }),
+            cacheKey,
+            CACHE_TTL.MEDIUM
+        )
+    }
 }
 
 // ============ CHAT APIs ============

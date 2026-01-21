@@ -20,6 +20,8 @@ export default function AttendancePage() {
     const [successInfo, setSuccessInfo] = useState(null)
     // State cho thông báo lỗi/feedback trực tiếp trên camera
     const [cameraFeedback, setCameraFeedback] = useState(null)
+    // Flag để dừng hoàn toàn luồng chấm công (sau thành công hoặc lỗi critical)
+    const [attendanceComplete, setAttendanceComplete] = useState(false)
 
     useEffect(() => {
         loadTodayStatus()
@@ -83,7 +85,8 @@ export default function AttendancePage() {
     }
 
     const handleCapture = useCallback(async (imageSrc) => {
-        if (loading || !location) return
+        // Dừng nếu đã hoàn tất hoặc đang xử lý
+        if (loading || !location || attendanceComplete) return
 
         setLoading(true)
         setCameraFeedback(null) // Reset feedback trước khi xử lý
@@ -105,6 +108,9 @@ export default function AttendancePage() {
                 response = await attendanceAPI.checkIn(data)
             }
 
+            // THÀNH CÔNG - Dừng hoàn toàn
+            setAttendanceComplete(true)
+
             // Lưu thông tin thành công để hiển thị
             setSuccessInfo({
                 userName: response.data.user_name || user?.fullname || user?.email || 'Nhân viên',
@@ -121,10 +127,22 @@ export default function AttendancePage() {
             const errorMsg = error.response?.data?.detail || 'Chấm công thất bại'
             console.error("Attendance error:", errorMsg);
 
+            // Kiểm tra nếu đã check-in rồi -> DỪNG HOÀN TOÀN, không retry
+            if (errorMsg.includes('đã check-in') || errorMsg.includes('đã check-out') ||
+                errorMsg.includes('already checked')) {
+                setAttendanceComplete(true)
+                toast.warning(errorMsg)
+                // Reload trạng thái và chuyển sang màn hình complete
+                loadTodayStatus()
+                loadAttendanceLogs()
+                return
+            }
+
             // Phân loại lỗi để hiển thị feedback phù hợp
-            let feedbackType = 'error';
             if (errorMsg.includes('chưa đăng ký khuôn mặt')) {
                 setCameraFeedback({ type: 'warning', message: 'Bạn chưa đăng ký khuôn mặt!' });
+                // Lỗi critical -> dừng hoàn toàn
+                setAttendanceComplete(true)
             } else if (errorMsg.includes('độ tin cậy')) {
                 // Trích xuất % độ tin cậy nếu có
                 const match = errorMsg.match(/(\d+\.?\d*)%/);
@@ -138,15 +156,17 @@ export default function AttendancePage() {
 
             toast.error(errorMsg)
 
-            // Giữ feedback trong 3 giây rồi tự xóa để người dùng thử lại
-            setTimeout(() => {
-                setCameraFeedback(null)
-            }, 3000)
+            // Chỉ xóa feedback nếu chưa dừng hoàn toàn (để cho phép thử lại)
+            if (!attendanceComplete) {
+                setTimeout(() => {
+                    setCameraFeedback(null)
+                }, 3000)
+            }
 
         } finally {
             setLoading(false)
         }
-    }, [location, todayStatus, loading, user])
+    }, [location, todayStatus, loading, user, attendanceComplete])
 
     const isCheckOut = todayStatus?.checked_in && !todayStatus?.checked_out
     const isComplete = todayStatus?.checked_in && todayStatus?.checked_out
@@ -238,11 +258,11 @@ export default function AttendancePage() {
                             <WebcamCapture
                                 onCapture={handleCapture}
                                 autoCapture={false}
-                                autoAttendance={true}
+                                autoAttendance={!attendanceComplete}
                                 attendanceDelay={2000}
                                 showGuide={true}
-                                isProcessing={loading}
-                                feedback={cameraFeedback} // Truyền feedback vào webcam
+                                isProcessing={loading || attendanceComplete}
+                                feedback={cameraFeedback}
                             />
                         </div>
                     )}

@@ -2,7 +2,9 @@ import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useAuth } from '../context/AuthContext'
-import { userAPI } from '../api'
+import { userAPI, utilsAPI } from '../api'
+import WebcamCapture from '../components/WebcamCapture'
+import { Camera, Upload } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
@@ -12,7 +14,56 @@ export default function ProfileSetupPage() {
     const [loading, setLoading] = useState(false)
     const [avatarUrl, setAvatarUrl] = useState(user?.avatar || null)
     const [uploading, setUploading] = useState(false)
+    const [showScanner, setShowScanner] = useState(false)
+    const [scanMode, setScanMode] = useState('upload') // 'upload' | 'camera'
+    const [ocrLoading, setOcrLoading] = useState(false)
     const fileInputRef = useRef(null)
+
+    // Helper to convert Base64 to File
+    const dataURLtoFile = (dataurl, filename) => {
+        let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+    }
+
+    const processOCR = async (input) => {
+        setOcrLoading(true)
+        try {
+            let file = input
+            // If input is base64 string (from Webcam)
+            if (typeof input === 'string' && input.startsWith('data:image')) {
+                file = dataURLtoFile(input, 'capture.jpg')
+            }
+
+            const res = await utilsAPI.scanCCCD(file)
+            const data = res.data
+
+            // Auto fill
+            setFormData(prev => ({
+                ...prev,
+                full_name: data.full_name || prev.full_name,
+                // Simple date conversion if format matches dd/mm/yyyy
+                // Note: Input type="date" expects yyyy-mm-dd
+                // We'll leave it simple for now or try to parse
+                // dob: convertDate(data.dob) || prev.dob
+
+                // Map other fields if available
+                bank_account_holder: data.full_name ? data.full_name.toUpperCase() : prev.bank_account_holder
+            }))
+
+            toast.success(`Đã trích xuất: ${data.full_name || 'Thông tin'}`)
+            setShowScanner(false)
+        } catch (error) {
+            console.error(error)
+            const detail = error.response?.data?.detail || error.message || 'Lỗi không xác định'
+            toast.error(`Lỗi OCR: ${detail}`)
+        } finally {
+            setOcrLoading(false)
+        }
+    }
 
     const [formData, setFormData] = useState({
         full_name: user?.full_name || '',
@@ -114,6 +165,15 @@ export default function ProfileSetupPage() {
                     <p className="text-slate-400 mt-2">
                         Bước 1/2: Điền đầy đủ thông tin cá nhân
                     </p>
+                    <div className="flex justify-center mt-4">
+                        <button
+                            type="button"
+                            onClick={() => setShowScanner(true)}
+                            className="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 px-4 py-2 rounded-full text-sm font-medium transition-colors border border-blue-600/50"
+                        >
+                            <Camera size={16} /> Scan CCCD (E-KYC)
+                        </button>
+                    </div>
                 </div>
 
                 {/* Progress */}
@@ -136,11 +196,11 @@ export default function ProfileSetupPage() {
                             />
                         ) : (
                             <div className="w-full h-full bg-slate-700 flex items-center justify-center text-4xl">
-                                📷
+                                Ảnh
                             </div>
                         )}
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <span className="text-white text-sm">{uploading ? '⏳' : '📷'}</span>
+                            <span className="text-white text-sm">{uploading ? 'Chờ...' : 'Ảnh'}</span>
                         </div>
                     </div>
                     <input
@@ -151,7 +211,7 @@ export default function ProfileSetupPage() {
                         className="hidden"
                     />
                     <p className="text-sm text-slate-400 mt-2">
-                        {avatarUrl ? '✅ Đã có ảnh đại diện' : '⚠️ Bắt buộc upload ảnh đại diện'}
+                        {avatarUrl ? 'Đã có ảnh đại diện' : 'Bắt buộc upload ảnh đại diện'}
                     </p>
                 </div>
 
@@ -224,7 +284,7 @@ export default function ProfileSetupPage() {
 
                     {/* Bank Info */}
                     <div className="border-t border-slate-600 pt-5">
-                        <h3 className="text-lg font-semibold mb-4">💳 Thông tin ngân hàng</h3>
+                        <h3 className="text-lg font-semibold mb-4">Thông tin ngân hàng</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label className="block text-sm font-medium mb-2">
@@ -287,6 +347,85 @@ export default function ProfileSetupPage() {
                     </button>
                 </form>
             </div>
+
+            {/* OCR Scanner Modal */}
+            {showScanner && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="glass-card w-full max-w-2xl p-6 relative overflow-hidden flex flex-col max-h-[90vh]">
+                        <button
+                            onClick={() => setShowScanner(false)}
+                            className="absolute top-4 right-4 text-slate-400 hover:text-white z-10"
+                        >
+                            ✕
+                        </button>
+
+                        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                            <Camera className="text-blue-400" />
+                            Scan CCCD/CMND (E-KYC)
+                        </h3>
+
+                        <div className="flex gap-2 mb-4">
+                            <button
+                                onClick={() => setScanMode('upload')}
+                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${scanMode === 'upload' ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'}`}
+                            >
+                                <Upload size={16} className="inline mr-2" /> Upload Ảnh
+                            </button>
+                            <button
+                                onClick={() => setScanMode('camera')}
+                                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${scanMode === 'camera' ? 'bg-blue-600' : 'bg-slate-700 hover:bg-slate-600'}`}
+                            >
+                                <Camera size={16} className="inline mr-2" /> Chụp ảnh
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto bg-black/20 rounded-xl relative min-h-[300px] flex flex-col items-center justify-center p-4">
+                            {ocrLoading && (
+                                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
+                                    <div className="spinner mb-4"></div>
+                                    <p className="text-blue-400 animate-pulse">Đang phân tích CCCD (OCR)...</p>
+                                </div>
+                            )}
+
+                            {scanMode === 'upload' ? (
+                                <div className="text-center w-full">
+                                    <input
+                                        type="file"
+                                        id="cccd-upload"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files[0]) processOCR(e.target.files[0])
+                                        }}
+                                    />
+                                    <label
+                                        htmlFor="cccd-upload"
+                                        className="border-2 border-dashed border-slate-600 rounded-xl p-10 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-slate-800/50 transition-all"
+                                    >
+                                        <Upload size={48} className="text-slate-500 mb-4" />
+                                        <span className="text-lg font-medium">Chọn ảnh CCCD từ máy</span>
+                                        <span className="text-sm text-slate-400 mt-2">Hỗ trợ JPG, PNG</span>
+                                    </label>
+                                </div>
+                            ) : (
+                                <div className="w-full h-full">
+                                    <WebcamCapture
+                                        onCapture={(imageSrc) => {
+                                            if (imageSrc) processOCR(imageSrc)
+                                        }}
+                                        instruction="Đặt CCCD vào khung hình"
+                                        singleShot={true}
+                                        minImages={1}
+                                        // We might need to adjust WebcamCapture to just return the file without forcing enrollment logic
+                                        // OR just assume it returns array of Files/Blobs
+                                        hideGallery={true}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

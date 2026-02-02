@@ -80,7 +80,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-2xl font-bold text-slate-800 mb-1">
-                            Xin chào, {user?.full_name || 'Bạn'}! 👋
+                            Xin chào, {user?.full_name || 'Bạn'}!
                         </h1>
                         <p className="text-slate-500">
                             {format(new Date(), "EEEE, 'ngày' dd 'tháng' MM, yyyy", { locale: vi })}
@@ -89,10 +89,10 @@ export default function DashboardPage() {
                     {/* Quick Actions */}
                     <div className="flex gap-2">
                         <button onClick={() => navigate('/attendance')} className="btn-primary text-sm">
-                            ⏰ Chấm công
+                            Chấm công
                         </button>
                         <button onClick={() => navigate('/leaves')} className="btn-secondary text-sm">
-                            🏖️ Xin nghỉ
+                            Xin nghỉ
                         </button>
                     </div>
                 </div>
@@ -103,7 +103,6 @@ export default function DashboardPage() {
                 {/* Today Status */}
                 <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/attendance')}>
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-3xl">⏰</span>
                         <span className={`px-3 py-1 rounded-full text-xs ${todayStatus?.checked_in ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
                             {todayStatus?.checked_in ? 'Đã chấm công' : 'Chưa chấm công'}
                         </span>
@@ -120,7 +119,6 @@ export default function DashboardPage() {
                 {/* Leave Balance */}
                 <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-3xl">🏖️</span>
                         <span className="text-2xl font-bold text-blue-600">{leaveSummary.remaining}</span>
                     </div>
                     <h3 className="text-base font-semibold text-slate-700">Ngày phép còn lại</h3>
@@ -130,7 +128,6 @@ export default function DashboardPage() {
                 {/* Tasks Widget */}
                 <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/tasks')}>
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-3xl">✅</span>
                         <span className="text-2xl font-bold text-purple-600">—</span>
                     </div>
                     <h3 className="text-base font-semibold text-slate-700">Công việc của tôi</h3>
@@ -141,7 +138,6 @@ export default function DashboardPage() {
                 {isManager ? (
                     <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-3xl">📋</span>
                             <span className={`text-2xl font-bold ${pendingLeaves > 0 ? 'text-red-600' : 'text-green-600'}`}>
                                 {pendingLeaves}
                             </span>
@@ -154,7 +150,6 @@ export default function DashboardPage() {
                 ) : (
                     <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/projects')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-3xl">📁</span>
                             <span className="text-2xl font-bold text-orange-600">—</span>
                         </div>
                         <h3 className="text-base font-semibold text-slate-700">Dự án</h3>
@@ -167,7 +162,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Attendance Pie Chart */}
                 <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-4">📊 Tỷ lệ chấm công tháng này</h3>
+                    <h3 className="text-lg font-semibold text-slate-700 mb-4">Tỷ lệ chấm công tháng này</h3>
                     <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                             <Pie
@@ -191,7 +186,7 @@ export default function DashboardPage() {
 
                 {/* Monthly Bar Chart */}
                 <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-4">📈 Thống kê chấm công theo tháng</h3>
+                    <h3 className="text-lg font-semibold text-slate-700 mb-4">Thống kê chấm công theo tháng</h3>
                     <ResponsiveContainer width="100%" height={280}>
                         <BarChart data={monthlyData}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -216,7 +211,7 @@ export default function DashboardPage() {
             {/* Employee Performance (Leaders/Admins only) */}
             {isManager && performance.length > 0 && (
                 <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-4">👥 Hiệu suất nhân viên</h3>
+                    <h3 className="text-lg font-semibold text-slate-700 mb-4">Hiệu suất nhân viên</h3>
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>

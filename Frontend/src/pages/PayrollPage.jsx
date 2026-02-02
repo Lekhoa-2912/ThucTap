@@ -85,7 +85,7 @@ export default function PayrollPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">💰 Bảng lương</h1>
+                    <h1 className="text-2xl font-bold">Bảng lương</h1>
                     <p className="text-slate-400">
                         {isHROrAdmin ? 'Quản lý và phê duyệt bảng lương' : 'Xem lịch sử bảng lương của bạn'}
                     </p>

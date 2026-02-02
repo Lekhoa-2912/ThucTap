@@ -8,7 +8,7 @@ from .database import connect_to_mongo, close_mongo_connection
 from .socket_events import socket_app
 
 # Import routers
-from .routers import auth, users, attendance, chat, projects, payroll, settings, leaves, notifications, calendar, overtime, exports, kpi, contracts, documents
+from .routers import auth, users, attendance, chat, projects, payroll, settings, leaves, notifications, calendar, overtime, exports, kpi, contracts, documents, utils
 
 # Create FastAPI app
 app = FastAPI(
@@ -56,6 +56,7 @@ app.include_router(exports.router)
 app.include_router(kpi.router)
 app.include_router(contracts.router)
 app.include_router(documents.router)
+app.include_router(utils.router)
 
 # Mount static files for uploads
 app.mount("/uploads", StaticFiles(directory=settings_config.UPLOADS_PATH), name="uploads")

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useAuth } from '../context/AuthContext'
 import { attendanceAPI } from '../api'
@@ -8,6 +9,7 @@ import { vi } from 'date-fns/locale'
 
 export default function AttendancePage() {
     const { user } = useAuth()
+    const navigate = useNavigate()
     const [step, setStep] = useState('checking') // checking, denied, camera, success
     const [location, setLocation] = useState(null)
     const [locationError, setLocationError] = useState(null)
@@ -66,7 +68,7 @@ export default function AttendancePage() {
                     setDistance(dist)
 
                     if (allowed) {
-                        setStep('camera')
+                        setStep('confirm')
                     } else {
                         setStep('denied')
                         setLocationError(message)
@@ -84,12 +86,16 @@ export default function AttendancePage() {
         )
     }
 
+    // Ref for tracking stranger detection time
+    const strangerDetectionStart = useRef(null)
+
     const handleCapture = useCallback(async (imageSrc) => {
         // Dừng nếu đã hoàn tất hoặc đang xử lý
         if (loading || !location || attendanceComplete) return
 
         setLoading(true)
-        setCameraFeedback(null) // Reset feedback trước khi xử lý
+        setLoading(true)
+        // setCameraFeedback(null) // Không reset vội để logic render có thể dùng nếu cần, nhưng ở đây ta unmount luôn
 
         try {
             const isCheckOut = todayStatus?.checked_in && !todayStatus?.checked_out
@@ -110,6 +116,7 @@ export default function AttendancePage() {
 
             // THÀNH CÔNG - Dừng hoàn toàn
             setAttendanceComplete(true)
+            strangerDetectionStart.current = null // Reset stranger timer on success
 
             // Lưu thông tin thành công để hiển thị
             setSuccessInfo({
@@ -125,14 +132,13 @@ export default function AttendancePage() {
             loadAttendanceLogs()
         } catch (error) {
             const errorMsg = error.response?.data?.detail || 'Chấm công thất bại'
-            console.error("Attendance error:", errorMsg);
+            // console.error("Attendance error:", errorMsg); // Giảm log spam
 
             // Kiểm tra nếu đã check-in rồi -> DỪNG HOÀN TOÀN, không retry
             if (errorMsg.includes('đã check-in') || errorMsg.includes('đã check-out') ||
                 errorMsg.includes('already checked')) {
                 setAttendanceComplete(true)
                 toast.warning(errorMsg)
-                // Reload trạng thái và chuyển sang màn hình complete
                 loadTodayStatus()
                 loadAttendanceLogs()
                 return
@@ -140,28 +146,32 @@ export default function AttendancePage() {
 
             // Phân loại lỗi để hiển thị feedback phù hợp
             if (errorMsg.includes('chưa đăng ký khuôn mặt')) {
-                setCameraFeedback({ type: 'warning', message: 'Bạn chưa đăng ký khuôn mặt!' });
-                // Lỗi critical -> dừng hoàn toàn
-                setAttendanceComplete(true)
-            } else if (errorMsg.includes('độ tin cậy')) {
+                setCameraFeedback({ type: 'error', message: 'Bạn chưa đăng ký khuôn mặt. Vui lòng đăng ký trước khi chấm công.' });
+            } else if (errorMsg.includes('độ tin cậy') || errorMsg.includes('Khuôn mặt không khớp')) {
                 // Trích xuất % độ tin cậy nếu có
                 const match = errorMsg.match(/(\d+\.?\d*)%/);
                 const confidence = match ? match[1] + '%' : '';
-                setCameraFeedback({ type: 'error', message: `Không khớp! Độ tin cậy: ${confidence}` });
+                setCameraFeedback({ type: 'error', message: `Không khớp! ${confidence}` });
+
+                // STRANGER DETECTION LOGIC
+                if (!strangerDetectionStart.current) {
+                    strangerDetectionStart.current = Date.now();
+                } else if (Date.now() - strangerDetectionStart.current > 2000) {
+                    toast.error("⚠️ Phát hiện gương mặt lạ!");
+                    strangerDetectionStart.current = Date.now();
+                }
             } else if (errorMsg.includes('Không phát hiện được khuôn mặt')) {
                 setCameraFeedback({ type: 'error', message: 'Không tìm thấy khuôn mặt!' });
+                strangerDetectionStart.current = null;
             } else {
                 setCameraFeedback({ type: 'error', message: errorMsg });
+                strangerDetectionStart.current = null;
             }
 
-            toast.error(errorMsg)
-
-            // Chỉ xóa feedback nếu chưa dừng hoàn toàn (để cho phép thử lại)
-            if (!attendanceComplete) {
-                setTimeout(() => {
-                    setCameraFeedback(null)
-                }, 3000)
-            }
+            // Với logic mới: Camera đã đóng khi bắt đầu xử lý.
+            // Nếu lỗi, ta giữ nguyên trạng thái 'camera' nhưng hiển thị UI lỗi thay vì Webcam
+            // UI lỗi sẽ có nút "Thử lại" để reset feedback và có thể là chuyển về step 'confirm' hoặc mount lại camera
+            // Việc setCameraFeedback ở trên đã đủ để trigger UI lỗi trong phần render
 
         } finally {
             setLoading(false)
@@ -175,7 +185,7 @@ export default function AttendancePage() {
         <div className="max-w-4xl mx-auto space-y-6">
             {/* Header */}
             <div className="glass-card p-6">
-                <h1 className="text-2xl font-bold mb-2">⏰ Chấm công</h1>
+                <h1 className="text-2xl font-bold mb-2">Chấm công</h1>
                 <p className="text-slate-400">
                     {format(new Date(), "EEEE, 'ngày' dd 'tháng' MM, yyyy", { locale: vi })}
                 </p>
@@ -220,7 +230,7 @@ export default function AttendancePage() {
             {!isComplete && (
                 <div className="glass-card p-6">
                     <h2 className="text-lg font-semibold mb-4">
-                        {isCheckOut ? '🏠 Check-out' : '📍 Check-in'}
+                        {isCheckOut ? 'Check-out' : 'Check-in'}
                     </h2>
 
                     {step === 'checking' && (
@@ -233,7 +243,7 @@ export default function AttendancePage() {
                     {step === 'denied' && (
                         <div className="text-center py-8">
                             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <span className="text-3xl">📍</span>
+                                <span className="text-3xl">Vị trí</span>
                             </div>
                             <p className="text-red-400 mb-4">{locationError}</p>
                             {distance && (
@@ -245,15 +255,33 @@ export default function AttendancePage() {
                         </div>
                     )}
 
-                    {step === 'camera' && (
-                        <div>
+                    {step === 'confirm' && (
+                        <div className="text-center py-8">
+                            <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span className="text-3xl">?</span>
+                            </div>
                             <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-4">
-                                <p className="text-green-400 flex items-center gap-2">
-                                    ✓ Bạn đang trong phạm vi cho phép ({Math.round(distance)}m)
+                                <p className="text-green-400 flex items-center gap-2 justify-center">
+                                    ✓ Vị trí hợp lệ ({Math.round(distance)}m)
                                 </p>
                             </div>
+                            <h3 className="text-lg font-semibold mb-2">Xác nhận chấm công</h3>
+                            <p className="text-slate-400 mb-6">
+                                Bạn có muốn {isCheckOut ? 'Check-out' : 'Check-in'} ngay bây giờ?
+                                <br />Camera sẽ được bật để xác thực.
+                            </p>
+                            <div className="flex justify-center gap-4">
+                                <button onClick={() => setStep('camera')} className="btn-primary px-8">
+                                    Mở Camera
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {step === 'camera' && !loading && !attendanceComplete && (
+                        <div>
                             <p className="text-slate-400 mb-4 text-center">
-                                🎯 Đưa khuôn mặt vào vòng tròn xanh và giữ yên để tự động chấm công
+                                Đưa khuôn mặt vào vòng tròn xanh và giữ yên để tự động chấm công
                             </p>
                             <WebcamCapture
                                 onCapture={handleCapture}
@@ -264,6 +292,49 @@ export default function AttendancePage() {
                                 isProcessing={loading || attendanceComplete}
                                 feedback={cameraFeedback}
                             />
+                        </div>
+                    )}
+
+                    {/* Processing State - Camera Closed */}
+                    {(loading || (step === 'camera' && attendanceComplete)) && step !== 'success' && (
+                        <div className="text-center py-12">
+                            <div className="spinner mx-auto mb-4"></div>
+                            <p className="text-slate-300 font-medium">Đang xử lý hình ảnh...</p>
+                            <p className="text-slate-500 text-sm mt-2">Camera đã tắt để bảo vệ riêng tư</p>
+                        </div>
+                    )}
+
+                    {/* Error State with Retry/Register - Camera Closed */}
+                    {cameraFeedback?.type === 'error' && !loading && !attendanceComplete && step === 'camera' && (
+                        <div className="text-center py-8">
+                            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span className="text-3xl">⚠</span>
+                            </div>
+                            <p className="text-red-400 mb-2 font-medium">{cameraFeedback.message}</p>
+
+                            {cameraFeedback.message?.includes('chưa đăng ký') ? (
+                                <div className="flex flex-col gap-3 max-w-xs mx-auto mt-4">
+                                    <button
+                                        onClick={() => navigate('/face-enrollment')}
+                                        className="btn-primary w-full"
+                                    >
+                                        Đăng ký khuôn mặt ngay
+                                    </button>
+                                    <button
+                                        onClick={() => { setCameraFeedback(null); setStep('confirm'); }}
+                                        className="btn-secondary w-full"
+                                    >
+                                        Để sau
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="text-slate-500 mb-6 font-sm">Vui lòng thử lại</p>
+                                    <button onClick={() => { setCameraFeedback(null); setStep('confirm'); }} className="btn-secondary">
+                                        Thử lại
+                                    </button>
+                                </>
+                            )}
                         </div>
                     )}
 
@@ -284,17 +355,17 @@ export default function AttendancePage() {
                                     {successInfo.userName}
                                 </p>
                                 <p className="text-green-400 text-lg font-medium mb-1">
-                                    {successInfo.type === 'CHECK_IN' ? '✅ Check-in thành công!' : '✅ Check-out thành công!'}
+                                    {successInfo.type === 'CHECK_IN' ? 'Check-in thành công!' : 'Check-out thành công!'}
                                 </p>
                                 <p className="text-slate-300 text-lg">
-                                    🕐 {successInfo.time}
+                                    Lúc: {successInfo.time}
                                 </p>
                             </div>
 
                             <p className="text-slate-400">
                                 {successInfo.type === 'CHECK_IN'
-                                    ? 'Chúc bạn một ngày làm việc hiệu quả! 💪'
-                                    : 'Hẹn gặp lại bạn ngày mai! 👋'}
+                                    ? 'Chúc bạn một ngày làm việc hiệu quả!'
+                                    : 'Hẹn gặp lại bạn ngày mai!'}
                             </p>
                         </div>
                     )}
@@ -304,7 +375,7 @@ export default function AttendancePage() {
             {isComplete && (
                 <div className="glass-card p-6 text-center">
                     <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span className="text-3xl">🎉</span>
+                        <span className="text-3xl">Success</span>
                     </div>
                     <p className="text-lg font-medium mb-2">Bạn đã hoàn tất chấm công hôm nay!</p>
                     <p className="text-slate-400">Hẹn gặp lại ngày mai</p>
@@ -313,7 +384,7 @@ export default function AttendancePage() {
 
             {/* Recent Logs */}
             <div className="glass-card p-6">
-                <h2 className="text-lg font-semibold mb-4">📋 Lịch sử chấm công</h2>
+                <h2 className="text-lg font-semibold mb-4">Lịch sử chấm công</h2>
                 <div className="space-y-2">
                     {attendanceLogs.slice(0, 10).map(log => (
                         <div key={log.id} className="flex items-center justify-between py-3 border-b border-slate-700/50">

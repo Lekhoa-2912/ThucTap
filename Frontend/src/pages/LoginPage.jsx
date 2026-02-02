@@ -92,15 +92,15 @@ export default function LoginPage() {
                     <p className="text-center text-slate-400 text-sm mb-4">Tính năng nổi bật</p>
                     <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
-                            <span className="text-2xl">🤖</span>
+                            <span className="text-2xl">AI</span>
                             <p className="text-xs text-slate-400 mt-1">AI Nhận diện</p>
                         </div>
                         <div>
-                            <span className="text-2xl">📍</span>
+                            <span className="text-2xl">GPS</span>
                             <p className="text-xs text-slate-400 mt-1">GPS Check-in</p>
                         </div>
                         <div>
-                            <span className="text-2xl">💬</span>
+                            <span className="text-2xl">|</span>
                             <p className="text-xs text-slate-400 mt-1">Chat Realtime</p>
                         </div>
                     </div>

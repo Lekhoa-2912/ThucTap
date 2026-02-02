@@ -11,6 +11,7 @@ export function SocketProvider({ children }) {
     const [socket, setSocket] = useState(null)
     const [connected, setConnected] = useState(false)
     const [typingUsers, setTypingUsers] = useState({})
+    const [totalUnread, setTotalUnread] = useState(0)
 
     // Connect socket when authenticated
     useEffect(() => {
@@ -63,6 +64,32 @@ export function SocketProvider({ children }) {
             }
         }
     }, [isAuthenticated, user])
+
+    const fetchTotalUnread = async () => {
+        try {
+            const { chatAPI } = await import('../api') // Dynamic import to avoid circular dependency if any
+            const res = await chatAPI.getTotalUnread()
+            setTotalUnread(res.data.total)
+        } catch (error) {
+            console.error('Failed to fetch unread count', error)
+        }
+    }
+
+    useEffect(() => {
+        if (connected) {
+            fetchTotalUnread()
+
+            const handleUpdateUnread = () => fetchTotalUnread()
+
+            socket.on('new_message', handleUpdateUnread)
+            socket.on('messages_seen', handleUpdateUnread)
+
+            return () => {
+                socket.off('new_message', handleUpdateUnread)
+                socket.off('messages_seen', handleUpdateUnread)
+            }
+        }
+    }, [connected, socket])
 
     // Send message
     const sendMessage = useCallback((messageData) => {
@@ -144,7 +171,9 @@ export function SocketProvider({ children }) {
             markSeen,
             sendTyping,
             revokeMessage,
-            messageDelivered
+            messageDelivered,
+            totalUnread,
+            fetchTotalUnread
         }}>
             {children}
         </SocketContext.Provider>

@@ -108,13 +108,13 @@ export default function SettingsPage() {
         <div className="max-w-4xl mx-auto space-y-6">
             {/* Header */}
             <div className="glass-card p-6">
-                <h1 className="text-2xl font-bold">⚙️ Cấu hình hệ thống</h1>
+                <h1 className="text-2xl font-bold">Cấu hình hệ thống</h1>
                 <p className="text-slate-400">Quản lý thông tin công ty và cấu hình chấm công</p>
             </div>
 
             {/* Company Info */}
             <div className="glass-card p-6">
-                <h2 className="text-lg font-semibold mb-4">🏢 Thông tin công ty</h2>
+                <h2 className="text-lg font-semibold mb-4">Thông tin công ty</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-medium mb-2">Tên công ty</label>
@@ -145,20 +145,20 @@ export default function SettingsPage() {
             {/* Location Settings */}
             <div className="glass-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold">📍 Vị trí GPS (Geofencing)</h2>
+                    <h2 className="text-lg font-semibold">Vị trí GPS (Geofencing)</h2>
                     {isSuperAdmin && (
                         <button
                             onClick={getCurrentLocation}
                             className="btn-secondary text-sm px-4 py-2"
                         >
-                            📍 Lấy vị trí hiện tại
+                            Lấy vị trí hiện tại
                         </button>
                     )}
                 </div>
 
                 <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-4">
                     <p className="text-sm text-blue-300">
-                        💡 Nhân viên chỉ có thể chấm công khi ở trong bán kính cho phép từ vị trí công ty.
+                        Nhân viên chỉ có thể chấm công khi ở trong bán kính cho phép từ vị trí công ty.
                     </p>
                 </div>
 
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                             rel="noopener noreferrer"
                             className="text-blue-400 hover:underline text-sm"
                         >
-                            🗺️ Mở Google Maps ({formData.latitude}, {formData.longitude})
+                            Mở Google Maps ({formData.latitude}, {formData.longitude})
                         </a>
                     </div>
                 )}
@@ -220,7 +220,7 @@ export default function SettingsPage() {
 
             {/* Work Hours */}
             <div className="glass-card p-6">
-                <h2 className="text-lg font-semibold mb-4">⏰ Giờ làm việc</h2>
+                <h2 className="text-lg font-semibold mb-4">Giờ làm việc</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label className="block text-sm font-medium mb-2">Giờ bắt đầu</label>
@@ -289,7 +289,7 @@ export default function SettingsPage() {
                         disabled={saving}
                         className="btn-primary px-8"
                     >
-                        {saving ? 'Đang lưu...' : '💾 Lưu cấu hình'}
+                        {saving ? 'Đang lưu...' : 'Lưu cấu hình'}
                     </button>
                 </div>
             )}
@@ -297,7 +297,7 @@ export default function SettingsPage() {
             {!isSuperAdmin && (
                 <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-center">
                     <p className="text-yellow-400">
-                        ⚠️ Chỉ Super Admin mới có quyền thay đổi cấu hình hệ thống
+                        Chỉ Super Admin mới có quyền thay đổi cấu hình hệ thống
                     </p>
                 </div>
             )}

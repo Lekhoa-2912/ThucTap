@@ -2,15 +2,15 @@ import os
 import cv2
 import numpy as np
 import base64
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict, Any
 from datetime import datetime
 from ..config import settings
+from deepface import DeepFace
 
 class FaceRecognitionService:
     """
-    Simplified Face Recognition Service using OpenCV.
-    Works without DeepFace/TensorFlow for better compatibility.
-    Uses face histograms for basic face comparison.
+    Advanced Face Recognition Service using DeepFace (ArcFace).
+    Replaces legacy Haar Cascade/Histogram methods.
     """
     
     def __init__(self):
@@ -21,186 +21,154 @@ class FaceRecognitionService:
         os.makedirs(self.face_data_path, exist_ok=True)
         os.makedirs(self.uploads_path, exist_ok=True)
         
-        # Load Haar Cascade for face detection
-        self.face_cascade = cv2.CascadeClassifier(
-            cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-        )
-    
+        # Configuration
+        self.model_name = "ArcFace"
+        self.detector_backend = "retinaface" # Stronger detection
+        self.distance_metric = "cosine"
+        # ArcFace cosine threshold is typically 0.68. 
+        # We use a slightly stricter one for better security or looser if needed.
+        self.threshold = 0.68 
+
     def base64_to_image(self, base64_string: str) -> np.ndarray:
         """Convert base64 string to OpenCV image"""
-        if "," in base64_string:
-            base64_string = base64_string.split(",")[1]
-        
-        img_bytes = base64.b64decode(base64_string)
-        img_array = np.frombuffer(img_bytes, dtype=np.uint8)
-        img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-        return img
+        try:
+            if "," in base64_string:
+                base64_string = base64_string.split(",")[1]
+            
+            img_bytes = base64.b64decode(base64_string)
+            img_array = np.frombuffer(img_bytes, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            return img
+        except Exception as e:
+            print(f"Error converting base64 to image: {e}")
+            return None
     
-    def detect_face(self, img: np.ndarray) -> Optional[Tuple[int, int, int, int]]:
-        """Detect face using OpenCV Haar Cascade"""
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(
-            gray, scaleFactor=1.1, minNeighbors=5, minSize=(50, 50)
-        )
-        
-        if len(faces) > 0:
-            return tuple(faces[0])  # (x, y, w, h)
-        return None
-    
-    def extract_face_histogram(self, img: np.ndarray, face_rect: Tuple[int, int, int, int]) -> List[float]:
+    def get_embedding(self, img: np.ndarray) -> Optional[List[float]]:
         """
-        Extract face histogram as simple encoding.
-        Returns normalized histogram as face "embedding".
+        Extract 512D face embedding using ArcFace.
+        Returns None if no face or multiple faces found (unless handled).
         """
-        x, y, w, h = face_rect
-        face_roi = img[y:y+h, x:x+w]
-        
-        # Resize to standard size
-        face_resized = cv2.resize(face_roi, (100, 100))
-        
-        # Convert to grayscale and compute histogram
-        gray = cv2.cvtColor(face_resized, cv2.COLOR_BGR2GRAY)
-        
-        # Calculate histogram
-        hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
-        hist = cv2.normalize(hist, hist).flatten()
-        
-        return hist.tolist()
-    
-    def calculate_laplacian_variance(self, img: np.ndarray) -> float:
-        """Calculate Laplacian variance to detect blur"""
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        laplacian = cv2.Laplacian(gray, cv2.CV_64F)
-        return laplacian.var()
-    
-    def is_image_blurry(self, img: np.ndarray, threshold: float = 50.0) -> bool:
-        """Check if image is too blurry"""
-        return self.calculate_laplacian_variance(img) < threshold
-    
+        try:
+            # DeepFace.represent returns a list of dicts
+            results = DeepFace.represent(
+                img_path=img,
+                model_name=self.model_name,
+                detector_backend=self.detector_backend,
+                enforce_detection=True,
+                align=True
+            )
+            
+            if not results:
+                return None
+                
+            # Return the embedding of the first detected face
+            # In a stricter system, we might reject if len(results) > 1
+            return results[0]["embedding"]
+            
+        except Exception as e:
+            print(f"Error getting embedding: {e}")
+            return None
+
+    def calculate_cosine_distance(self, source_representation: List[float], test_representation: List[float]) -> float:
+        """
+        Calculate cosine distance between two embeddings.
+        """
+        a = np.matmul(np.transpose(source_representation), test_representation)
+        b = np.sum(np.multiply(source_representation, source_representation))
+        c = np.sum(np.multiply(test_representation, test_representation))
+        return 1 - (a / (np.sqrt(b) * np.sqrt(c)))
+
     def enroll_faces(self, user_id: str, face_images: List[str]) -> Tuple[bool, str, List[List[float]]]:
         """
-        Process face images and extract encodings for enrollment.
-        Uses adaptive filtering to keep at least 50 valid images.
+        Enroll user with DeepFace.
+        Only needs 1-3 good images.
         
         Returns:
             (success, message, encodings)
         """
-        MIN_REQUIRED_IMAGES = 50
-        MAX_IMAGES_TO_KEEP = 100
-        
         user_face_dir = os.path.join(self.face_data_path, str(user_id))
         os.makedirs(user_face_dir, exist_ok=True)
         
-        # Step 1: Score all images based on quality
-        scored_images = []
-        for idx, img_base64 in enumerate(face_images):
-            try:
-                img = self.base64_to_image(img_base64)
-                
-                # Detect face first
-                face_rect = self.detect_face(img)
-                if face_rect is None:
-                    continue  # No face detected, skip
-                
-                # Calculate blur score (higher = sharper)
-                blur_score = self.calculate_laplacian_variance(img)
-                
-                # Calculate face size score (larger face = better)
-                x, y, w, h = face_rect
-                face_size_score = (w * h) / (img.shape[0] * img.shape[1])
-                
-                # Combined quality score
-                quality_score = blur_score * 0.7 + (face_size_score * 1000) * 0.3
-                
-                scored_images.append({
-                    'idx': idx,
-                    'img': img,
-                    'face_rect': face_rect,
-                    'blur_score': blur_score,
-                    'quality_score': quality_score
-                })
-                    
-            except Exception as e:
-                print(f"Error processing image {idx}: {e}")
-                continue
-        
-        # Step 2: Sort by quality score (best first)
-        scored_images.sort(key=lambda x: x['quality_score'], reverse=True)
-        
-        # Step 3: Keep at least MIN_REQUIRED_IMAGES, up to MAX_IMAGES_TO_KEEP
-        images_to_keep = min(max(len(scored_images), 0), MAX_IMAGES_TO_KEEP)
-        
-        # If we have more than MIN_REQUIRED_IMAGES, we can be more selective
-        # If less, keep all we have
-        if len(scored_images) >= MIN_REQUIRED_IMAGES:
-            images_to_keep = min(len(scored_images), MAX_IMAGES_TO_KEEP)
-        
-        selected_images = scored_images[:images_to_keep]
-        
-        # Step 4: Extract encodings from selected images
         encodings = []
         saved_count = 0
-        for item in selected_images:
-            try:
-                encoding = self.extract_face_histogram(item['img'], item['face_rect'])
-                encodings.append(encoding)
+        
+        # We only need a few valid images now
+        MAX_ENROLLMENT_IMAGES = 3
+        
+        for idx, img_base64 in enumerate(face_images):
+            if saved_count >= MAX_ENROLLMENT_IMAGES:
+                break
                 
-                # Save reference images (first 20)
-                if saved_count < 20:
-                    saved_count += 1
-                    face_path = os.path.join(user_face_dir, f"face_{saved_count}.jpg")
-                    cv2.imwrite(face_path, item['img'])
-                    
-            except Exception as e:
-                print(f"Error extracting encoding: {e}")
+            img = self.base64_to_image(img_base64)
+            if img is None:
                 continue
+                
+            embedding = self.get_embedding(img)
+            
+            if embedding:
+                encodings.append(embedding)
+                
+                # Save the image for reference
+                saved_count += 1
+                face_path = os.path.join(user_face_dir, f"ref_{saved_count}.jpg")
+                cv2.imwrite(face_path, img)
+            else:
+                print(f"Skipping image {idx}: No face detected or low quality.")
+
+        if not encodings:
+            return False, "Không thể phát hiện khuôn mặt rõ ràng trong các ảnh đã gửi. Vui lòng chụp lại, giữ khuôn mặt thẳng và đủ sáng.", []
         
-        valid_count = len(encodings)
-        
-        if valid_count < MIN_REQUIRED_IMAGES:
-            return False, f"Không đủ ảnh khuôn mặt hợp lệ. Chỉ có {valid_count} ảnh (cần ít nhất {MIN_REQUIRED_IMAGES} ảnh). Vui lòng chụp thêm ảnh rõ nét hơn.", []
-        
-        return True, f"Đăng ký thành công với {valid_count} ảnh khuôn mặt chất lượng tốt!", encodings
+        return True, f"Đăng ký thành công với {len(encodings)} mẫu khuôn mặt chất lượng cao!", encodings
     
-    def compare_histograms(self, hist1: List[float], hist2: List[float]) -> float:
-        """Compare two histograms using correlation"""
-        h1 = np.array(hist1, dtype=np.float32)
-        h2 = np.array(hist2, dtype=np.float32)
-        return cv2.compareHist(h1, h2, cv2.HISTCMP_CORREL)
+    def enroll_single_image(self, user_id: str, image_base64: str) -> Tuple[bool, str, List[float]]:
+        """
+        Auto-enroll user with a single image.
+        """
+        return self.enroll_faces(user_id, [image_base64])
     
     def verify_face(self, face_image: str, stored_encodings: List[List[float]]) -> Tuple[bool, float, str]:
         """
-        Verify if face matches stored encodings.
+        Verify if face matches stored encodings using DeepFace embeddings.
         
         Returns:
-            (is_match, confidence, message)
+            (is_match, confidence_score, message)
         """
         try:
             img = self.base64_to_image(face_image)
+            if img is None:
+                return False, 0.0, "Ảnh không hợp lệ"
             
-            # Detect face
-            face_rect = self.detect_face(img)
-            if face_rect is None:
+            # Get embedding of the probe image
+            current_embedding = self.get_embedding(img)
+            
+            if current_embedding is None:
                 return False, 0.0, "Không phát hiện được khuôn mặt trong ảnh"
             
-            # Extract encoding
-            current_encoding = self.extract_face_histogram(img, face_rect)
+            # Compare with all stored embeddings
+            # We look for the MINIMUM distance (best match)
+            min_distance = float("inf")
             
-            # Compare with stored encodings
-            best_score = 0.0
             for stored_enc in stored_encodings:
-                score = self.compare_histograms(current_encoding, stored_enc)
-                if score > best_score:
-                    best_score = score
+                dist = self.calculate_cosine_distance(current_embedding, stored_enc)
+                if dist < min_distance:
+                    min_distance = dist
             
-            # Threshold for match
-            threshold = 0.5
-            confidence = best_score * 100
+            # Convert distance to confidence score (approximate)
+            # Threshold is self.threshold. 
+            # If dist = 0, confidence = 100%. If dist = threshold, confidence = 50% (just a heuristic mapping)
             
-            if best_score >= threshold:
-                return True, confidence, f"Xác thực thành công (độ tin cậy: {confidence:.1f}%)"
+            if min_distance <= self.threshold:
+                # Map [0, threshold] to [100, 50] linearly-ish or just inverted
+                # Simple inversion: (1 - dist) * 100 might be too linear.
+                # Let's use relative to threshold.
+                score = (1 - (min_distance / (self.threshold * 2))) * 100 # Just a safe visualization
+                # Or simply:
+                confidence = max(0, (1 - min_distance) * 100)
+                
+                return True, confidence, f"Xác thực thành công (Khớp: {confidence:.1f}%)"
             else:
-                return False, confidence, f"Khuôn mặt không khớp (độ tin cậy: {confidence:.1f}%)"
+                confidence = max(0, (1 - min_distance) * 100)
+                return False, confidence, f"Khuôn mặt không khớp (Độ tin cậy: {confidence:.1f}%)"
                 
         except Exception as e:
             print(f"Face verification error: {e}")
@@ -210,6 +178,8 @@ class FaceRecognitionService:
         """Save attendance check image"""
         try:
             img = self.base64_to_image(face_image)
+            if img is None:
+                return ""
             
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"{user_id}_{check_type}_{timestamp}.jpg"
@@ -224,6 +194,18 @@ class FaceRecognitionService:
         except Exception as e:
             print(f"Error saving attendance image: {e}")
             return ""
+
+    def delete_user_faces(self, user_id: str) -> bool:
+        """Delete all face data for a user"""
+        try:
+            import shutil
+            user_face_dir = os.path.join(self.face_data_path, str(user_id))
+            if os.path.exists(user_face_dir):
+                shutil.rmtree(user_face_dir)
+            return True
+        except Exception as e:
+            print(f"Error deleting face data: {e}")
+            return False
 
 # Singleton instance
 face_service = FaceRecognitionService()

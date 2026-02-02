@@ -178,10 +178,10 @@ async def enroll_face(
     """
     face_images = request.face_images
     
-    if len(face_images) < 10:
+    if len(face_images) < 1:
         raise HTTPException(
             status_code=400, 
-            detail=f"Cần ít nhất 10 ảnh khuôn mặt, bạn chỉ gửi {len(face_images)} ảnh"
+            detail=f"Cần ít nhất 1 ảnh khuôn mặt"
         )
     
     # Process face images
@@ -193,7 +193,12 @@ async def enroll_face(
     if not success:
         raise HTTPException(status_code=400, detail=message)
     
-    # Update user with face embeddings and change status to PENDING
+    # Determine new status (Keep ACTIVE if already ACTIVE)
+    new_status = UserStatus.PENDING.value
+    if current_user.get("status") == UserStatus.ACTIVE.value:
+        new_status = UserStatus.ACTIVE.value
+
+    # Update user with face embeddings
     users_col = get_users_collection()
     await users_col.update_one(
         {"_id": ObjectId(current_user["_id"])},
@@ -201,7 +206,7 @@ async def enroll_face(
             "$set": {
                 "face_encodings": embeddings,
                 "face_registered": True,
-                "status": UserStatus.PENDING.value,
+                "status": new_status,
                 "updated_at": datetime.utcnow()
             }
         }
@@ -209,9 +214,9 @@ async def enroll_face(
     
     return {
         "message": message,
-        "status": "PENDING",
+        "status": new_status,
         "embeddings_count": len(embeddings),
-        "next_step": "wait_for_approval"
+        "next_step": "wait_for_approval" if new_status == "PENDING" else "dashboard"
     }
 
 @router.get("/pending", response_model=List[dict])
@@ -572,3 +577,36 @@ async def admin_update_user(
     
     return {"message": "Cập nhật thông tin thành công"}
 
+    return {"message": "Cập nhật thông tin thành công"}
+
+@router.delete("/{user_id}/face")
+async def delete_user_face_data(
+    user_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete user face data - HR/Admin only"""
+    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền xóa dữ liệu khuôn mặt")
+    
+    users_col = get_users_collection()
+    user = await users_col.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+    
+    # Delete physical files
+    face_service.delete_user_faces(user_id)
+    
+    # Update DB
+    await users_col.update_one(
+        {"_id": ObjectId(user_id)},
+        {
+            "$set": {
+                "face_encodings": [],
+                "face_registered": False,
+                "updated_at": datetime.utcnow()
+            }
+        }
+    )
+    
+    return {"message": "Đã xóa dữ liệu khuôn mặt thành công"}

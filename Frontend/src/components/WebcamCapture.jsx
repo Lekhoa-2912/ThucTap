@@ -32,11 +32,11 @@ export default function WebcamCapture({
     const detectionInterval = useRef(null)
 
     const phases = [
-        { label: 'Nhìn thẳng', icon: '😐', count: 30 },
-        { label: 'Quay trái', icon: '👈', count: 30 },
-        { label: 'Quay phải', icon: '👉', count: 30 },
-        { label: 'Ngước lên', icon: '👆', count: 30 },
-        { label: 'Cúi xuống', icon: '👇', count: 30 },
+        { label: 'Nhìn thẳng', count: 30 },
+        { label: 'Quay trái', count: 30 },
+        { label: 'Quay phải', count: 30 },
+        { label: 'Ngước lên', count: 30 },
+        { label: 'Cúi xuống', count: 30 },
     ]
 
     const videoConstraints = {
@@ -342,7 +342,7 @@ export default function WebcamCapture({
                                                 {feedback ? (
                                                     <div className="bg-red-900/90 px-5 py-3 rounded-xl shadow-2xl border border-red-500/50 animate-bounce-short">
                                                         <p className="text-red-200 text-lg font-bold flex items-center justify-center gap-2">
-                                                            <span className="text-2xl">⚠️</span> Lỗi nhận diện
+                                                            <span className="text-2xl">!</span> Lỗi nhận diện
                                                         </p>
                                                         <p className="text-white text-sm mt-1 font-medium">
                                                             {feedback.message}
@@ -356,7 +356,7 @@ export default function WebcamCapture({
                                                 ) : faceInFrame ? (
                                                     <div className="bg-green-900/90 px-5 py-3 rounded-xl shadow-2xl border border-green-500">
                                                         <p className="text-green-300 text-lg font-bold flex items-center gap-2">
-                                                            <span className="text-2xl">😊</span> Đã nhận diện
+                                                            Đã nhận diện
                                                         </p>
                                                         <p className="text-white text-sm mt-1">
                                                             Giữ yên {Math.max(0, Math.ceil((100 - faceProgress) / 50))}s...
@@ -371,7 +371,7 @@ export default function WebcamCapture({
                                                 ) : (
                                                     <div className="bg-slate-900/90 px-5 py-3 rounded-xl shadow-2xl border border-blue-500/50">
                                                         <p className="text-blue-300 text-lg font-medium flex items-center gap-2 justify-center">
-                                                            <span className="text-2xl">👤</span> Đưa mặt vào khung
+                                                            Đưa mặt vào khung
                                                         </p>
                                                         <p className="text-slate-300 text-xs mt-1">
                                                             AI đang tìm kiếm khuôn mặt...
@@ -429,7 +429,7 @@ export default function WebcamCapture({
                             {captureCount >= maxCaptures && (
                                 <div className="mt-4 bg-green-500/20 border border-green-500/30 rounded-xl p-4 text-center">
                                     <p className="text-green-400 font-medium">
-                                        ✅ Đã chụp đủ {maxCaptures} ảnh!
+                                        Đã chụp đủ {maxCaptures} ảnh!
                                     </p>
                                 </div>
                             )}
@@ -442,7 +442,7 @@ export default function WebcamCapture({
                                 onClick={capture}
                                 className="btn-primary"
                             >
-                                📸 Chụp ảnh
+                                Chụp ảnh
                             </button>
                         </div>
                     )}

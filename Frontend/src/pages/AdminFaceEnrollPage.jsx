@@ -66,7 +66,7 @@ export default function AdminFaceEnrollPage() {
                         ← Quay lại
                     </button>
                     <div>
-                        <h1 className="text-2xl font-bold">🤖 Đăng ký khuôn mặt</h1>
+                        <h1 className="text-2xl font-bold">Đăng ký khuôn mặt</h1>
                         <p className="text-slate-400">Cho nhân viên: {user?.full_name || user?.email}</p>
                     </div>
                 </div>
@@ -96,7 +96,7 @@ export default function AdminFaceEnrollPage() {
                     </div>
 
                     <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-6">
-                        <h3 className="font-medium text-blue-300 mb-2">📷 Hướng dẫn chụp ảnh</h3>
+                        <h3 className="font-medium text-blue-300 mb-2">Hướng dẫn chụp ảnh</h3>
                         <ul className="text-sm text-slate-300 space-y-1">
                             <li>• Đảm bảo ánh sáng đủ, không ngược sáng</li>
                             <li>• Nhìn thẳng vào camera, theo hướng dẫn</li>
@@ -109,7 +109,7 @@ export default function AdminFaceEnrollPage() {
                         onClick={() => setStep('capture')}
                         className="w-full btn-primary py-4 text-lg"
                     >
-                        🎥 Bắt đầu chụp ảnh
+                        Bắt đầu chụp ảnh
                     </button>
                 </div>
             )}
@@ -140,7 +140,7 @@ export default function AdminFaceEnrollPage() {
             {/* Done */}
             {step === 'done' && (
                 <div className="glass-card p-12 text-center">
-                    <div className="text-6xl mb-4">✅</div>
+                    <div className="text-6xl mb-4">OK</div>
                     <h3 className="text-xl font-semibold mb-2 text-green-400">
                         Đăng ký thành công!
                     </h3>

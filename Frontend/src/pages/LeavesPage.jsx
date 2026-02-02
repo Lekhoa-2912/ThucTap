@@ -6,13 +6,13 @@ import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 
 const LEAVE_TYPES = [
-    { value: 'ANNUAL', label: 'Nghỉ phép năm', icon: '🏖️', color: 'blue' },
-    { value: 'SICK', label: 'Nghỉ ốm', icon: '🤒', color: 'red' },
-    { value: 'PERSONAL', label: 'Việc riêng', icon: '👤', color: 'purple' },
-    { value: 'MATERNITY', label: 'Thai sản', icon: '🤰', color: 'pink' },
-    { value: 'WEDDING', label: 'Nghỉ cưới', icon: '💒', color: 'yellow' },
-    { value: 'BEREAVEMENT', label: 'Nghỉ tang', icon: '🕯️', color: 'gray' },
-    { value: 'UNPAID', label: 'Không lương', icon: '💸', color: 'orange' }
+    { value: 'ANNUAL', label: 'Nghỉ phép năm', color: 'blue' },
+    { value: 'SICK', label: 'Nghỉ ốm', color: 'green' },
+    { value: 'PERSONAL', label: 'Việc riêng', color: 'purple' },
+    { value: 'MATERNITY', label: 'Thai sản', color: 'pink' },
+    { value: 'WEDDING', label: 'Nghỉ cưới', color: 'yellow' },
+    { value: 'BEREAVEMENT', label: 'Nghỉ tang', color: 'gray' },
+    { value: 'UNPAID', label: 'Không lương', color: 'orange' }
 ]
 
 export default function LeavesPage() {
@@ -139,7 +139,7 @@ export default function LeavesPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800">🏖️ Nghỉ phép</h1>
+                    <h1 className="text-2xl font-bold text-slate-800">Nghỉ phép</h1>
                     <p className="text-slate-500">Quản lý đơn xin nghỉ phép</p>
                 </div>
                 <button onClick={() => setShowCreateModal(true)} className="btn-primary">+ Tạo đơn nghỉ</button>
@@ -167,14 +167,14 @@ export default function LeavesPage() {
                     onClick={() => setActiveTab('my-leaves')}
                     className={`px-4 py-2 rounded-t-lg font-medium transition-colors ${activeTab === 'my-leaves' ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                    📋 Đơn của tôi
+                    Đơn của tôi
                 </button>
                 {canApprove && (
                     <button
                         onClick={() => setActiveTab('pending')}
                         className={`px-4 py-2 rounded-t-lg font-medium transition-colors flex items-center gap-2 ${activeTab === 'pending' ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:text-slate-700'}`}
                     >
-                        ⏳ Chờ duyệt
+                        Chờ duyệt
                         {pendingLeaves.length > 0 && (
                             <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{pendingLeaves.length}</span>
                         )}

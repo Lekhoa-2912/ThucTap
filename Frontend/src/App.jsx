@@ -87,7 +87,7 @@ export default function App() {
                 <Route
                     path="/face-enrollment"
                     element={
-                        isAuthenticated && needsProfileSetup
+                        isAuthenticated
                             ? <FaceEnrollmentPage />
                             : <Navigate to="/dashboard" />
                     }

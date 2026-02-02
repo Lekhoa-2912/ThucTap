@@ -25,6 +25,9 @@ async def connect(sid, environ, auth):
         connected_users[user_id] = sid
         print(f"User {user_id} connected with SID {sid}")
         
+        # Join user's personal room for notifications
+        await sio.enter_room(sid, f"user_{user_id}")
+        
         # Join user's conversation rooms
         conv_col = get_conversations_collection()
         conversations = await conv_col.find({"participants": user_id}).to_list(None)
@@ -82,6 +85,14 @@ async def send_message(sid, data):
         await sio.emit("error", {"message": "Missing required fields"}, to=sid)
         return
     
+    # Check conversation existence and get participants
+    conversation = await conv_col.find_one({"_id": ObjectId(conversation_id)})
+    if not conversation:
+        await sio.emit("error", {"message": "Conversation not found"}, to=sid)
+        return
+        
+    participants = conversation.get("participants", [])
+    
     # Handle Reply
     reply_to = None
     if reply_to_id:
@@ -131,9 +142,43 @@ async def send_message(sid, data):
         }}
     )
     
-    # Broadcast to conversation room
+    # Broadcast to conversation room (for active chat windows)
     await sio.emit("new_message", message, room=conversation_id)
-    print(f"Message sent to room {conversation_id}: {content[:30]}...")
+    
+    # Broadcast to all participants' personal rooms (for notifications)
+    # This ensures users get notified even if they haven't joined the conversation room (e.g. new group/chat)
+    for p_id in participants:
+         # Don't send double if they are in the conversation room? 
+         # SocketIO treats rooms independently. If client is in both, they might get double events?
+         # "new_message" handler in frontend should handle deduplication or we use a different event name like "notification".
+         # However, frontend usually just appends to list.
+         # Actually, if I emit to both rooms, and user is in both, they get it TWICE.
+         # Solution: Emit to `conversation_id` OR `user_room`.
+         # Better: Frontend listens to ONE event.
+         # But we want `conversation_id` for chat window context.
+         
+         # Strategy:
+         # 1. Emit `new_message` to `conversation_id` (standard chat flow).
+         # 2. Emit `notification` or `chat_notification` to `user_{p_id}` that contains count update or minimal info?
+         # 3. OR simply check in frontend if we already have the message.
+         
+         # Let's emit `new_message` to `user_{p_id}` ONLY IF they are NOT the sender.
+         # But wait, if I am in the conversation room, I get it from there.
+         
+         # Let's change the strategy:
+         # Do NOT emit to `conversation_id` if we emit to all participants individually.
+         # BUT `conversation_id` is useful for anonymous/public logic if we had it.
+         # Here we have strict participants.
+         # So we can just emit to `user_{p_id}` for ALL participants.
+         # AND REMOVE `await sio.emit("new_message", message, room=conversation_id)`.
+         
+         # Let's try that. Access control via rooms.
+         pass
+
+    for p_id in participants:
+        await sio.emit("new_message", message, room=f"user_{p_id}")
+            
+    print(f"Message sent to participants of {conversation_id}: {content[:30]}...")
 
 @sio.event
 async def message_delivered(sid, data):
@@ -189,12 +234,12 @@ async def mark_seen(sid, data):
                 }
             )
     
-    # Notify other participants
+    # Notify all participants (including current user to update badges)
     await sio.emit("messages_seen", {
         "conversation_id": conversation_id,
         "message_ids": message_ids,
         "seen_by": user_id
-    }, room=conversation_id, skip_sid=sid)
+    }, room=conversation_id)
 
 @sio.event
 async def typing(sid, data):

@@ -143,7 +143,7 @@ export default function ChatWindow({
         return (
             <div className="flex-1 flex items-center justify-center">
                 <div className="text-center text-slate-400">
-                    <p className="text-4xl mb-4">💬</p>
+                    <p className="text-4xl mb-4">Tin nhắn</p>
                     <p>Chọn một cuộc trò chuyện để bắt đầu</p>
                 </div>
             </div>
@@ -219,7 +219,7 @@ export default function ChatWindow({
                                 {msg.reply_to && (
                                     <div className="mb-2 p-2 rounded bg-black/20 text-sm border-l-2 border-blue-500 cursor-pointer hover:bg-black/30 transition-colors">
                                         <p className="font-bold text-[10px] opacity-70 mb-0.5">{msg.reply_to.sender_name}</p>
-                                        <p className="truncate opacity-50 text-xs">{msg.reply_to.content || (msg.reply_to.message_type === 'image' ? '📷 Ảnh' : '📁 Tệp tin')}</p>
+                                        <p className="truncate opacity-50 text-xs">{msg.reply_to.content || (msg.reply_to.message_type === 'image' ? 'Ảnh' : 'Tệp tin')}</p>
                                     </div>
                                 )}
 
@@ -244,7 +244,7 @@ export default function ChatWindow({
                                                 rel="noopener noreferrer"
                                                 className="flex items-center gap-2 p-2 bg-black/20 rounded-lg hover:bg-black/30 transition-colors mb-1"
                                             >
-                                                <span className="text-2xl">📄</span>
+                                                <span className="text-2xl">Tệp</span>
                                                 <span className="text-sm underline truncate max-w-[200px]">{msg.file_name || 'Tệp đính kèm'}</span>
                                             </a>
                                         )}
@@ -265,7 +265,63 @@ export default function ChatWindow({
                                     {renderMessageStatus(msg)}
                                 </div>
 
-                                {/* Context Menu */}
+                                {/* Read Receipts (Avatars) */}
+                                {msg.sender_id === user.id && msg.seen_by?.length > 0 && (
+                                    <div className="flex justify-end mt-1 mr-1 gap-[-0.5rem]">
+                                        {msg.seen_by
+                                            .filter(id => id !== user.id)
+                                            .map((seenId, idx) => {
+                                                // Find user details in participants list
+                                                let avatar = null
+                                                let name = 'User'
+
+                                                if (conversation.type === 'PRIVATE') {
+                                                    avatar = conversation.avatar
+                                                    name = conversation.name
+                                                } else if (conversation.participants) {
+                                                    // Try to find in participants list (which might be populated now)
+                                                    const participant = conversation.participants.find(p =>
+                                                        (p.id === seenId) || (p === seenId) // Handle both object and string ID
+                                                    )
+
+                                                    if (participant && typeof participant === 'object') {
+                                                        avatar = participant.avatar
+                                                        name = participant.full_name
+                                                    }
+                                                }
+
+                                                return (
+                                                    <div key={idx} className="w-4 h-4 rounded-full border border-white overflow-hidden bg-gray-300 ml-[-4px] relative z-0 hover:z-10 transition-all custom-tooltip-container cursor-default">
+                                                        {avatar ? (
+                                                            <img src={`${import.meta.env.VITE_API_URL}${avatar}`} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full bg-blue-500 flex items-center justify-center text-[8px] text-white font-bold">
+                                                                {name[0]}
+                                                            </div>
+                                                        )}
+                                                        {/* Tooltip */}
+                                                        <div className="custom-tooltip absolute bottom-full mb-1 left-1/2 -translate-x-1/2 bg-black/80 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap opacity-0 pointer-events-none">
+                                                            {name}
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                )}
+
+                                {/* Context Menu & Actions */}
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleReply(msg)
+                                    }}
+                                    className="absolute top-1/2 -translate-y-1/2 -left-8 opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-blue-400 transition-all"
+                                    title="Trả lời"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-reply"><polyline points="9 17 4 12 9 7" /><path d="M20 18v-2a4 4 0 0 0-4-4H4" /></svg>
+                                </button>
+
                                 {showContextMenu === msg.id && (
                                     <div
                                         className="absolute right-0 top-full mt-1 bg-slate-800 rounded-lg shadow-xl border border-slate-600 py-1 z-20 overflow-hidden min-w-[150px]"
@@ -275,14 +331,14 @@ export default function ChatWindow({
                                             onClick={() => handleReply(msg)}
                                             className="w-full px-4 py-3 text-left text-sm text-blue-400 hover:bg-slate-700 flex items-center gap-2 transition-colors border-b border-slate-700"
                                         >
-                                            ↩️ Trả lời
+                                            Trả lời
                                         </button>
                                         {isOwn && (
                                             <button
                                                 onClick={() => handleRevoke(msg.id)}
                                                 className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-slate-700 flex items-center gap-2 transition-colors"
                                             >
-                                                🗑️ Thu hồi
+                                                Thu hồi
                                             </button>
                                         )}
                                     </div>
@@ -313,7 +369,7 @@ export default function ChatWindow({
                     <div className="bg-slate-800/80 p-3 flex justify-between items-center text-sm border-b border-slate-700 backdrop-blur-sm animate-fade-in-up">
                         <div className="flex-1 overflow-hidden">
                             <span className="font-bold text-blue-400 text-xs block mb-1">Đang trả lời {replyTo.sender_name}</span>
-                            <p className="truncate text-slate-300 max-w-md">{replyTo.content || (replyTo.message_type === 'image' ? '📷 Ảnh' : '📁 Tệp tin')}</p>
+                            <p className="truncate text-slate-300 max-w-md">{replyTo.content || (replyTo.message_type === 'image' ? 'Ảnh' : 'Tệp tin')}</p>
                         </div>
                         <button
                             onClick={() => setReplyTo(null)}
@@ -335,7 +391,7 @@ export default function ChatWindow({
                         onClick={() => fileInputRef.current?.click()}
                         title="Đính kèm file/ảnh/video"
                     >
-                        📎
+                        [+]
                     </button>
                     <input
                         ref={inputRef}

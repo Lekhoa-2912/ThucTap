@@ -8,7 +8,7 @@ export default function PendingPage() {
             <div className="glass-card p-8 w-full max-w-md text-center">
                 {/* Icon */}
                 <div className="w-20 h-20 bg-orange-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-5xl">⏳</span>
+                    <span className="text-5xl">...</span>
                 </div>
 
                 {/* Title */}
@@ -42,7 +42,7 @@ export default function PendingPage() {
                 {/* Info */}
                 <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-6 text-left">
                     <p className="text-sm text-slate-300">
-                        💡 <strong>Lưu ý:</strong> Bạn sẽ nhận được thông báo khi hồ sơ được duyệt.
+                        <strong>Lưu ý:</strong> Bạn sẽ nhận được thông báo khi hồ sơ được duyệt.
                         Trong thời gian chờ, bạn chỉ có thể xem các thông báo công khai.
                     </p>
                 </div>
@@ -53,7 +53,7 @@ export default function PendingPage() {
                         onClick={() => window.location.reload()}
                         className="flex-1 btn-secondary"
                     >
-                        🔄 Kiểm tra lại
+                        Kiểm tra lại
                     </button>
                     <button
                         onClick={logout}

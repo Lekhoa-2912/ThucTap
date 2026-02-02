@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useSocket } from '../context/SocketContext'
 import NotificationBell from './NotificationBell'
 import {
     LayoutDashboard,
@@ -46,6 +47,7 @@ const menuItems = [
 export default function Sidebar() {
     const location = useLocation()
     const { user, hasRole } = useAuth()
+    const { totalUnread } = useSocket()
     const [collapsed, setCollapsed] = useState(false)
 
     const visibleItems = menuItems.filter(item => hasRole(item.roles))
@@ -113,7 +115,7 @@ export default function Sidebar() {
                                 key={item.path}
                                 to={item.path}
                                 title={collapsed ? item.label : ''}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${collapsed ? 'justify-center' : ''
+                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 relative ${collapsed ? 'justify-center' : ''
                                     } ${isActive
                                         ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
                                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -121,6 +123,13 @@ export default function Sidebar() {
                             >
                                 <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                                 {!collapsed && <span className="font-medium">{item.label}</span>}
+
+                                {/* Badge for Chat */}
+                                {item.path === '/chat' && totalUnread > 0 && (
+                                    <span className={`absolute ${collapsed ? 'top-1 right-1' : 'right-4'} bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center border-2 border-white`}>
+                                        {totalUnread > 99 ? '99+' : totalUnread}
+                                    </span>
+                                )}
                             </Link>
                         )
                     })}

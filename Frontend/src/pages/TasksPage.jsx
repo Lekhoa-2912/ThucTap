@@ -79,11 +79,11 @@ export default function TasksPage() {
 
     const getPriorityIcon = (priority) => {
         switch (priority) {
-            case 'URGENT': return '🔴'
-            case 'HIGH': return '🟠'
-            case 'MEDIUM': return '🟡'
-            case 'LOW': return '🟢'
-            default: return '⚪'
+            case 'URGENT': return 'Khẩn cấp'
+            case 'HIGH': return 'Cao'
+            case 'MEDIUM': return 'Trung bình'
+            case 'LOW': return 'Thấp'
+            default: return 'Bình thường'
         }
     }
 
@@ -100,7 +100,7 @@ export default function TasksPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">✅ Công việc của tôi</h1>
+                    <h1 className="text-2xl font-bold">Công việc của tôi</h1>
                     <p className="text-slate-400">Quản lý và theo dõi tiến độ công việc</p>
                 </div>
             </div>
@@ -128,7 +128,7 @@ export default function TasksPage() {
             <div className="grid gap-4">
                 {tasks.length === 0 ? (
                     <div className="glass-card p-8 text-center">
-                        <p className="text-4xl mb-4">📋</p>
+                        <p className="text-4xl mb-4">Công việc</p>
                         <p className="text-slate-400">Không có công việc nào</p>
                     </div>
                 ) : (
@@ -150,11 +150,11 @@ export default function TasksPage() {
 
                                     <div className="flex flex-wrap gap-4 text-sm">
                                         <span className="text-slate-400">
-                                            📁 {task.project_name}
+                                            Dự án: {task.project_name}
                                         </span>
                                         {task.deadline && (
                                             <span className="text-slate-400">
-                                                📅 {format(new Date(task.deadline), 'dd/MM/yyyy')}
+                                                Hạn: {format(new Date(task.deadline), 'dd/MM/yyyy')}
                                             </span>
                                         )}
                                     </div>

@@ -70,7 +70,7 @@ export default function ProjectsPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold">📁 Dự án</h1>
+                    <h1 className="text-2xl font-bold">Dự án</h1>
                     <p className="text-slate-400">Quản lý và theo dõi các dự án</p>
                 </div>
                 {canManage && (
@@ -101,7 +101,7 @@ export default function ProjectsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects.length === 0 ? (
                     <div className="col-span-full glass-card p-8 text-center">
-                        <p className="text-4xl mb-4">📁</p>
+                        <p className="text-4xl mb-4">Dự án</p>
                         <p className="text-slate-400">Chưa có dự án nào</p>
                     </div>
                 ) : (
@@ -140,12 +140,12 @@ export default function ProjectsPage() {
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-4">
                                     <span className="text-slate-400">
-                                        ✅ {project.completed_tasks || 0}/{project.total_tasks || 0} tasks
+                                        {project.completed_tasks || 0}/{project.total_tasks || 0} tasks hoàn thành
                                     </span>
                                 </div>
                                 {project.deadline && (
                                     <span className="text-slate-400">
-                                        📅 {format(new Date(project.deadline), 'dd/MM/yyyy')}
+                                        Hạn: {format(new Date(project.deadline), 'dd/MM/yyyy')}
                                     </span>
                                 )}
                             </div>

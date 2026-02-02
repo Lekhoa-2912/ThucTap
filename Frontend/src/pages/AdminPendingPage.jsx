@@ -63,7 +63,7 @@ export default function AdminPendingPage() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold">📋 Duyệt hồ sơ nhân viên</h1>
+                <h1 className="text-2xl font-bold">Duyệt hồ sơ nhân viên</h1>
                 <p className="text-slate-400">Xem xét và phê duyệt hồ sơ nhân viên mới</p>
             </div>
 
@@ -71,7 +71,7 @@ export default function AdminPendingPage() {
             <div className="grid gap-4">
                 {users.length === 0 ? (
                     <div className="glass-card p-8 text-center">
-                        <p className="text-4xl mb-4">✅</p>
+                        <p className="text-4xl mb-4">Duyệt hồ sơ</p>
                         <p className="text-slate-400">Không có hồ sơ nào đang chờ duyệt</p>
                     </div>
                 ) : (
@@ -90,7 +90,7 @@ export default function AdminPendingPage() {
                                         <span className="status-pending px-2 py-1 rounded-full text-xs">PENDING</span>
                                         {user.face_registered && (
                                             <span className="bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-1 rounded-full text-xs">
-                                                🤖 Đã đăng ký khuôn mặt
+                                                Đã đăng ký khuôn mặt
                                             </span>
                                         )}
                                     </div>

@@ -136,6 +136,10 @@ export default function AdminUsersPage() {
                     const res = await userAPI.resetUserPassword(selectedUser.id)
                     toast.success(`Đã reset mật khẩu về: ${res.data.default_password}`)
                     break
+                case 'delete_face':
+                    await userAPI.deleteUserFace(selectedUser.id)
+                    toast.success('Đã xóa dữ liệu khuôn mặt')
+                    break
                 default:
                     break
             }
@@ -195,7 +199,7 @@ export default function AdminUsersPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-800">👥 Quản lý nhân viên</h1>
+                    <h1 className="text-2xl font-bold text-slate-800">Quản lý nhân viên</h1>
                     <p className="text-slate-500">Danh sách và thông tin nhân viên</p>
                 </div>
                 <button onClick={() => setShowCreateModal(true)} className="btn-primary">+ Tạo tài khoản</button>
@@ -261,6 +265,7 @@ export default function AdminUsersPage() {
                                 <th className="text-left py-4 px-6 font-semibold text-slate-700">Liên hệ</th>
                                 <th className="text-left py-4 px-6 font-semibold text-slate-700">Phòng ban</th>
                                 <th className="text-center py-4 px-6 font-semibold text-slate-700">Vai trò</th>
+                                <th className="text-center py-4 px-6 font-semibold text-slate-700">AI</th>
                                 <th className="text-center py-4 px-6 font-semibold text-slate-700">Trạng thái</th>
                                 <th className="text-center py-4 px-6 font-semibold text-slate-700">Thao tác</th>
                             </tr>
@@ -292,10 +297,17 @@ export default function AdminUsersPage() {
                                         </td>
                                         <td className="py-4 px-6 text-slate-700">{user.department || '-'}</td>
                                         <td className="py-4 px-6 text-center">{getRoleBadge(user.role)}</td>
+                                        <td className="py-4 px-6 text-center">
+                                            {user.face_registered ? (
+                                                <span className="text-green-500 bg-green-100 px-2 py-1 rounded-full text-xs">Đã ĐK</span>
+                                            ) : (
+                                                <span className="text-slate-400 bg-slate-100 px-2 py-1 rounded-full text-xs">Chưa</span>
+                                            )}
+                                        </td>
                                         <td className="py-4 px-6 text-center">{getStatusBadge(user.status)}</td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center justify-center gap-2" ref={openDropdown === user.id ? dropdownRef : null}>
-                                                <button onClick={() => handleViewDetail(user)} className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg transition-colors">👁 Chi tiết</button>
+                                                <button onClick={() => handleViewDetail(user)} className="text-xs bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5 rounded-lg transition-colors">Chi tiết</button>
                                                 <div className="relative">
                                                     <button
                                                         onClick={() => setOpenDropdown(openDropdown === user.id ? null : user.id)}
@@ -305,17 +317,20 @@ export default function AdminUsersPage() {
                                                     </button>
                                                     {openDropdown === user.id && (
                                                         <div className="absolute right-0 mt-2 w-44 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1">
-                                                            <button onClick={() => handleEditUser(user)} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-slate-700">✏️ Chỉnh sửa</button>
+                                                            <button onClick={() => handleEditUser(user)} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-slate-700">Chỉnh sửa</button>
                                                             {user.status !== 'SUSPENDED' && user.status !== 'TERMINATED' && (
-                                                                <button onClick={() => handleAction(user, 'suspend')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-amber-600">⏸ Tạm khóa</button>
+                                                                <button onClick={() => handleAction(user, 'suspend')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-amber-600">Tạm khóa</button>
                                                             )}
                                                             {user.status === 'SUSPENDED' && (
-                                                                <button onClick={() => handleAction(user, 'activate')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-green-600">▶ Kích hoạt</button>
+                                                                <button onClick={() => handleAction(user, 'activate')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-green-600">Kích hoạt</button>
                                                             )}
                                                             {user.status !== 'TERMINATED' && (
-                                                                <button onClick={() => handleAction(user, 'terminate')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-red-600">🚫 Cho nghỉ việc</button>
+                                                                <button onClick={() => handleAction(user, 'terminate')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-red-600">Cho nghỉ việc</button>
                                                             )}
-                                                            <button onClick={() => handleAction(user, 'reset')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-slate-700">🔑 Reset mật khẩu</button>
+                                                            <button onClick={() => handleAction(user, 'reset')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-slate-700">Reset mật khẩu</button>
+                                                            {user.face_registered && (
+                                                                <button onClick={() => handleAction(user, 'delete_face')} className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm text-red-600">Xóa dữ liệu khuôn mặt</button>
+                                                            )}
                                                             {isAdmin && (
                                                                 <div className="border-t border-slate-200 mt-1 pt-1">
                                                                     <p className="px-4 py-1 text-xs text-slate-400">Đổi vai trò:</p>
@@ -395,7 +410,7 @@ export default function AdminUsersPage() {
                         </div>
                         {(selectedUser.bank_name || selectedUser.bank_account_number) && (
                             <div className="mt-4 border-t border-slate-200 pt-4">
-                                <h5 className="font-medium text-slate-700 mb-2">💳 Thông tin ngân hàng</h5>
+                                <h5 className="font-medium text-slate-700 mb-2">Thông tin ngân hàng</h5>
                                 <div className="grid grid-cols-3 gap-3 text-sm">
                                     <div className="bg-slate-50 rounded-xl p-3"><p className="text-slate-500 text-xs">Ngân hàng</p><p className="text-slate-800">{selectedUser.bank_name || '—'}</p></div>
                                     <div className="bg-slate-50 rounded-xl p-3"><p className="text-slate-500 text-xs">Số TK</p><p className="text-slate-800">{selectedUser.bank_account_number || '—'}</p></div>
@@ -431,12 +446,18 @@ export default function AdminUsersPage() {
             {showActionModal && selectedUser && (
                 <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
-                        <p className="text-4xl mb-4">{actionType === 'suspend' ? '⏸' : actionType === 'terminate' ? '🚫' : actionType === 'activate' ? '✅' : '🔑'}</p>
+                        <p className="text-4xl mb-4">
+                            {actionType === 'suspend' ? 'Khóa' :
+                                actionType === 'terminate' ? 'Kết thúc' :
+                                    actionType === 'activate' ? 'Kích hoạt' :
+                                        actionType === 'delete_face' ? 'Xóa ID' : 'Mật khẩu'}
+                        </p>
                         <h3 className="text-lg font-semibold text-slate-800 mb-2">
                             {actionType === 'suspend' && 'Tạm khóa tài khoản?'}
                             {actionType === 'terminate' && 'Cho nhân viên nghỉ việc?'}
                             {actionType === 'activate' && 'Kích hoạt tài khoản?'}
                             {actionType === 'reset' && 'Reset mật khẩu?'}
+                            {actionType === 'delete_face' && 'Xóa dữ liệu khuôn mặt?'}
                         </h3>
                         <p className="text-slate-500 mb-4">{selectedUser.full_name || selectedUser.email}</p>
                         {actionType === 'reset' && <p className="text-sm text-amber-600 mb-4 bg-amber-50 rounded-lg px-3 py-2">Mật khẩu sẽ được reset về: 123456</p>}

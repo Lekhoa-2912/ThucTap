@@ -88,10 +88,21 @@ export default function ChatPage() {
         }
     }
 
-    const handleSelectConversation = (conv) => {
+    const handleSelectConversation = async (conv) => {
+        // Set temporarily while loading
         setSelectedConv(conv)
         joinConversation(conv.id)
+
+        // Load messages immediately
         loadMessages(conv.id)
+
+        // Fetch full details (populated participants) for Group Chat or if needed
+        try {
+            const res = await chatAPI.getConversation(conv.id)
+            setSelectedConv(res.data)
+        } catch (error) {
+            console.error('Failed to load full conversation details', error)
+        }
     }
 
     const handleSendMessage = (content, type = 'text', fileUrl = null, fileName = null, replyToId = null) => {
@@ -119,7 +130,7 @@ export default function ChatPage() {
             {/* Conversation List */}
             <div className="w-80 glass-card flex flex-col">
                 <div className="p-4 border-b border-slate-700 flex justify-between items-center">
-                    <h2 className="text-lg font-semibold">💬 Tin nhắn</h2>
+                    <h2 className="text-lg font-semibold">Tin nhắn</h2>
                     <button
                         onClick={() => setShowNewChatModal(true)}
                         className="bg-blue-600 hover:bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors"

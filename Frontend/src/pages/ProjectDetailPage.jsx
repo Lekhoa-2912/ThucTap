@@ -133,11 +133,11 @@ export default function ProjectDetailPage() {
 
     const getPriorityIcon = (priority) => {
         switch (priority) {
-            case 'URGENT': return '🔴'
-            case 'HIGH': return '🟠'
-            case 'MEDIUM': return '🟡'
-            case 'LOW': return '🟢'
-            default: return '⚪'
+            case 'URGENT': return 'Khẩn cấp'
+            case 'HIGH': return 'Cao'
+            case 'MEDIUM': return 'Trung bình'
+            case 'LOW': return 'Thấp'
+            default: return 'Bình thường'
         }
     }
 
@@ -197,7 +197,7 @@ export default function ProjectDetailPage() {
             {/* Members Section */}
             <div className="glass-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-slate-800">👥 Thành viên</h2>
+                    <h2 className="text-lg font-semibold text-slate-800">Thành viên</h2>
                     {canManage && (
                         <button onClick={() => { setShowMemberModal(true); loadAvailableUsers(); }} className="btn-secondary text-sm">
                             + Thêm
@@ -230,7 +230,7 @@ export default function ProjectDetailPage() {
             {/* Kanban Board */}
             <div className="glass-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-slate-800">📋 Kanban Board</h2>
+                    <h2 className="text-lg font-semibold text-slate-800">Kanban Board</h2>
                     {canManage && (
                         <button onClick={() => setShowTaskModal(true)} className="btn-primary text-sm">+ Tạo task</button>
                     )}
@@ -271,12 +271,12 @@ export default function ProjectDetailPage() {
                                         <h4 className="font-medium text-sm text-slate-800 mb-1">{task.title}</h4>
                                         {task.assigned_to && (
                                             <div className="flex items-center gap-1 text-xs text-slate-500">
-                                                <span>👤</span>
+                                                <span>Người</span>
                                                 <span>{task.assigned_to.full_name}</span>
                                             </div>
                                         )}
                                         {task.deadline && (
-                                            <p className="text-xs text-slate-400 mt-1">📅 {format(new Date(task.deadline), 'dd/MM')}</p>
+                                            <p className="text-xs text-slate-400 mt-1">Hạn: {format(new Date(task.deadline), 'dd/MM')}</p>
                                         )}
                                     </div>
                                 ))}
@@ -304,10 +304,10 @@ export default function ProjectDetailPage() {
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-2">Ưu tiên</label>
                                     <select value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3">
-                                        <option value="LOW">🟢 Thấp</option>
-                                        <option value="MEDIUM">🟡 Trung bình</option>
-                                        <option value="HIGH">🟠 Cao</option>
-                                        <option value="URGENT">🔴 Khẩn cấp</option>
+                                        <option value="LOW">Thấp</option>
+                                        <option value="MEDIUM">Trung bình</option>
+                                        <option value="HIGH">Cao</option>
+                                        <option value="URGENT">Khẩn cấp</option>
                                     </select>
                                 </div>
                                 <div>
@@ -388,7 +388,7 @@ export default function ProjectDetailPage() {
                             {selectedTask.assigned_to && (
                                 <div>
                                     <p className="text-sm text-slate-500 mb-1">Người thực hiện</p>
-                                    <p className="text-slate-800">👤 {selectedTask.assigned_to.full_name}</p>
+                                    <p className="text-slate-800">Người phụ trách: {selectedTask.assigned_to.full_name}</p>
                                 </div>
                             )}
                             {selectedTask.progress > 0 && (

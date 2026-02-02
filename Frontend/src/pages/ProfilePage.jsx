@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useAuth } from '../context/AuthContext'
 import { userAPI } from '../api'
@@ -7,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export default function ProfilePage() {
     const { user, updateUser } = useAuth()
+    const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -128,7 +130,7 @@ export default function ProfilePage() {
         <div className="max-w-4xl mx-auto space-y-6">
             {/* Header */}
             <div className="glass-card p-6">
-                <h1 className="text-2xl font-bold">👤 Hồ sơ cá nhân</h1>
+                <h1 className="text-2xl font-bold">Hồ sơ cá nhân</h1>
                 <p className="text-slate-400">Xem và quản lý thông tin cá nhân của bạn</p>
             </div>
 
@@ -153,7 +155,7 @@ export default function ProfilePage() {
                                 </div>
                             )}
                             <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <span className="text-white text-sm">📷 Đổi ảnh</span>
+                                <span className="text-white text-sm">Đổi ảnh</span>
                             </div>
                         </div>
                         <input
@@ -173,7 +175,7 @@ export default function ProfilePage() {
 
                         {/* Role Badge */}
                         <span className={`text-xs px-3 py-1 rounded-full ${profile?.status === 'ACTIVE' ? 'status-active' :
-                                profile?.status === 'PENDING' ? 'status-pending' : 'status-init'
+                            profile?.status === 'PENDING' ? 'status-pending' : 'status-init'
                             }`}>
                             {profile?.role?.replace('_', ' ')} • {profile?.status}
                         </span>
@@ -185,16 +187,16 @@ export default function ProfilePage() {
                             /* View Mode */
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <InfoField label="Họ và tên" value={profile?.full_name} icon="👤" />
-                                    <InfoField label="Email" value={profile?.email} icon="📧" />
-                                    <InfoField label="Số điện thoại" value={profile?.phone} icon="📱" />
-                                    <InfoField label="Phòng ban" value={profile?.department} icon="🏢" />
-                                    <InfoField label="Chức vụ" value={profile?.position} icon="💼" />
+                                    <InfoField label="Họ và tên" value={profile?.full_name} />
+                                    <InfoField label="Email" value={profile?.email} />
+                                    <InfoField label="Số điện thoại" value={profile?.phone} />
+                                    <InfoField label="Phòng ban" value={profile?.department} />
+                                    <InfoField label="Chức vụ" value={profile?.position} />
                                 </div>
 
                                 {/* Bank Info */}
                                 <div className="border-t border-slate-600 pt-4 mt-4">
-                                    <h3 className="text-lg font-semibold mb-3">💳 Thông tin ngân hàng</h3>
+                                    <h3 className="text-lg font-semibold mb-3">Thông tin ngân hàng</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <InfoField label="Ngân hàng" value={profile?.bank_name} />
                                         <InfoField label="Số tài khoản" value={profile?.bank_account_number} />
@@ -205,10 +207,13 @@ export default function ProfilePage() {
                                 {/* Action Buttons */}
                                 <div className="flex flex-wrap gap-3 pt-4">
                                     <button onClick={() => setIsEditing(true)} className="btn-primary">
-                                        ✏️ Chỉnh sửa
+                                        Chỉnh sửa
                                     </button>
                                     <button onClick={() => setShowPasswordModal(true)} className="btn-secondary">
-                                        🔑 Đổi mật khẩu
+                                        Đổi mật khẩu
+                                    </button>
+                                    <button onClick={() => navigate('/face-enrollment')} className="btn-secondary border-blue-500/50 text-blue-400 hover:bg-blue-500/10">
+                                        {profile?.face_registered ? 'Cập nhật khuôn mặt' : 'Đăng ký khuôn mặt'}
                                     </button>
                                 </div>
                             </>
@@ -267,7 +272,7 @@ export default function ProfilePage() {
 
                                 {/* Bank Info Edit */}
                                 <div className="border-t border-slate-600 pt-4 mt-4">
-                                    <h3 className="text-lg font-semibold mb-3">💳 Thông tin ngân hàng</h3>
+                                    <h3 className="text-lg font-semibold mb-3">Thông tin ngân hàng</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div>
                                             <label className="block text-sm font-medium mb-2">Ngân hàng</label>
@@ -316,10 +321,10 @@ export default function ProfilePage() {
                                 {/* Save/Cancel Buttons */}
                                 <div className="flex gap-3 pt-4">
                                     <button onClick={handleSave} disabled={saving} className="btn-primary">
-                                        {saving ? 'Đang lưu...' : '💾 Lưu thay đổi'}
+                                        {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                                     </button>
                                     <button onClick={() => setIsEditing(false)} className="btn-secondary">
-                                        ❌ Hủy
+                                        Hủy
                                     </button>
                                 </div>
                             </>
@@ -332,7 +337,7 @@ export default function ProfilePage() {
             {showPasswordModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="glass-card p-6 w-full max-w-md">
-                        <h2 className="text-xl font-bold mb-4">🔑 Đổi mật khẩu</h2>
+                        <h2 className="text-xl font-bold mb-4">Đổi mật khẩu</h2>
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium mb-2">Mật khẩu hiện tại</label>

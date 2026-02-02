@@ -112,6 +112,11 @@ export const userAPI = {
         // Invalidate user cache on update
         cacheManager.invalidatePattern('/api/users')
         return api.put(`/api/users/${userId}`, data)
+    },
+
+    deleteUserFace: (userId) => {
+        cacheManager.invalidatePattern('/api/users')
+        return api.delete(`/api/users/${userId}/face`)
     }
 }
 
@@ -183,6 +188,9 @@ export const chatAPI = {
     getConversations: () =>
         api.get('/api/chat/conversations'),
 
+    getConversation: (conversationId) =>
+        api.get(`/api/chat/conversations/${conversationId}`),
+
     createConversation: (type, name, participants) =>
         api.post('/api/chat/conversations', { type, name, participants }),
 
@@ -207,7 +215,10 @@ export const chatAPI = {
         api.delete(`/api/chat/conversations/${conversationId}/members/${memberId}`),
 
     deleteConversation: (conversationId) =>
-        api.delete(`/api/chat/conversations/${conversationId}`)
+        api.delete(`/api/chat/conversations/${conversationId}`),
+
+    getTotalUnread: () =>
+        api.get('/api/chat/unread/total')
 }
 
 // ============ PROJECT APIs ============
@@ -450,6 +461,17 @@ export const contractsAPI = {
     terminate: (contractId, reason) =>
         api.put(`/api/contracts/${contractId}/terminate`, null, { params: { reason } }),
     getStats: () => api.get('/api/contracts/stats')
+}
+
+// ============ UTILS APIs ============
+export const utilsAPI = {
+    scanCCCD: (file) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        return api.post('/api/utils/ocr', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    }
 }
 
 export default api

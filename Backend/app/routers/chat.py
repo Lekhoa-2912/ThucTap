@@ -29,6 +29,10 @@ async def get_conversations(current_user: dict = Depends(get_current_user)):
         "participants": current_user["_id"]
     }).sort("last_message_at", -1).to_list(100)
     
+    
+    # Get unread counts for each conversation
+    msg_col = get_messages_collection()
+    
     result = []
     for conv in conversations:
         # Get other participant info for private chats
@@ -38,6 +42,13 @@ async def get_conversations(current_user: dict = Depends(get_current_user)):
             if other_id:
                 other_user = await users_col.find_one({"_id": ObjectId(other_id[0])})
         
+        # Calculate unread count
+        unread_count = await msg_col.count_documents({
+            "conversation_id": str(conv["_id"]),
+            "sender_id": {"$ne": current_user["_id"]},
+            "seen_by": {"$ne": current_user["_id"]}
+        })
+        
         result.append({
             "id": str(conv["_id"]),
             "type": conv["type"],
@@ -46,10 +57,35 @@ async def get_conversations(current_user: dict = Depends(get_current_user)):
             "participants": conv["participants"],
             "last_message": conv.get("last_message"),
             "last_message_at": conv.get("last_message_at"),
-            "unread_count": 0  # TODO: Calculate unread
+            "unread_count": unread_count
         })
     
     return result
+
+@router.get("/unread/total")
+async def get_total_unread(current_user: dict = Depends(get_current_user)):
+    """Get total unread messages count"""
+    if current_user.get("status") != UserStatus.ACTIVE.value:
+        return {"total": 0}
+
+    msg_col = get_messages_collection()
+    conv_col = get_conversations_collection()
+    
+    # Get all conversation IDs where user is participant
+    user_convs = await conv_col.find(
+        {"participants": current_user["_id"]},
+        {"_id": 1}
+    ).to_list(None)
+    
+    conv_ids = [str(c["_id"]) for c in user_convs]
+    
+    total = await msg_col.count_documents({
+        "conversation_id": {"$in": conv_ids},
+        "sender_id": {"$ne": current_user["_id"]},
+        "seen_by": {"$ne": current_user["_id"]}
+    })
+    
+    return {"total": total}
 
 @router.post("/conversations")
 async def create_conversation(
@@ -146,6 +182,53 @@ async def get_messages(
         })
     
     return result
+
+    return result
+
+@router.get("/conversations/{conversation_id}")
+async def get_conversation_details(
+    conversation_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get conversation details with populated participants"""
+    conv_col = get_conversations_collection()
+    users_col = get_users_collection()
+    
+    conv = await conv_col.find_one({
+        "_id": ObjectId(conversation_id),
+        "participants": current_user["_id"]
+    })
+    
+    if not conv:
+        raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
+    
+    # Populate participants
+    participant_details = []
+    
+    # Fetch all participants info
+    # We can use $in query for efficiency
+    p_ids = [ObjectId(p) for p in conv["participants"]]
+    users = await users_col.find({"_id": {"$in": p_ids}}).to_list(None)
+    
+    # Create a map for easy lookup or just list
+    for user in users:
+        participant_details.append({
+            "id": str(user["_id"]),
+            "full_name": user["full_name"],
+            "avatar": user.get("avatar"),
+            "email": user.get("email")
+        })
+        
+    return {
+        "id": str(conv["_id"]),
+        "type": conv["type"],
+        "name": conv.get("name"),
+        "avatar": conv.get("avatar"),
+        "participants": participant_details,
+        "admin_ids": conv.get("admin_ids", []),
+        "created_by": conv.get("created_by"),
+        "created_at": conv.get("created_at")
+    }
 
 @router.post("/upload")
 async def upload_file(

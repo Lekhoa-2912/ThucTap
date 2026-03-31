@@ -25,7 +25,7 @@ def get_attendance_collection():
 async def get_calendar_events(
     month: int = Query(..., ge=1, le=12),
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get all calendar events for the month (leaves, tasks, birthdays)"""
     from calendar import monthrange

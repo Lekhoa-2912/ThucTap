@@ -88,9 +88,11 @@ export default function DashboardPage() {
                     </div>
                     {/* Quick Actions */}
                     <div className="flex gap-2">
-                        <button onClick={() => navigate('/attendance')} className="btn-primary text-sm">
-                            Chấm công
-                        </button>
+                        {!isManager && (
+                            <button onClick={() => navigate('/attendance')} className="btn-primary text-sm">
+                                Chấm công
+                            </button>
+                        )}
                         <button onClick={() => navigate('/leaves')} className="btn-secondary text-sm">
                             Xin nghỉ
                         </button>
@@ -101,20 +103,22 @@ export default function DashboardPage() {
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Today Status */}
-                <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/attendance')}>
-                    <div className="flex items-center justify-between mb-3">
-                        <span className={`px-3 py-1 rounded-full text-xs ${todayStatus?.checked_in ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                            {todayStatus?.checked_in ? 'Đã chấm công' : 'Chưa chấm công'}
-                        </span>
+                {!isManager && (
+                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/attendance')}>
+                        <div className="flex items-center justify-between mb-3">
+                            <span className={`px-3 py-1 rounded-full text-xs ${todayStatus?.checked_in ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                                {todayStatus?.checked_in ? 'Đã chấm công' : 'Chưa chấm công'}
+                            </span>
+                        </div>
+                        <h3 className="text-base font-semibold text-slate-700">Chấm công hôm nay</h3>
+                        {todayStatus?.checkin_time && (
+                            <p className="text-slate-500 text-sm mt-1">
+                                In: {format(new Date(todayStatus.checkin_time), 'HH:mm')}
+                                {todayStatus?.checkout_time && ` → Out: ${format(new Date(todayStatus.checkout_time), 'HH:mm')}`}
+                            </p>
+                        )}
                     </div>
-                    <h3 className="text-base font-semibold text-slate-700">Chấm công hôm nay</h3>
-                    {todayStatus?.checkin_time && (
-                        <p className="text-slate-500 text-sm mt-1">
-                            In: {format(new Date(todayStatus.checkin_time), 'HH:mm')}
-                            {todayStatus?.checkout_time && ` → Out: ${format(new Date(todayStatus.checkout_time), 'HH:mm')}`}
-                        </p>
-                    )}
-                </div>
+                )}
 
                 {/* Leave Balance */}
                 <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>

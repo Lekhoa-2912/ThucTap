@@ -45,7 +45,7 @@ async def upload_document(
     title: str = Query(...),
     description: str = Query(""),
     is_public: bool = Query(True),  # Visible to all employees
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Upload a document to the system"""
     # Only HR and admin can upload
@@ -104,7 +104,7 @@ async def upload_document(
 async def get_documents(
     category: Optional[str] = None,
     search: Optional[str] = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get documents list"""
     docs_col = get_documents_collection()
@@ -144,7 +144,7 @@ async def get_documents(
 @router.get("/{doc_id}/download")
 async def download_document(
     doc_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Track document download"""
     docs_col = get_documents_collection()
@@ -169,7 +169,7 @@ async def download_document(
 @router.delete("/{doc_id}")
 async def delete_document(
     doc_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Delete a document"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -205,7 +205,7 @@ async def get_categories():
 
 @router.get("/stats")
 async def get_document_stats(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get document statistics"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:

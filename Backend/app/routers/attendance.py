@@ -1,5 +1,5 @@
 from datetime import datetime, time
-from typing import List
+from typing import List, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends
 from bson import ObjectId
 
@@ -15,27 +15,53 @@ from .auth import get_current_user
 
 router = APIRouter(prefix="/api/attendance", tags=["Attendance"])
 
-# Work schedule (configurable)
-WORK_START_TIME = time(8, 30)  # 8:30 AM
-WORK_END_TIME = time(17, 30)   # 5:30 PM
-LATE_THRESHOLD_MINUTES = 15     # 15 minutes grace period
+# Dynamic settings fetched from DB
+async def get_attendance_settings():
+    from ..database import get_database
+    db = get_database()
+    settings_col = db["settings"]
+    company_settings = await settings_col.find_one({"type": "company"})
+    if company_settings:
+        return {
+            "work_start_time": company_settings.get("work_start_time", "08:30"),
+            "work_end_time": company_settings.get("work_end_time", "17:30"),
+            "late_threshold_minutes": company_settings.get("late_threshold_minutes", 15),
+            "company_latitude": company_settings.get("latitude", 21.028511),
+            "company_longitude": company_settings.get("longitude", 105.804817),
+            "radius_meters": company_settings.get("radius_meters", 50)
+        }
+    return {
+        "work_start_time": "08:30",
+        "work_end_time": "17:30",
+        "late_threshold_minutes": 15,
+        "company_latitude": 21.028511,
+        "company_longitude": 105.804817,
+        "radius_meters": 50
+    }
 
-def calculate_attendance_status(check_time: datetime, attendance_type: AttendanceType) -> AttendanceStatus:
+async def calculate_attendance_status(check_time: datetime, attendance_type: AttendanceType) -> AttendanceStatus:
     """Calculate if check-in is late or check-out is early"""
     current_time = check_time.time()
+    settings = await get_attendance_settings()
+    
+    start_hour, start_minute = map(int, settings["work_start_time"].split(':'))
+    end_hour, end_minute = map(int, settings["work_end_time"].split(':'))
+    work_start_time = time(start_hour, start_minute)
+    work_end_time = time(end_hour, end_minute)
+    late_threshold = settings["late_threshold_minutes"]
     
     if attendance_type == AttendanceType.CHECK_IN:
         # Add grace period
         late_time = time(
-            WORK_START_TIME.hour,
-            WORK_START_TIME.minute + LATE_THRESHOLD_MINUTES
+            work_start_time.hour,
+            work_start_time.minute + late_threshold
         )
         if current_time > late_time:
             return AttendanceStatus.LATE
         return AttendanceStatus.ON_TIME
     
     elif attendance_type == AttendanceType.CHECK_OUT:
-        if current_time < WORK_END_TIME:
+        if current_time < work_end_time:
             return AttendanceStatus.EARLY_LEAVE
         return AttendanceStatus.ON_TIME
     
@@ -44,7 +70,7 @@ def calculate_attendance_status(check_time: datetime, attendance_type: Attendanc
 @router.post("/check-location", response_model=LocationCheckResponse)
 async def check_location(
     location: LocationCheckRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """
     Check if user is within geofence radius before allowing camera access.
@@ -68,7 +94,7 @@ async def check_location(
 @router.post("/checkin")
 async def check_in(
     data: AttendanceCheckIn,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """
     AI-powered check-in with face recognition.
@@ -118,8 +144,8 @@ async def check_in(
     if existing_checkin:
         raise HTTPException(status_code=400, detail="Bạn đã check-in hôm nay rồi")
     
-    # 4. Save attendance image
-    image_path = face_service.save_attendance_image(
+    # 4. Save attendance image to GridFS
+    image_path = await face_service.save_attendance_image(
         current_user["_id"],
         data.face_image,
         "checkin"
@@ -127,7 +153,7 @@ async def check_in(
     
     # 5. Calculate status and log attendance
     now = datetime.now()
-    status = calculate_attendance_status(now, AttendanceType.CHECK_IN)
+    status = await calculate_attendance_status(now, AttendanceType.CHECK_IN)
     
     attendance_log = {
         "user_id": current_user["_id"],
@@ -160,7 +186,7 @@ async def check_in(
 @router.post("/checkout")
 async def check_out(
     data: AttendanceCheckIn,  # Same structure as check-in
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """
     AI-powered check-out with face recognition.
@@ -222,8 +248,8 @@ async def check_out(
     if existing_checkout:
         raise HTTPException(status_code=400, detail="Bạn đã check-out hôm nay rồi")
     
-    # 5. Save attendance image
-    image_path = face_service.save_attendance_image(
+    # 5. Save attendance image to GridFS
+    image_path = await face_service.save_attendance_image(
         current_user["_id"],
         data.face_image,
         "checkout"
@@ -231,7 +257,7 @@ async def check_out(
     
     # 6. Calculate status and log attendance
     now = datetime.now()
-    status = calculate_attendance_status(now, AttendanceType.CHECK_OUT)
+    status = await calculate_attendance_status(now, AttendanceType.CHECK_OUT)
     
     # Calculate working hours
     checkin_time = existing_checkin["timestamp"]
@@ -267,11 +293,11 @@ async def check_out(
         "log_id": str(result.inserted_id)
     }
 
-@router.get("/logs", response_model=List[dict])
+@router.get("/logs")
 async def get_attendance_logs(
     start_date: str = None,
     end_date: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get attendance logs for current user"""
     attendance_col = get_attendance_collection()
@@ -300,8 +326,46 @@ async def get_attendance_logs(
     
     return result
 
+@router.get("/admin/logs")
+async def get_admin_attendance_logs(
+    start_date: str = None,
+    end_date: str = None,
+    current_user = Depends(get_current_user)
+):
+    """Get all attendance logs for admin"""
+    from ..models.user import UserRole
+    if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền xem tất cả logs")
+        
+    attendance_col = get_attendance_collection()
+    
+    query = {}
+    if start_date and end_date:
+        query["timestamp"] = {
+            "$gte": datetime.fromisoformat(start_date),
+            "$lte": datetime.fromisoformat(end_date)
+        }
+    
+    logs = await attendance_col.find(query).sort("timestamp", -1).to_list(1000)
+    
+    result = []
+    for log in logs:
+        result.append({
+            "id": str(log["_id"]),
+            "user_id": log["user_id"],
+            "user_name": log.get("user_name", "Unknown"),
+            "type": log["attendance_type"],
+            "status": log["status"],
+            "timestamp": log["timestamp"].isoformat(),
+            "location": log.get("location"),
+            "face_confidence": log.get("face_confidence"),
+            "notes": log.get("notes")
+        })
+    
+    return result
+
 @router.get("/today")
-async def get_today_status(current_user: dict = Depends(get_current_user)):
+async def get_today_status(current_user = Depends(get_current_user)):
     """Get today's attendance status for current user"""
     attendance_col = get_attendance_collection()
     
@@ -338,7 +402,7 @@ async def get_company_location():
 async def get_monthly_report(
     month: int,
     year: int,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get monthly attendance report for current user"""
     from calendar import monthrange
@@ -388,7 +452,7 @@ async def get_monthly_report(
 async def get_team_report(
     month: int,
     year: int,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get team attendance report (for Leaders/HR)"""
     from ..models.user import UserRole
@@ -452,4 +516,47 @@ async def get_team_report(
         "overall_on_time_rate": round(total_on_time / total_checkins * 100, 1) if total_checkins > 0 else 0,
         "employees": sorted_stats
     }
+
+@router.get("/settings")
+async def get_settings(current_user = Depends(get_current_user)):
+    """Get attendance settings"""
+    from ..models.user import UserRole
+    if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền xem cài đặt")
+    
+    settings = await get_attendance_settings()
+    return settings
+
+@router.put("/settings")
+async def update_settings(
+    settings: Dict[str, Any],
+    current_user = Depends(get_current_user)
+):
+    """Update attendance settings"""
+    from ..models.user import UserRole
+    from ..database import get_database
+    
+    if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền cập nhật cài đặt")
+        
+    db = get_database()
+    settings_col = db["settings"]
+    
+    update_data = {
+        "type": "company",
+        "work_start_time": settings.get("work_start_time", "08:30"),
+        "work_end_time": settings.get("work_end_time", "17:30"),
+        "late_threshold_minutes": int(settings.get("late_threshold_minutes", 15)),
+        "latitude": float(settings.get("company_latitude", 21.028511)),
+        "longitude": float(settings.get("company_longitude", 105.804817)),
+        "radius_meters": int(settings.get("radius_meters", 50))
+    }
+    
+    await settings_col.update_one(
+        {"type": "company"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    return {"message": "Cập nhật cài đặt thành công", "settings": update_data}
 

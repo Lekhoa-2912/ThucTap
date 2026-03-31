@@ -21,16 +21,17 @@ import {
     CalendarDays,
     Timer,
     Target,
-    FileText
+    FileText,
+    KeyRound
 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'LEADER', 'EMPLOYEE'] },
-    { path: '/attendance', label: 'Chấm công', icon: Clock, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
+    { path: '/attendance', label: 'Chấm công', icon: Clock, roles: ['SUPER_ADMIN', 'LEADER', 'EMPLOYEE'] },
     { path: '/chat', label: 'Chat', icon: MessageCircle, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'LEADER', 'EMPLOYEE'] },
-    { path: '/projects', label: 'Dự án', icon: FolderKanban, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
+    { path: '/projects', label: 'Dự án', icon: FolderKanban, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'] },
     { path: '/tasks', label: 'Công việc', icon: CheckSquare, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
     { path: '/leaves', label: 'Nghỉ phép', icon: Palmtree, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
     { path: '/overtime', label: 'OT', icon: Timer, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
@@ -41,6 +42,7 @@ const menuItems = [
     { path: '/payroll', label: 'Bảng lương', icon: Wallet, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'EMPLOYEE'] },
     { path: '/admin/users', label: 'Quản lý NV', icon: Users, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
     { path: '/admin/pending', label: 'Duyệt hồ sơ', icon: ClipboardList, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
+    { path: '/admin/password-reset', label: 'Cấp lại mật khẩu', icon: KeyRound, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
     { path: '/settings', label: 'Cấu hình', icon: Settings, roles: ['SUPER_ADMIN'] },
 ]
 

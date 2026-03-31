@@ -43,7 +43,7 @@ def get_contracts_collection():
 @router.post("/")
 async def create_contract(
     data: ContractCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Create a new contract"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -94,7 +94,7 @@ async def get_contracts(
     employee_id: Optional[str] = None,
     status: Optional[str] = None,
     expiring_soon: bool = False,  # Get contracts expiring in 30 days
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get contracts list"""
     contracts_col = get_contracts_collection()
@@ -137,7 +137,7 @@ async def get_contracts(
 
 @router.get("/my")
 async def get_my_contracts(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get current user's contracts"""
     contracts_col = get_contracts_collection()
@@ -161,7 +161,7 @@ async def get_my_contracts(
 @router.get("/expiring")
 async def get_expiring_contracts(
     days: int = Query(30, ge=1, le=90),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get contracts expiring within X days"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -193,7 +193,7 @@ async def get_expiring_contracts(
 async def update_contract(
     contract_id: str,
     data: ContractCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update a contract"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -224,7 +224,7 @@ async def update_contract(
 async def terminate_contract(
     contract_id: str,
     reason: str = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Terminate a contract"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -258,7 +258,7 @@ async def terminate_contract(
 
 @router.get("/stats")
 async def get_contract_stats(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get contract statistics"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:

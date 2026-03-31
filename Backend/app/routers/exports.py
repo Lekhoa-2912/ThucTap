@@ -42,7 +42,7 @@ BORDER = Border(
 async def export_attendance(
     month: int = Query(..., ge=1, le=12),
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Export attendance report to Excel"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -134,7 +134,7 @@ async def export_attendance(
 @router.get("/leaves")
 async def export_leaves(
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Export leaves report to Excel"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:
@@ -198,7 +198,7 @@ async def export_leaves(
 async def export_overtime(
     month: int = Query(..., ge=1, le=12),
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Export overtime report to Excel"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.ACCOUNTANT.value]:

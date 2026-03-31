@@ -1,3 +1,4 @@
+from typing import Dict, Any
 from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -60,8 +61,8 @@ async def require_role(roles: list):
         return user
     return role_checker
 
-@router.post("/register", response_model=dict)
-async def register_user(user_data: UserCreate, current_user: dict = Depends(get_current_user)):
+@router.post("/register")
+async def register_user(user_data: UserCreate, current_user = Depends(get_current_user)):
     """
     Create a new user account (HR/Admin only).
     Initial status is INIT, requiring profile setup.
@@ -137,7 +138,7 @@ async def login(login_data: UserLogin):
     )
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(current_user: dict = Depends(get_current_user)):
+async def get_me(current_user = Depends(get_current_user)):
     """Get current user information"""
     return UserResponse(
         id=current_user["_id"],

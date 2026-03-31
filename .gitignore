@@ -1,25 +1,25 @@
+# ##############################################################################
+# GOODZWORK - PROJECT-WIDE GITIGNORE
+# ##############################################################################
+
 # =====================
 # Node.js / Frontend
 # =====================
 node_modules/
+Frontend/node_modules/
 dist/
+Frontend/dist/
 dist-ssr/
 build/
 *.local
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+.npm
+.eslintcache
 
 # =====================
 # Python / Backend
 # =====================
 __pycache__/
+Backend/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -27,23 +27,67 @@ __pycache__/
 env/
 venv/
 .venv/
+Backend/venv/
+Backend/.venv/
 ENV/
-.env.local
 *.egg-info/
 *.egg
 .eggs/
-*.manifest
-*.spec
-pip-log.txt
-pip-delete-this-directory.txt
+.pytest_cache/
+.tox/
+.hypothesis/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
 
 # =====================
-# Environment Variables
+# AI / OCR / Debug
+# =====================
+ocr_debug.txt
+Backend/ocr_debug.txt
+Backend/app/services/ocr_debug.txt
+paddleocr/
+.paddleocr/
+# Pre-trained models download dir (usually in home but sometimes local)
+inference/
+# Face data (legacy local storage - now in GridFS)
+Backend/face_data/
+face_data/
+# Old uploads dir
+Backend/uploads/
+uploads/
+
+# =====================
+# Environment / Keys
 # =====================
 .env
 *.env
 .env.*
 !.env.example
+Backend/.env
+Frontend/.env
+
+# =====================
+# Developer Scripts (Temporary)
+# =====================
+test_*.py
+test_*.js
+Backend/test_*.py
+tmp_*.py
+trace_*.py
+check_*.py
+seed_*.py
+relax_req.py
+fix_req.py
+gentle_fix.py
+auto_fix_*.bat
+setup_clean.bat
+db_content.txt
+*.bak
+*.tmp
+*.temp
 
 # =====================
 # IDE / Editor
@@ -59,6 +103,8 @@ pip-delete-this-directory.txt
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*~
 
 # =====================
 # OS Generated Files
@@ -73,40 +119,8 @@ Thumbs.db
 desktop.ini
 
 # =====================
-# Project Specific
+# Database (SQLite fallback)
 # =====================
-# Uploaded files
-Backend/uploads/
-uploads/
-
-# Face recognition data
-Backend/face_data/
-face_data/
-
-# Database
 *.db
 *.sqlite
 *.sqlite3
-
-# Coverage reports
-htmlcov/
-.coverage
-.coverage.*
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-.tox/
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-
-# =====================
-# Misc
-# =====================
-*.bak
-*.tmp
-*.temp
-*.swp
-*~
-.cache/

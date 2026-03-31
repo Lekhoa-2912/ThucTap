@@ -71,13 +71,12 @@ class TaskBase(BaseModel):
     description: Optional[str] = None
     priority: TaskPriority = TaskPriority.MEDIUM
     deadline: Optional[datetime] = None
-    estimated_hours: Optional[float] = None
 
 class Task(TaskBase):
     id: Optional[str] = Field(default=None, alias="_id")
     project_id: str
     phase_id: Optional[str] = None
-    assigned_to: Optional[str] = None  # User ID
+    assigned_to: List[str] = []  # List of user IDs (multi-assign)
     assigned_by: str  # Leader user ID
     status: TaskStatus = TaskStatus.TODO
     rejection_reason: Optional[str] = None
@@ -95,9 +94,8 @@ class TaskCreate(BaseModel):
     description: Optional[str] = None
     priority: TaskPriority = TaskPriority.MEDIUM
     deadline: Optional[datetime] = None
-    estimated_hours: Optional[float] = None
     phase_id: Optional[str] = None
-    assigned_to: Optional[str] = None
+    assigned_to: List[str] = []  # Multi-assign: list of user IDs
 
 class TaskAccept(BaseModel):
     accepted: bool
@@ -107,3 +105,15 @@ class TaskAccept(BaseModel):
 class TaskProgressUpdate(BaseModel):
     progress: int = Field(ge=0, le=100)
     notes: Optional[str] = None
+
+class TaskHistory(BaseModel):
+    id: Optional[str] = Field(default=None, alias="_id")
+    task_id: str
+    updated_by: str  # User ID
+    old_progress: int
+    new_progress: int
+    note: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+    class Config:
+        populate_by_name = True

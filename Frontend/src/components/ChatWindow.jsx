@@ -156,7 +156,12 @@ export default function ChatWindow({
             <div className="glass-card p-4 flex items-center gap-3 rounded-none border-b border-slate-700/50">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
                     {conversation.avatar ? (
-                        <img src={conversation.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                        <img 
+                            src={conversation.avatar} 
+                            alt="" 
+                            className="w-full h-full rounded-full object-cover" 
+                            onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(conversation.name || '?')}&background=random` }}
+                        />
                     ) : (
                         conversation.name?.[0] || '?'
                     )}
@@ -191,7 +196,12 @@ export default function ChatWindow({
                             {!isOwn && showAvatar && (
                                 <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-white text-xs font-bold mr-2 flex-shrink-0 border border-slate-500">
                                     {msg.sender_avatar ? (
-                                        <img src={msg.sender_avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                                        <img 
+                                            src={msg.sender_avatar} 
+                                            alt="" 
+                                            className="w-full h-full rounded-full object-cover" 
+                                            onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(msg.sender_name || '?')}&background=random` }}
+                                        />
                                     ) : (
                                         msg.sender_name?.[0] || '?'
                                     )}
@@ -286,17 +296,21 @@ export default function ChatWindow({
 
                                                     if (participant && typeof participant === 'object') {
                                                         avatar = participant.avatar
-                                                        name = participant.full_name
+                                                        name = participant.full_name || participant.name || 'User'
                                                     }
                                                 }
 
                                                 return (
                                                     <div key={idx} className="w-4 h-4 rounded-full border border-white overflow-hidden bg-gray-300 ml-[-4px] relative z-0 hover:z-10 transition-all custom-tooltip-container cursor-default">
                                                         {avatar ? (
-                                                            <img src={`${import.meta.env.VITE_API_URL}${avatar}`} className="w-full h-full object-cover" />
+                                                            <img 
+                                                                src={avatar.startsWith('http') ? avatar : `${import.meta.env.VITE_API_URL || ''}${avatar}`} 
+                                                                className="w-full h-full object-cover" 
+                                                                onError={(e) => { e.target.onerror = null; e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || '?')}&background=random` }}
+                                                            />
                                                         ) : (
                                                             <div className="w-full h-full bg-blue-500 flex items-center justify-center text-[8px] text-white font-bold">
-                                                                {name[0]}
+                                                                {(name || '?')[0]}
                                                             </div>
                                                         )}
                                                         {/* Tooltip */}

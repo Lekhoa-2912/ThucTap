@@ -1,0 +1,78 @@
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\test_api.py", line 13, in test_openapi
+    response = client.get("/openapi.json")
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\testclient.py", line 479, in get
+    return super().get(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\httpx\_client.py", line 1053, in get
+    return self.request(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\testclient.py", line 451, in request
+    return super().request(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\httpx\_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\anyio\from_thread.py", line 334, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\concurrent\futures\_base.py", line 440, in result
+    return self.__get_result()
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\concurrent\futures\_base.py", line 389, in __get_result
+    raise self._exception
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\anyio\from_thread.py", line 259, in _call_func
+    retval = await retval_or_awaitable
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\routing.py", line 78, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\starlette\routing.py", line 75, in app
+    response = await f(request)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1093, in openapi
+    return JSONResponse(self.openapi())
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'

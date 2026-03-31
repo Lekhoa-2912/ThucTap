@@ -1,0 +1,197 @@
+{
+  "timestamp": "2026-03-30T20:11:15.464892",
+  "total_endpoints": 0,
+  "working": [
+    {
+      "status": "OK",
+      "code": 200,
+      "endpoint": "/docs",
+      "method": "GET",
+      "error": null
+    },
+    {
+      "status": "OK",
+      "code": 200,
+      "endpoint": "/api/attendance/company-location",
+      "method": "GET",
+      "error": null
+    }
+  ],
+  "errors": [
+    {
+      "status": "ERROR",
+      "code": 0,
+      "endpoint": "/",
+      "method": "GET",
+      "error": ""
+    },
+    {
+      "status": "ERROR",
+      "code": 0,
+      "endpoint": "/health",
+      "method": "GET",
+      "error": ""
+    },
+    {
+      "status": "ERROR",
+      "code": 0,
+      "endpoint": "/api/info",
+      "method": "GET",
+      "error": ""
+    },
+    {
+      "status": "ERROR",
+      "code": 400,
+      "endpoint": "/api/auth/init-admin",
+      "method": "POST",
+      "error": "{\"detail\":\"Super Admin đã tồn tại\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/auth/register",
+      "method": "POST",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 401,
+      "endpoint": "/api/auth/login",
+      "method": "POST",
+      "error": "{\"detail\":\"Email hoặc mật khẩu không chính xác\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/users/list",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/users/pending",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/users/search?query=test",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/attendance/today",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/attendance/logs",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/attendance/settings",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/departments/",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/projects/",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/chat/conversations",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/payroll/list",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/leaves/my",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/overtime/my",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/notifications/",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/calendar/events",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/kpi/my",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/contracts/",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/documents/",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    },
+    {
+      "status": "ERROR",
+      "code": 403,
+      "endpoint": "/api/settings/company",
+      "method": "GET",
+      "error": "{\"detail\":\"Not authenticated\"}"
+    }
+  ],
+  "warnings": [],
+  "summary": {
+    "total": 26,
+    "working": 2,
+    "errors": 24,
+    "success_rate": "7.7%"
+  }
+}

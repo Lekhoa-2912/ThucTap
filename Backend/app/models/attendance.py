@@ -61,3 +61,11 @@ class DailyAttendanceSummary(BaseModel):
     check_in_status: Optional[AttendanceStatus] = None
     check_out_status: Optional[AttendanceStatus] = None
     total_hours: Optional[float] = None
+
+class AttendanceSettings(BaseModel):
+    work_start_time: str = "08:30"
+    work_end_time: str = "17:30"
+    late_threshold_minutes: int = 15
+    company_latitude: float
+    company_longitude: float
+    radius_meters: int = 50

@@ -1,0 +1,2089 @@
+--- ROUTE ERRORS ---
+
+FAILED ROUTE: /api/auth/register [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/auth/login [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/auth/me [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/auth/init-admin [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/profile [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/me [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/upload-avatar [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/change-password [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/enroll-face [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/pending [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id}/approve [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id}/reject [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/search [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/list [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id} [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id}/status [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id}/role [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id}/reset-password [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id} [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/users/{user_id}/face [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/check-location [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/checkin [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/checkout [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/logs [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/admin/logs [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/today [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/company-location [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/report/monthly [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/report/team [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/settings [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/attendance/settings [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/unread/total [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations/{conversation_id}/messages [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations/{conversation_id} [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/upload [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations/{conversation_id} [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations/{conversation_id}/members [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations/{conversation_id}/members/{member_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/chat/conversations/{conversation_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/ [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/ [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id} [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id} [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id}/status [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id}/members [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id}/members [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id}/members/{member_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id}/tasks [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/{project_id}/tasks [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/tasks/my-tasks [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/tasks/{task_id} [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/tasks/{task_id} [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/tasks/{task_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/tasks/{task_id}/accept [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/tasks/{task_id}/progress [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/projects/stats/employee-performance [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/calculate [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/list [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/my-payroll [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/{payroll_id} [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/approve [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/{payroll_id}/pay [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/{payroll_id}/qr [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/payroll/summary/{month}/{year} [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/settings/company [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/settings/company [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/settings/company/location [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/ [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/my [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/pending [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/{leave_id}/approve [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/{leave_id}/reject [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/{leave_id}/cancel [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/calendar [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/leaves/stats [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/notifications/ [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/notifications/{notification_id}/read [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/notifications/read-all [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/notifications/{notification_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/calendar/events [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/ [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/my [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/pending [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/{ot_id}/approve [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/{ot_id}/reject [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/{ot_id}/cancel [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/overtime/stats [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/export/attendance [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/export/leaves [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/export/overtime [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/kpi/ [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/kpi/my [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/kpi/team [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/kpi/{review_id}/submit [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/kpi/{review_id}/review [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/kpi/stats [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/ [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/ [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/my [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/expiring [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/{contract_id} [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/{contract_id}/terminate [{'PUT'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/contracts/stats [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/documents/upload [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/documents/ [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/documents/{doc_id}/download [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/documents/{doc_id} [{'DELETE'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/documents/categories [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/documents/stats [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/utils/ocr [{'POST'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: / [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /health [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'
+
+FAILED ROUTE: /api/info [{'GET'}]
+Traceback (most recent call last):
+  File "D:\DU_AN\GoodZWork\Backend\isolate_route.py", line 21, in test_routes
+    test_app.openapi()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\applications.py", line 1064, in openapi
+    self.openapi_schema = get_openapi(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\openapi\utils.py", line 518, in get_openapi
+    field_mapping, definitions = get_definitions(
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\fastapi\_compat\v2.py", line 236, in get_definitions
+    schema_generator = GenerateJsonSchema(ref_template=REF_TEMPLATE)
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 294, in __init__
+    self._schema_type_to_method = self.build_schema_type_to_method()
+  File "D:\DU_AN\GoodZWork\Backend\venv\lib\site-packages\pydantic\json_schema.py", line 333, in build_schema_type_to_method
+    method_name = f'{key.replace("-", "_")}_schema'
+  File "C:\Users\lekho\AppData\Local\Programs\Python\Python39\lib\typing.py", line 647, in __getattr__
+    return getattr(self.__origin__, attr)
+AttributeError: '_SpecialForm' object has no attribute 'replace'

@@ -44,7 +44,7 @@ def calculate_hours(start_time: str, end_time: str) -> float:
 @router.post("/")
 async def create_ot_request(
     data: OTRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Create a new OT request"""
     if data.date < date.today():
@@ -96,7 +96,7 @@ async def get_my_ot(
     status: Optional[str] = None,
     month: Optional[int] = None,
     year: Optional[int] = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get current user's OT requests"""
     ot_col = get_ot_collection()
@@ -139,7 +139,7 @@ async def get_my_ot(
 
 @router.get("/pending")
 async def get_pending_ot(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get pending OT requests for approval"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -174,7 +174,7 @@ async def get_pending_ot(
 @router.put("/{ot_id}/approve")
 async def approve_ot(
     ot_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Approve an OT request"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -214,7 +214,7 @@ async def approve_ot(
 async def reject_ot(
     ot_id: str,
     reason: str = Query(..., description="Lý do từ chối"),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Reject an OT request"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -254,7 +254,7 @@ async def reject_ot(
 @router.put("/{ot_id}/cancel")
 async def cancel_ot(
     ot_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Cancel own OT request"""
     ot_col = get_ot_collection()
@@ -283,7 +283,7 @@ async def cancel_ot(
 async def get_ot_stats(
     month: int = Query(..., ge=1, le=12),
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get OT statistics for payroll calculation"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.ACCOUNTANT.value]:

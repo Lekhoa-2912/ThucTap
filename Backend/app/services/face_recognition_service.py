@@ -5,29 +5,70 @@ import base64
 from typing import List, Tuple, Optional, Dict, Any
 from datetime import datetime
 from ..config import settings
-from deepface import DeepFace
+
+# Lazy import - DeepFace is heavy, only import when needed
+_deepface = None
+
+def _get_deepface():
+    """Lazy import DeepFace to avoid slow startup."""
+    global _deepface
+    if _deepface is None:
+        from deepface import DeepFace
+        _deepface = DeepFace
+    return _deepface
+
 
 class FaceRecognitionService:
     """
     Advanced Face Recognition Service using DeepFace (ArcFace).
-    Replaces legacy Haar Cascade/Histogram methods.
+    - Model pre-warming at startup for fast first request
+    - GridFS storage for face data (no local filesystem dependency)
     """
     
     def __init__(self):
-        self.face_data_path = settings.FACE_DATA_PATH
-        self.uploads_path = settings.UPLOADS_PATH
-        
-        # Ensure directories exist
-        os.makedirs(self.face_data_path, exist_ok=True)
-        os.makedirs(self.uploads_path, exist_ok=True)
-        
         # Configuration
         self.model_name = "ArcFace"
-        self.detector_backend = "retinaface" # Stronger detection
+        self.detector_backend = "retinaface"
         self.distance_metric = "cosine"
-        # ArcFace cosine threshold is typically 0.68. 
-        # We use a slightly stricter one for better security or looser if needed.
-        self.threshold = 0.68 
+        self.threshold = 0.68
+        self._model_warmed = False
+
+    def warm_up(self):
+        """
+        Pre-load ArcFace + RetinaFace models into memory.
+        Call once at server startup. Makes first check-in 5-10x faster.
+        """
+        if self._model_warmed:
+            return
+        
+        try:
+            print("🔄 Pre-loading face recognition models (ArcFace + RetinaFace)...")
+            DeepFace = _get_deepface()
+            
+            # Create a small dummy image with a simple face-like pattern
+            dummy = np.zeros((160, 160, 3), dtype=np.uint8)
+            # Draw a simple circle to give the detector something to work with
+            cv2.circle(dummy, (80, 60), 30, (200, 200, 200), -1)  # head
+            cv2.circle(dummy, (70, 50), 5, (100, 100, 100), -1)   # left eye
+            cv2.circle(dummy, (90, 50), 5, (100, 100, 100), -1)   # right eye
+            cv2.ellipse(dummy, (80, 75), (15, 8), 0, 0, 180, (100, 100, 100), 2)  # mouth
+            
+            # Force model loading by running represent (will fail on dummy but loads model)
+            try:
+                DeepFace.represent(
+                    img_path=dummy,
+                    model_name=self.model_name,
+                    detector_backend=self.detector_backend,
+                    enforce_detection=False,
+                    align=True
+                )
+            except Exception:
+                pass  # Expected - dummy image won't have a real face
+            
+            self._model_warmed = True
+            print("✅ Face recognition models loaded and ready!")
+        except Exception as e:
+            print(f"⚠️ Model warm-up had issues (will load on first request): {e}")
 
     def base64_to_image(self, base64_string: str) -> np.ndarray:
         """Convert base64 string to OpenCV image"""
@@ -43,13 +84,18 @@ class FaceRecognitionService:
             print(f"Error converting base64 to image: {e}")
             return None
     
+    def image_to_bytes(self, img: np.ndarray, quality: int = 85) -> bytes:
+        """Convert OpenCV image to JPEG bytes."""
+        _, buffer = cv2.imencode('.jpg', img, [cv2.IMWRITE_JPEG_QUALITY, quality])
+        return buffer.tobytes()
+    
     def get_embedding(self, img: np.ndarray) -> Optional[List[float]]:
         """
         Extract 512D face embedding using ArcFace.
-        Returns None if no face or multiple faces found (unless handled).
+        Returns None if no face found.
         """
         try:
-            # DeepFace.represent returns a list of dicts
+            DeepFace = _get_deepface()
             results = DeepFace.represent(
                 img_path=img,
                 model_name=self.model_name,
@@ -61,8 +107,6 @@ class FaceRecognitionService:
             if not results:
                 return None
                 
-            # Return the embedding of the first detected face
-            # In a stricter system, we might reject if len(results) > 1
             return results[0]["embedding"]
             
         except Exception as e:
@@ -70,29 +114,24 @@ class FaceRecognitionService:
             return None
 
     def calculate_cosine_distance(self, source_representation: List[float], test_representation: List[float]) -> float:
-        """
-        Calculate cosine distance between two embeddings.
-        """
+        """Calculate cosine distance between two embeddings."""
         a = np.matmul(np.transpose(source_representation), test_representation)
         b = np.sum(np.multiply(source_representation, source_representation))
         c = np.sum(np.multiply(test_representation, test_representation))
         return 1 - (a / (np.sqrt(b) * np.sqrt(c)))
 
-    def enroll_faces(self, user_id: str, face_images: List[str]) -> Tuple[bool, str, List[List[float]]]:
+    async def enroll_faces(self, user_id: str, face_images: List[str]) -> Tuple[bool, str, list, list]:
         """
-        Enroll user with DeepFace.
-        Only needs 1-3 good images.
+        Enroll user with DeepFace. Stores face images in GridFS.
         
         Returns:
-            (success, message, encodings)
+            (success, message, encodings, face_image_ids)
         """
-        user_face_dir = os.path.join(self.face_data_path, str(user_id))
-        os.makedirs(user_face_dir, exist_ok=True)
+        from .gridfs_service import GridFSService
         
         encodings = []
+        face_image_ids = []
         saved_count = 0
-        
-        # We only need a few valid images now
         MAX_ENROLLMENT_IMAGES = 3
         
         for idx, img_base64 in enumerate(face_images):
@@ -107,24 +146,33 @@ class FaceRecognitionService:
             
             if embedding:
                 encodings.append(embedding)
-                
-                # Save the image for reference
                 saved_count += 1
-                face_path = os.path.join(user_face_dir, f"ref_{saved_count}.jpg")
-                cv2.imwrite(face_path, img)
+                
+                # Save reference image to GridFS
+                img_bytes = self.image_to_bytes(img)
+                file_id = await GridFSService.upload_file(
+                    img_bytes,
+                    f"face_ref_{user_id}_{saved_count}.jpg",
+                    content_type="image/jpeg",
+                    metadata={
+                        "type": "face_reference",
+                        "user_id": user_id,
+                        "index": saved_count
+                    }
+                )
+                face_image_ids.append(file_id)
             else:
                 print(f"Skipping image {idx}: No face detected or low quality.")
 
         if not encodings:
-            return False, "Không thể phát hiện khuôn mặt rõ ràng trong các ảnh đã gửi. Vui lòng chụp lại, giữ khuôn mặt thẳng và đủ sáng.", []
+            return False, "Không thể phát hiện khuôn mặt rõ ràng trong các ảnh đã gửi. Vui lòng chụp lại, giữ khuôn mặt thẳng và đủ sáng.", [], []
         
-        return True, f"Đăng ký thành công với {len(encodings)} mẫu khuôn mặt chất lượng cao!", encodings
+        return True, f"Đăng ký thành công với {len(encodings)} mẫu khuôn mặt chất lượng cao!", encodings, face_image_ids
     
-    def enroll_single_image(self, user_id: str, image_base64: str) -> Tuple[bool, str, List[float]]:
-        """
-        Auto-enroll user with a single image.
-        """
-        return self.enroll_faces(user_id, [image_base64])
+    async def enroll_single_image(self, user_id: str, image_base64: str) -> Tuple[bool, str, list]:
+        """Auto-enroll user with a single image."""
+        success, message, encodings, _ = await self.enroll_faces(user_id, [image_base64])
+        return success, message, encodings
     
     def verify_face(self, face_image: str, stored_encodings: List[List[float]]) -> Tuple[bool, float, str]:
         """
@@ -138,14 +186,11 @@ class FaceRecognitionService:
             if img is None:
                 return False, 0.0, "Ảnh không hợp lệ"
             
-            # Get embedding of the probe image
             current_embedding = self.get_embedding(img)
             
             if current_embedding is None:
                 return False, 0.0, "Không phát hiện được khuôn mặt trong ảnh"
             
-            # Compare with all stored embeddings
-            # We look for the MINIMUM distance (best match)
             min_distance = float("inf")
             
             for stored_enc in stored_encodings:
@@ -153,18 +198,8 @@ class FaceRecognitionService:
                 if dist < min_distance:
                     min_distance = dist
             
-            # Convert distance to confidence score (approximate)
-            # Threshold is self.threshold. 
-            # If dist = 0, confidence = 100%. If dist = threshold, confidence = 50% (just a heuristic mapping)
-            
             if min_distance <= self.threshold:
-                # Map [0, threshold] to [100, 50] linearly-ish or just inverted
-                # Simple inversion: (1 - dist) * 100 might be too linear.
-                # Let's use relative to threshold.
-                score = (1 - (min_distance / (self.threshold * 2))) * 100 # Just a safe visualization
-                # Or simply:
                 confidence = max(0, (1 - min_distance) * 100)
-                
                 return True, confidence, f"Xác thực thành công (Khớp: {confidence:.1f}%)"
             else:
                 confidence = max(0, (1 - min_distance) * 100)
@@ -174,8 +209,10 @@ class FaceRecognitionService:
             print(f"Face verification error: {e}")
             return False, 0.0, f"Lỗi xác thực: {str(e)}"
     
-    def save_attendance_image(self, user_id: str, face_image: str, check_type: str) -> str:
-        """Save attendance check image"""
+    async def save_attendance_image(self, user_id: str, face_image: str, check_type: str) -> str:
+        """Save attendance check image to GridFS. Returns file_id or empty string."""
+        from .gridfs_service import GridFSService
+        
         try:
             img = self.base64_to_image(face_image)
             if img is None:
@@ -184,28 +221,36 @@ class FaceRecognitionService:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"{user_id}_{check_type}_{timestamp}.jpg"
             
-            attendance_dir = os.path.join(self.uploads_path, "attendance")
-            os.makedirs(attendance_dir, exist_ok=True)
+            img_bytes = self.image_to_bytes(img, quality=75)  # Lower quality for attendance photos
+            file_id = await GridFSService.upload_file(
+                img_bytes,
+                filename,
+                content_type="image/jpeg",
+                metadata={
+                    "type": "attendance",
+                    "user_id": user_id,
+                    "check_type": check_type,
+                    "timestamp": datetime.now()
+                }
+            )
             
-            filepath = os.path.join(attendance_dir, filename)
-            cv2.imwrite(filepath, img)
-            
-            return f"/uploads/attendance/{filename}"
+            return f"/api/files/{file_id}"
         except Exception as e:
             print(f"Error saving attendance image: {e}")
             return ""
 
-    def delete_user_faces(self, user_id: str) -> bool:
-        """Delete all face data for a user"""
+    async def delete_user_faces(self, user_id: str, face_image_ids: list = None) -> bool:
+        """Delete all face data for a user from GridFS."""
+        from .gridfs_service import GridFSService
+        
         try:
-            import shutil
-            user_face_dir = os.path.join(self.face_data_path, str(user_id))
-            if os.path.exists(user_face_dir):
-                shutil.rmtree(user_face_dir)
+            if face_image_ids:
+                await GridFSService.delete_files(face_image_ids)
             return True
         except Exception as e:
             print(f"Error deleting face data: {e}")
             return False
+
 
 # Singleton instance
 face_service = FaceRecognitionService()

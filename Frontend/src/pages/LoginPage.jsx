@@ -85,6 +85,15 @@ export default function LoginPage() {
                             'Đăng nhập'
                         )}
                     </button>
+
+                    <div className="text-center mt-4">
+                        <Link
+                            to="/forgot-password"
+                            className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                            🔑 Quên mật khẩu? Yêu cầu cấp lại
+                        </Link>
+                    </div>
                 </form>
 
                 {/* Features */}

@@ -120,6 +120,15 @@ export const userAPI = {
     }
 }
 
+// ============ DEPARTMENT APIs ============
+export const departmentAPI = {
+    getDepartments: () => api.get('/api/departments/'),
+    createDepartment: (data) => api.post('/api/departments/', data),
+    getDepartment: (id) => api.get(`/api/departments/${id}`),
+    updateDepartment: (id, data) => api.put(`/api/departments/${id}`, data),
+    deleteDepartment: (id) => api.delete(`/api/departments/${id}`)
+}
+
 // ============ ATTENDANCE APIs ============
 export const attendanceAPI = {
     checkLocation: (latitude, longitude) =>
@@ -280,7 +289,10 @@ export const projectAPI = {
         api.post(`/api/projects/${projectId}/members`, { member_ids: memberIds }),
 
     removeProjectMember: (projectId, memberId) =>
-        api.delete(`/api/projects/${projectId}/members/${memberId}`)
+        api.delete(`/api/projects/${projectId}/members/${memberId}`),
+
+    getTaskHistory: (taskId) =>
+        api.get(`/api/projects/tasks/${taskId}/history`)
 }
 
 // ============ PAYROLL APIs ============

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from bson import ObjectId
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/api/users", tags=["Users"])
 @router.put("/profile")
 async def update_profile(
     profile_data: UserProfileUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """
     Update user profile (Force Update flow for INIT users).
@@ -70,7 +70,7 @@ import uuid
 from ..config import settings as settings_config
 
 @router.get("/me")
-async def get_current_profile(current_user: dict = Depends(get_current_user)):
+async def get_current_profile(current_user = Depends(get_current_user)):
     """Get current user's full profile"""
     return {
         "id": current_user["_id"],
@@ -93,27 +93,42 @@ async def get_current_profile(current_user: dict = Depends(get_current_user)):
 @router.post("/upload-avatar")
 async def upload_avatar(
     file: UploadFile = File(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Upload user avatar image"""
+    """Upload user avatar image to GridFS"""
+    from ..services.gridfs_service import GridFSService
+    
     # Validate file type
     allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Chỉ chấp nhận file ảnh (JPEG, PNG, WebP, GIF)")
     
-    # Generate unique filename
+    # Read file contents
+    contents = await file.read()
     ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
     filename = f"avatar_{current_user['_id']}_{uuid.uuid4().hex[:8]}.{ext}"
-    filepath = os.path.join(settings_config.UPLOADS_PATH, filename)
     
-    # Save file
-    contents = await file.read()
-    with open(filepath, "wb") as f:
-        f.write(contents)
+    # Upload to GridFS
+    file_id = await GridFSService.upload_file(
+        contents,
+        filename,
+        content_type=file.content_type,
+        metadata={
+            "type": "avatar",
+            "user_id": current_user["_id"]
+        }
+    )
+    
+    # Delete old avatar from GridFS if exists
+    users_col = get_users_collection()
+    user = await users_col.find_one({"_id": ObjectId(current_user["_id"])})
+    old_avatar = user.get("avatar", "") if user else ""
+    if old_avatar and old_avatar.startswith("/api/files/"):
+        old_id = old_avatar.replace("/api/files/", "")
+        await GridFSService.delete_file(old_id)
     
     # Update user avatar URL
-    avatar_url = f"/uploads/{filename}"
-    users_col = get_users_collection()
+    avatar_url = f"/api/files/{file_id}"
     await users_col.update_one(
         {"_id": ObjectId(current_user["_id"])},
         {"$set": {"avatar": avatar_url, "updated_at": datetime.utcnow()}}
@@ -137,7 +152,7 @@ class ChangePasswordRequest(PydanticBaseModel):
 @router.put("/change-password")
 async def change_password(
     request: ChangePasswordRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Change user password"""
     users_col = get_users_collection()
@@ -170,11 +185,12 @@ class FaceEnrollRequest(BaseModel):
 @router.post("/enroll-face")
 async def enroll_face(
     request: FaceEnrollRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """
     Enroll face with images for AI training.
     After successful enrollment, status changes to PENDING.
+    Face images stored in GridFS.
     """
     face_images = request.face_images
     
@@ -184,8 +200,16 @@ async def enroll_face(
             detail=f"Cần ít nhất 1 ảnh khuôn mặt"
         )
     
-    # Process face images
-    success, message, embeddings = face_service.enroll_faces(
+    # Delete old face images from GridFS if re-enrolling
+    users_col = get_users_collection()
+    user = await users_col.find_one({"_id": ObjectId(current_user["_id"])})
+    old_face_ids = user.get("face_image_ids", []) if user else []
+    if old_face_ids:
+        from ..services.gridfs_service import GridFSService
+        await GridFSService.delete_files(old_face_ids)
+    
+    # Process face images (now async - stores in GridFS)
+    success, message, embeddings, face_image_ids = await face_service.enroll_faces(
         user_id=current_user["_id"],
         face_images=face_images
     )
@@ -198,13 +222,13 @@ async def enroll_face(
     if current_user.get("status") == UserStatus.ACTIVE.value:
         new_status = UserStatus.ACTIVE.value
 
-    # Update user with face embeddings
-    users_col = get_users_collection()
+    # Update user with face embeddings + GridFS image IDs
     await users_col.update_one(
         {"_id": ObjectId(current_user["_id"])},
         {
             "$set": {
                 "face_encodings": embeddings,
+                "face_image_ids": face_image_ids,
                 "face_registered": True,
                 "status": new_status,
                 "updated_at": datetime.utcnow()
@@ -219,8 +243,8 @@ async def enroll_face(
         "next_step": "wait_for_approval" if new_status == "PENDING" else "dashboard"
     }
 
-@router.get("/pending", response_model=List[dict])
-async def get_pending_users(current_user: dict = Depends(get_current_user)):
+@router.get("/pending")
+async def get_pending_users(current_user = Depends(get_current_user)):
     """Get list of users pending approval (HR/Admin only)"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền truy cập")
@@ -249,7 +273,7 @@ async def get_pending_users(current_user: dict = Depends(get_current_user)):
 @router.put("/{user_id}/approve")
 async def approve_user(
     user_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Approve a pending user (HR/Admin only)"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -288,7 +312,7 @@ async def approve_user(
 async def reject_user(
     user_id: str,
     reason: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Reject a pending user (HR/Admin only)"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -318,11 +342,11 @@ async def reject_user(
         "reason": reason
     }
 
-@router.get("/search", response_model=List[dict])
+@router.get("/search")
 async def search_users(
     q: str = None,
     department: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Search active users for chat (Public for active users)"""
     # Only active users can search
@@ -361,11 +385,11 @@ async def search_users(
     
     return result
 
-@router.get("/list", response_model=List[dict])
+@router.get("/list")
 async def list_users(
     status: str = None,
     role: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get list of all users (HR/Admin only)"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -399,10 +423,10 @@ async def list_users(
     
     return result
 
-@router.get("/{user_id}", response_model=dict)
+@router.get("/{user_id}")
 async def get_user(
     user_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get user details"""
     users_col = get_users_collection()
@@ -438,7 +462,7 @@ class UpdateStatusRequest(PydanticBaseModel):
 async def update_user_status(
     user_id: str,
     data: UpdateStatusRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update user status (suspend/terminate/activate) - HR/Admin only"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -480,7 +504,7 @@ class UpdateRoleRequest(PydanticBaseModel):
 async def update_user_role(
     user_id: str,
     data: UpdateRoleRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Change user role - Admin only"""
     if current_user.get("role") != UserRole.SUPER_ADMIN.value:
@@ -511,7 +535,7 @@ async def update_user_role(
 @router.put("/{user_id}/reset-password")
 async def reset_user_password(
     user_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Reset user password to default - HR/Admin only"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -549,7 +573,7 @@ class AdminUpdateUserRequest(PydanticBaseModel):
 async def admin_update_user(
     user_id: str,
     data: AdminUpdateUserRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update user info by admin - HR/Admin only"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -582,9 +606,9 @@ async def admin_update_user(
 @router.delete("/{user_id}/face")
 async def delete_user_face_data(
     user_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Delete user face data - HR/Admin only"""
+    """Delete user face data from GridFS - HR/Admin only"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền xóa dữ liệu khuôn mặt")
     
@@ -594,8 +618,9 @@ async def delete_user_face_data(
     if not user:
         raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
     
-    # Delete physical files
-    face_service.delete_user_faces(user_id)
+    # Delete face images from GridFS
+    face_image_ids = user.get("face_image_ids", [])
+    await face_service.delete_user_faces(user_id, face_image_ids)
     
     # Update DB
     await users_col.update_one(
@@ -603,6 +628,7 @@ async def delete_user_face_data(
         {
             "$set": {
                 "face_encodings": [],
+                "face_image_ids": [],
                 "face_registered": False,
                 "updated_at": datetime.utcnow()
             }

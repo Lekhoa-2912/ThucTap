@@ -12,7 +12,7 @@ async def get_settings_collection():
     return db["settings"]
 
 @router.get("/company", response_model=CompanySettings)
-async def get_company_settings(current_user: dict = Depends(get_current_user)):
+async def get_company_settings(current_user = Depends(get_current_user)):
     """Get current company settings (any authenticated user)"""
     settings_col = await get_settings_collection()
     settings = await settings_col.find_one({"type": "company"})
@@ -48,7 +48,7 @@ async def get_company_settings(current_user: dict = Depends(get_current_user)):
 @router.put("/company", response_model=CompanySettings)
 async def update_company_settings(
     update_data: CompanySettingsUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update company settings (SUPER_ADMIN only)"""
     if current_user.get("role") != "SUPER_ADMIN":

@@ -31,6 +31,7 @@ const PayrollPage = lazy(() => import('./pages/PayrollPage'))
 const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage'))
 const AdminPendingPage = lazy(() => import('./pages/AdminPendingPage'))
 const AdminFaceEnrollPage = lazy(() => import('./pages/AdminFaceEnrollPage'))
+const AdminAttendancePage = lazy(() => import('./pages/AdminAttendancePage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'))
@@ -40,6 +41,8 @@ const CalendarPage = lazy(() => import('./pages/CalendarPage'))
 const OvertimePage = lazy(() => import('./pages/OvertimePage'))
 const KPIPage = lazy(() => import('./pages/KPIPage'))
 const ContractsPage = lazy(() => import('./pages/ContractsPage'))
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'))
+const AdminPasswordResetPage = lazy(() => import('./pages/AdminPasswordResetPage'))
 
 // Layout with Sidebar
 function MainLayout({ children }) {
@@ -74,6 +77,7 @@ export default function App() {
                     element={isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage />}
                 />
                 <Route path="/logout" element={<LogoutPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
                 {/* Onboarding Routes */}
                 <Route
@@ -113,7 +117,7 @@ export default function App() {
                 <Route
                     path="/attendance"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'LEADER', 'EMPLOYEE']}>
                             <MainLayout><AttendancePage /></MainLayout>
                         </ProtectedRoute>
                     }
@@ -237,6 +241,14 @@ export default function App() {
                     element={
                         <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
                             <MainLayout><AdminFaceEnrollPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/password-reset"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
+                            <MainLayout><AdminPasswordResetPage /></MainLayout>
                         </ProtectedRoute>
                     }
                 />

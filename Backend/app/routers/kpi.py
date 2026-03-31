@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from datetime import datetime, date
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from bson import ObjectId
 from pydantic import BaseModel
 from enum import Enum
@@ -37,7 +37,7 @@ class KPIReviewCreate(BaseModel):
     goals: List[KPIGoal]
 
 class KPIReviewUpdate(BaseModel):
-    goals: List[dict]  # Contains achievement scores
+    goals: List[Dict[str, Any]]  # Contains achievement scores
     self_review: str = ""
     manager_feedback: str = ""
 
@@ -50,7 +50,7 @@ def get_kpi_collection():
 @router.post("/")
 async def create_kpi_review(
     data: KPIReviewCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Create a new KPI review"""
     kpi_col = get_kpi_collection()
@@ -122,7 +122,7 @@ async def create_kpi_review(
 async def get_my_kpi_reviews(
     year: Optional[int] = None,
     period: Optional[str] = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get current user's KPI reviews"""
     kpi_col = get_kpi_collection()
@@ -151,7 +151,7 @@ async def get_my_kpi_reviews(
 @router.get("/team")
 async def get_team_kpi_reviews(
     year: Optional[int] = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get team KPI reviews for managers"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -188,7 +188,7 @@ async def get_team_kpi_reviews(
 async def submit_self_review(
     review_id: str,
     data: KPIReviewUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Employee submits self-review with achievements"""
     kpi_col = get_kpi_collection()
@@ -247,7 +247,7 @@ async def manager_review(
     review_id: str,
     feedback: str = Query(...),
     approve: bool = Query(True),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Manager reviews and approves/provides feedback"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -287,7 +287,7 @@ async def manager_review(
 @router.get("/stats")
 async def get_kpi_stats(
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get KPI statistics for HR dashboard"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:

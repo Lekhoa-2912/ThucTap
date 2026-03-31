@@ -60,7 +60,7 @@ def calculate_leave_days(start: date, end: date, half_day: bool = False) -> floa
 @router.post("/")
 async def create_leave_request(
     data: LeaveRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Create a new leave request"""
     if data.start_date > data.end_date:
@@ -112,7 +112,7 @@ async def create_leave_request(
 async def get_my_leaves(
     status: Optional[str] = None,
     year: Optional[int] = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get current user's leave requests"""
     leaves_col = get_leaves_collection()
@@ -152,7 +152,7 @@ async def get_my_leaves(
 
 @router.get("/pending")
 async def get_pending_leaves(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get pending leave requests for approval (Leader/HR only)"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -195,7 +195,7 @@ async def get_pending_leaves(
 @router.put("/{leave_id}/approve")
 async def approve_leave(
     leave_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Approve a leave request"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -242,7 +242,7 @@ async def approve_leave(
 async def reject_leave(
     leave_id: str,
     reason: str = Query(..., description="Lý do từ chối"),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Reject a leave request"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
@@ -284,7 +284,7 @@ async def reject_leave(
 @router.put("/{leave_id}/cancel")
 async def cancel_leave(
     leave_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Cancel own leave request"""
     leaves_col = get_leaves_collection()
@@ -315,7 +315,7 @@ async def cancel_leave(
 async def get_leave_calendar(
     month: int = Query(..., ge=1, le=12),
     year: int = Query(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get leave calendar for the month"""
     leaves_col = get_leaves_collection()
@@ -354,7 +354,7 @@ async def get_leave_calendar(
 @router.get("/stats")
 async def get_leave_stats(
     year: int = Query(default=None),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get leave statistics for HR dashboard"""
     if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value]:

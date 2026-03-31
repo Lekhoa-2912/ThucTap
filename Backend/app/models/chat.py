@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
 
@@ -50,7 +50,7 @@ class Message(BaseModel):
     message_type: str = "text"  # text, image, file
     file_url: Optional[str] = None
     file_name: Optional[str] = None
-    reply_to: Optional[dict] = None  # {id, content, sender_name, message_type}
+    reply_to: Optional[Dict[str, Any]] = None  # {id, content, sender_name, message_type}
     status: MessageStatus = MessageStatus.SENDING
     is_revoked: bool = False
     seen_by: List[str] = []
@@ -84,4 +84,4 @@ class MarkSeenRequest(BaseModel):
 # For Socket Events
 class SocketMessage(BaseModel):
     event: str
-    data: dict
+    data: Dict[str, Any]

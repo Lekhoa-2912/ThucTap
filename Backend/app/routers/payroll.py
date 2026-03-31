@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends
 from bson import ObjectId
 
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/api/payroll", tags=["Payroll"])
 @router.post("/calculate")
 async def calculate_payroll(
     data: PayrollCalculateRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Calculate payroll for an employee (HR/Admin only)"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -60,12 +60,12 @@ async def calculate_payroll(
         "bonuses": payroll.total_bonuses
     }
 
-@router.get("/list", response_model=List[dict])
+@router.get("/list")
 async def get_payrolls(
     month: int = None,
     year: int = None,
     status: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get payroll list (HR/Accountant/Admin)"""
     if current_user.get("role") not in [
@@ -108,9 +108,9 @@ async def get_payrolls(
     
     return result
 
-@router.get("/my-payroll", response_model=List[dict])
+@router.get("/my-payroll")
 async def get_my_payroll(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get current user's payroll history"""
     if current_user.get("status") != UserStatus.ACTIVE.value:
@@ -141,10 +141,10 @@ async def get_my_payroll(
     
     return result
 
-@router.get("/{payroll_id}", response_model=dict)
+@router.get("/{payroll_id}")
 async def get_payroll_detail(
     payroll_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get payroll detail"""
     payrolls_col = get_payrolls_collection()
@@ -192,7 +192,7 @@ async def get_payroll_detail(
 @router.put("/approve")
 async def approve_payrolls(
     data: PayrollApprove,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Approve payrolls (HR only) - Draft -> Approved"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -221,7 +221,7 @@ async def approve_payrolls(
 async def pay_payroll(
     payroll_id: str,
     data: PayrollPay,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Mark payroll as paid (Accountant only) - Approved -> Paid"""
     if current_user.get("role") not in [UserRole.ACCOUNTANT.value, UserRole.SUPER_ADMIN.value]:
@@ -259,7 +259,7 @@ async def pay_payroll(
 async def get_payment_qr(
     payroll_id: str,
     bank_account: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Generate QR code for payment (Accountant only)"""
     if current_user.get("role") not in [UserRole.ACCOUNTANT.value, UserRole.SUPER_ADMIN.value]:
@@ -290,7 +290,7 @@ async def get_payment_qr(
 async def get_payroll_summary(
     month: int,
     year: int,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get payroll summary for a month"""
     if current_user.get("role") not in [

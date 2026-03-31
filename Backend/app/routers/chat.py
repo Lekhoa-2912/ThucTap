@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from bson import ObjectId
 import os
@@ -16,8 +16,8 @@ from .auth import get_current_user
 
 router = APIRouter(prefix="/api/chat", tags=["Chat"])
 
-@router.get("/conversations", response_model=List[dict])
-async def get_conversations(current_user: dict = Depends(get_current_user)):
+@router.get("/conversations")
+async def get_conversations(current_user = Depends(get_current_user)):
     """Get all conversations for current user"""
     if current_user.get("status") != UserStatus.ACTIVE.value:
         raise HTTPException(status_code=403, detail="Tài khoản chưa được kích hoạt")
@@ -63,7 +63,7 @@ async def get_conversations(current_user: dict = Depends(get_current_user)):
     return result
 
 @router.get("/unread/total")
-async def get_total_unread(current_user: dict = Depends(get_current_user)):
+async def get_total_unread(current_user = Depends(get_current_user)):
     """Get total unread messages count"""
     if current_user.get("status") != UserStatus.ACTIVE.value:
         return {"total": 0}
@@ -90,7 +90,7 @@ async def get_total_unread(current_user: dict = Depends(get_current_user)):
 @router.post("/conversations")
 async def create_conversation(
     data: ConversationCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Create a new conversation (private or group)"""
     if current_user.get("status") != UserStatus.ACTIVE.value:
@@ -137,12 +137,12 @@ async def create_conversation(
         "message": "Tạo cuộc trò chuyện thành công"
     }
 
-@router.get("/conversations/{conversation_id}/messages", response_model=List[dict])
+@router.get("/conversations/{conversation_id}/messages")
 async def get_messages(
     conversation_id: str,
     limit: int = 50,
     before: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get messages in a conversation"""
     conv_col = get_conversations_collection()
@@ -188,7 +188,7 @@ async def get_messages(
 @router.get("/conversations/{conversation_id}")
 async def get_conversation_details(
     conversation_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get conversation details with populated participants"""
     conv_col = get_conversations_collection()
@@ -233,7 +233,7 @@ async def get_conversation_details(
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Upload file for chat"""
     if current_user.get("status") != UserStatus.ACTIVE.value:
@@ -268,7 +268,7 @@ async def upload_file(
 async def update_conversation(
     conversation_id: str,
     data: ConversationUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update group conversation (admin only)"""
     conv_col = get_conversations_collection()
@@ -299,7 +299,7 @@ async def update_conversation(
 async def add_members(
     conversation_id: str,
     member_ids: List[str],
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Add members to group (admin only)"""
     conv_col = get_conversations_collection()
@@ -327,7 +327,7 @@ async def add_members(
 async def remove_member(
     conversation_id: str,
     member_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Remove member from group (admin only)"""
     conv_col = get_conversations_collection()
@@ -357,7 +357,7 @@ async def remove_member(
 @router.delete("/conversations/{conversation_id}")
 async def delete_conversation(
     conversation_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Delete group (admin only) or leave conversation"""
     conv_col = get_conversations_collection()

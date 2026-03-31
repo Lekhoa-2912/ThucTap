@@ -41,21 +41,32 @@ export default function ProfileSetupPage() {
             const res = await utilsAPI.scanCCCD(file)
             const data = res.data
 
-            // Auto fill
-            setFormData(prev => ({
-                ...prev,
-                full_name: data.full_name || prev.full_name,
-                // Simple date conversion if format matches dd/mm/yyyy
-                // Note: Input type="date" expects yyyy-mm-dd
-                // We'll leave it simple for now or try to parse
-                // dob: convertDate(data.dob) || prev.dob
+            const hasFieldFound = data.full_name || data.cccd_number || data.dob || data.gender
 
-                // Map other fields if available
-                bank_account_holder: data.full_name ? data.full_name.toUpperCase() : prev.bank_account_holder
-            }))
+            if (hasFieldFound) {
+                // Auto fill
+                setFormData(prev => ({
+                    ...prev,
+                    full_name: data.full_name || prev.full_name,
+                    identity_number: data.cccd_number || prev.identity_number,
+                    
+                    // Convert DD/MM/YYYY to YYYY-MM-DD for date input
+                    date_of_birth: data.dob 
+                        ? data.dob.split('/').reverse().join('-') 
+                        : prev.date_of_birth,
+                    
+                    gender: data.gender || prev.gender,
+                    nationality: data.nationality || prev.nationality || 'Việt Nam',
 
-            toast.success(`Đã trích xuất: ${data.full_name || 'Thông tin'}`)
-            setShowScanner(false)
+                    // Map other fields if available
+                    bank_account_holder: data.full_name ? data.full_name.toUpperCase() : prev.bank_account_holder
+                }))
+
+                toast.success(`✅ Đã trích xuất: ${data.full_name || 'Thông tin'}`)
+                setShowScanner(false)
+            } else {
+                toast.warning("⚠️ Không tìm thấy thông tin trên thẻ. Vui lòng chụp ảnh rõ nét hơn hoặc điền tay.")
+            }
         } catch (error) {
             console.error(error)
             const detail = error.response?.data?.detail || error.message || 'Lỗi không xác định'
@@ -67,6 +78,10 @@ export default function ProfileSetupPage() {
 
     const [formData, setFormData] = useState({
         full_name: user?.full_name || '',
+        identity_number: user?.identity_number || '',
+        date_of_birth: user?.date_of_birth || '',
+        gender: user?.gender || '',
+        nationality: user?.nationality || 'Việt Nam',
         phone: user?.phone || '',
         department: user?.department || '',
         position: user?.position || '',
@@ -113,6 +128,10 @@ export default function ProfileSetupPage() {
         }
         if (!formData.full_name) {
             toast.error('Vui lòng nhập họ và tên')
+            return
+        }
+        if (!formData.identity_number) {
+            toast.error('Vui lòng nhập số CCCD')
             return
         }
         if (!formData.phone) {
@@ -229,6 +248,65 @@ export default function ProfileSetupPage() {
                                 value={formData.full_name}
                                 onChange={handleChange}
                                 placeholder="Nguyễn Văn A"
+                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-2">
+                                Số định danh (CCCD) <span className="text-red-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="identity_number"
+                                value={formData.identity_number}
+                                onChange={handleChange}
+                                placeholder="012345678901"
+                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-2">
+                                Ngày sinh
+                            </label>
+                            <input
+                                type="date"
+                                name="date_of_birth"
+                                value={formData.date_of_birth}
+                                onChange={handleChange}
+                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white"
+                                style={{ colorScheme: 'dark' }}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-2">
+                                Giới tính
+                            </label>
+                            <select
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="">Chọn giới tính</option>
+                                <option value="MALE">Nam</option>
+                                <option value="FEMALE">Nữ</option>
+                                <option value="OTHER">Khác</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-2">
+                                Quốc tịch
+                            </label>
+                            <input
+                                type="text"
+                                name="nationality"
+                                value={formData.nationality}
+                                onChange={handleChange}
+                                placeholder="Việt Nam"
                                 className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         </div>

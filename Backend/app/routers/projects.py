@@ -1,11 +1,12 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends
 from bson import ObjectId
 
-from ..database import get_projects_collection, get_tasks_collection, get_users_collection
+from ..database import get_projects_collection, get_tasks_collection, get_users_collection, get_task_history_collection, get_phases_collection
 from ..models.project import (
     Project, ProjectCreate, ProjectStatus,
+    PhaseBase, Phase,
     Task, TaskCreate, TaskStatus, TaskAccept, TaskProgressUpdate
 )
 from ..models.user import UserRole, UserStatus
@@ -15,167 +16,189 @@ router = APIRouter(prefix="/api/projects", tags=["Projects"])
 
 # ============ PROJECT ENDPOINTS ============
 
-@router.get("/", response_model=List[dict])
+@router.get("/")
 async def get_projects(
     status: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Get all projects (filtered by user access)"""
+    """Get standalone tasks acting as projects (filtered by user access)"""
     if current_user.get("status") != UserStatus.ACTIVE.value:
         raise HTTPException(status_code=403, detail="Tài khoản chưa được kích hoạt")
     
-    projects_col = get_projects_collection()
+    tasks_col = get_tasks_collection()
+    users_col = get_users_collection()
     
-    # Admin/HR/Leader can see all, employees only see their projects
-    query = {}
+    # standalone tasks have project_id == None
+    query = {"project_id": None}
+    
     if current_user.get("role") == UserRole.EMPLOYEE.value:
-        query["team_members"] = current_user["_id"]
-    
+        query["assigned_to"] = {"$in": [str(current_user["_id"])]}
+        
     if status:
         query["status"] = status
-    
-    projects = await projects_col.find(query).sort("created_at", -1).to_list(None)
+        
+    projects = await tasks_col.find(query).sort("created_at", -1).to_list(None)
     
     result = []
     for proj in projects:
+        members_raw = proj.get("assigned_to", [])
+        members_info = []
+        for member_id in members_raw[:6]:
+            try:
+                user = await users_col.find_one({"_id": ObjectId(member_id)})
+                if user:
+                    members_info.append({
+                        "id": str(user["_id"]),
+                        "full_name": user.get("full_name"),
+                        "avatar": user.get("avatar"),
+                    })
+            except:
+                pass
+
         result.append({
             "id": str(proj["_id"]),
-            "name": proj["name"],
+            "name": proj.get("title"),  # Map title to name for React card render
             "description": proj.get("description"),
             "status": proj.get("status"),
-            "start_date": proj.get("start_date"),
-            "end_date": proj.get("end_date"),
-            "team_members": proj.get("team_members", []),
-            "created_by": proj.get("created_by"),
+            "start_date": proj.get("created_at"),
+            "end_date": proj.get("deadline"),
+            "team_members": members_info,
+            "team_count": len(members_raw),
+            "created_by": proj.get("assigned_by"),
             "created_at": proj.get("created_at")
         })
-    
+        
     return result
-
 @router.post("/")
 async def create_project(
     data: ProjectCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Create a new project (Leader/Admin only)"""
+    """Create a standalone task acting as a project (Leader/Admin only)"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền tạo dự án")
+        
+    tasks_col = get_tasks_collection()
     
-    projects_col = get_projects_collection()
-    
-    project = {
-        "name": data.name,
+    project_task = {
+        "project_id": None, 
+        "title": data.name, 
         "description": data.description,
-        "status": ProjectStatus.PLANNING.value,
-        "start_date": data.start_date,
-        "end_date": data.end_date,
-        "team_members": data.team_members,
-        "created_by": current_user["_id"],
+        "priority": "MEDIUM",
+        "deadline": data.end_date,
+        "assigned_to": data.team_members or [],
+        "assigned_by": str(current_user["_id"]),
+        "status": TaskStatus.ASSIGNED.value if data.team_members else TaskStatus.TODO.value,
+        "progress": 0,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow()
     }
     
-    result = await projects_col.insert_one(project)
-    
+    result = await tasks_col.insert_one(project_task)
     return {
         "id": str(result.inserted_id),
         "message": "Tạo dự án thành công"
     }
 
-@router.get("/{project_id}", response_model=dict)
+@router.get("/{project_id}")
 async def get_project(
     project_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Get project details"""
-    projects_col = get_projects_collection()
+    """Get standalone task details loaded as a project"""
     tasks_col = get_tasks_collection()
     users_col = get_users_collection()
     
-    project = await projects_col.find_one({"_id": ObjectId(project_id)})
-    if not project:
+    try:
+         proj = await tasks_col.find_one({"_id": ObjectId(project_id)})
+    except:
+         raise HTTPException(status_code=400, detail="ID không hợp lệ")
+
+    if not proj:
         raise HTTPException(status_code=404, detail="Không tìm thấy dự án")
-    
-    # Get team member details
-    team_members = []
-    for member_id in project.get("team_members", []):
+        
+    members_raw = proj.get("assigned_to", [])
+    members_info = []
+    for member_id in members_raw:
         try:
-            user = await users_col.find_one({"_id": ObjectId(member_id)})
-            if user:
-                team_members.append({
-                    "id": str(user["_id"]),
-                    "full_name": user.get("full_name"),
-                    "avatar": user.get("avatar"),
-                    "position": user.get("position")
-                })
+             user = await users_col.find_one({"_id": ObjectId(member_id)})
+             if user:
+                  members_info.append({
+                       "id": str(user["_id"]),
+                       "full_name": user.get("full_name"),
+                       "avatar": user.get("avatar")
+                  })
         except:
-            pass
-    
-    # Get task statistics
-    tasks = await tasks_col.find({"project_id": project_id}).to_list(None)
-    task_stats = {
-        "total": len(tasks),
-        "completed": len([t for t in tasks if t.get("status") == TaskStatus.COMPLETED.value]),
-        "in_progress": len([t for t in tasks if t.get("status") == TaskStatus.IN_PROGRESS.value]),
-        "todo": len([t for t in tasks if t.get("status") in [TaskStatus.TODO.value, TaskStatus.ASSIGNED.value]])
-    }
-    
+             pass
+
     return {
-        "id": str(project["_id"]),
-        "name": project["name"],
-        "description": project.get("description"),
-        "status": project.get("status"),
-        "start_date": project.get("start_date"),
-        "end_date": project.get("end_date"),
-        "team_members": team_members,
-        "task_stats": task_stats,
-        "created_by": project.get("created_by"),
-        "created_at": project.get("created_at")
+        "id": str(proj["_id"]),
+        "name": proj.get("title"),
+        "description": proj.get("description"),
+        "status": proj.get("status"),
+        "end_date": proj.get("deadline"),
+        "team_members": members_info,
+        "team_count": len(members_raw),
+        "created_by": proj.get("assigned_by"),
+        "created_at": proj.get("created_at")
+    }
+    return {
+        "id": str(proj["_id"]),
+        "name": proj.get("title"),
+        "description": proj.get("description"),
+        "status": proj.get("status"),
+        "end_date": proj.get("deadline"),
+        "team_members": members_info,
+        "team_count": len(members_raw),
+        "created_by": proj.get("assigned_by"),
+        "created_at": proj.get("created_at")
     }
 
 @router.put("/{project_id}")
 async def update_project(
     project_id: str,
     data: ProjectCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Update project (Leader/Admin only)"""
+    """Update standalone task acting as project (Leader/Admin only)"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền sửa dự án")
+        
+    tasks_col = get_tasks_collection()
     
-    projects_col = get_projects_collection()
+    update_doc = {
+        "title": data.name,
+        "description": data.description,
+        "deadline": data.end_date,
+        "assigned_to": data.team_members or [],
+        "updated_at": datetime.utcnow()
+    }
     
-    await projects_col.update_one(
-        {"_id": ObjectId(project_id)},
-        {"$set": {
-            "name": data.name,
-            "description": data.description,
-            "start_date": data.start_date,
-            "end_date": data.end_date,
-            "team_members": data.team_members,
-            "updated_at": datetime.utcnow()
-        }}
-    )
-    
+    try:
+        await tasks_col.update_one({"_id": ObjectId(project_id)}, {"$set": update_doc})
+    except:
+         raise HTTPException(status_code=400, detail="ID không hợp lệ")
+         
     return {"message": "Cập nhật dự án thành công"}
+
+
 
 @router.put("/{project_id}/status")
 async def update_project_status(
     project_id: str,
     status: ProjectStatus,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update project status"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền cập nhật trạng thái")
     
-    projects_col = get_projects_collection()
+    tasks_col = get_tasks_collection()
     
-    await projects_col.update_one(
+    await tasks_col.update_one(
         {"_id": ObjectId(project_id)},
         {"$set": {"status": status.value, "updated_at": datetime.utcnow()}}
     )
-    
     return {"message": f"Đã cập nhật trạng thái: {status.value}"}
 
 # ============ MEMBER MANAGEMENT ============
@@ -186,21 +209,21 @@ from typing import List as TypeList
 class MemberIds(PydanticModel):
     member_ids: TypeList[str]
 
-@router.get("/{project_id}/members", response_model=list)
+@router.get("/{project_id}/members")
 async def get_project_members(
     project_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get all members of a project"""
-    projects_col = get_projects_collection()
+    tasks_col = get_tasks_collection()
     users_col = get_users_collection()
     
-    project = await projects_col.find_one({"_id": ObjectId(project_id)})
+    project = await tasks_col.find_one({"_id": ObjectId(project_id)})
     if not project:
         raise HTTPException(status_code=404, detail="Không tìm thấy dự án")
     
     members = []
-    for member_id in project.get("team_members", []):
+    for member_id in project.get("assigned_to", []):
         try:
             user = await users_col.find_one({"_id": ObjectId(member_id)})
             if user:
@@ -221,7 +244,7 @@ async def get_project_members(
 async def add_project_members(
     project_id: str,
     data: MemberIds,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Add members to project"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -243,7 +266,7 @@ async def add_project_members(
 async def remove_project_member(
     project_id: str,
     member_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Remove member from project"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -264,7 +287,7 @@ async def remove_project_member(
 @router.delete("/{project_id}")
 async def delete_project(
     project_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Delete a project (Admin only)"""
     if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -281,14 +304,82 @@ async def delete_project(
     
     return {"message": "Đã xóa dự án"}
 
+# ============ PHASE ENDPOINTS ============
+
+@router.post("/{project_id}/phases")
+async def create_phase(
+    project_id: str,
+    data: PhaseBase,
+    current_user = Depends(get_current_user)
+):
+    """Create a new phase for a project (Leader/Admin only)"""
+    if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền tạo giai đoạn")
+        
+    phases_col = get_phases_collection()
+    
+    phase = {
+        "project_id": project_id,
+        "name": data.name,
+        "description": data.description,
+        "order": data.order,
+        "start_date": data.start_date,
+        "end_date": data.end_date,
+        "created_at": datetime.utcnow()
+    }
+    
+    result = await phases_col.insert_one(phase)
+    return {"id": str(result.inserted_id), "message": "Tạo giai đoạn thành công"}
+
+@router.get("/{project_id}/phases")
+async def get_project_phases(
+    project_id: str,
+    current_user = Depends(get_current_user)
+):
+    """Get all phases in a project"""
+    phases_col = get_phases_collection()
+    
+    phases = await phases_col.find({"project_id": project_id}).sort("order", 1).to_list(None)
+    result = []
+    for ph in phases:
+        result.append({
+            "id": str(ph["_id"]),
+            "name": ph["name"],
+            "description": ph.get("description"),
+            "order": ph.get("order", 0),
+            "start_date": ph.get("start_date"),
+            "end_date": ph.get("end_date")
+        })
+    return result
+
+@router.delete("/phases/{phase_id}")
+async def delete_phase(
+    phase_id: str,
+    current_user = Depends(get_current_user)
+):
+    """Delete a phase (Leader/Admin only)"""
+    if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền xóa giai đoạn")
+        
+    phases_col = get_phases_collection()
+    tasks_col = get_tasks_collection()
+    
+    # Optional: nullify or do something for tasks connected to it?
+    await tasks_col.update_many({"phase_id": phase_id}, {"$set": {"phase_id": None}})
+    
+    result = await phases_col.delete_one({"_id": ObjectId(phase_id)})
+    if result.deleted_count == 0:
+         raise HTTPException(status_code=404, detail="Không tìm thấy giai đoạn")
+    return {"message": "Đã xóa giai đoạn"}
+
 # ============ TASK ENDPOINTS ============
 
-@router.get("/{project_id}/tasks", response_model=List[dict])
+@router.get("/{project_id}/tasks")
 async def get_project_tasks(
     project_id: str,
     status: str = None,
     assigned_to: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get all tasks in a project"""
     tasks_col = get_tasks_collection()
@@ -298,22 +389,23 @@ async def get_project_tasks(
     if status:
         query["status"] = status
     if assigned_to:
-        query["assigned_to"] = assigned_to
+        query["assigned_to"] = {"$in": [assigned_to]}
     
     tasks = await tasks_col.find(query).sort("created_at", -1).to_list(None)
     
     result = []
     for task in tasks:
-        assignee = None
-        if task.get("assigned_to"):
+        # assigned_to is now a list of user IDs
+        assignees = []
+        for uid in (task.get("assigned_to") or []):
             try:
-                user = await users_col.find_one({"_id": ObjectId(task["assigned_to"])})
+                user = await users_col.find_one({"_id": ObjectId(uid)})
                 if user:
-                    assignee = {
+                    assignees.append({
                         "id": str(user["_id"]),
                         "full_name": user.get("full_name"),
                         "avatar": user.get("avatar")
-                    }
+                    })
             except:
                 pass
         
@@ -325,7 +417,7 @@ async def get_project_tasks(
             "status": task.get("status"),
             "deadline": task.get("deadline"),
             "progress": task.get("progress", 0),
-            "assigned_to": assignee,
+            "assigned_to": assignees,
             "assigned_by": task.get("assigned_by"),
             "rejection_reason": task.get("rejection_reason"),
             "created_at": task.get("created_at")
@@ -337,7 +429,7 @@ async def get_project_tasks(
 async def create_task(
     project_id: str,
     data: TaskCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Create a new task (Leader assigns to employee)"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -345,17 +437,17 @@ async def create_task(
     
     tasks_col = get_tasks_collection()
     
+    assigned_to = data.assigned_to or []
     task = {
         "project_id": project_id,
         "title": data.title,
         "description": data.description,
         "priority": data.priority.value,
         "deadline": data.deadline,
-        "estimated_hours": data.estimated_hours,
         "phase_id": data.phase_id,
-        "assigned_to": data.assigned_to,
+        "assigned_to": assigned_to,
         "assigned_by": current_user["_id"],
-        "status": TaskStatus.ASSIGNED.value if data.assigned_to else TaskStatus.TODO.value,
+        "status": TaskStatus.ASSIGNED.value if assigned_to else TaskStatus.TODO.value,
         "progress": 0,
         "created_at": datetime.utcnow(),
         "updated_at": datetime.utcnow()
@@ -363,23 +455,22 @@ async def create_task(
     
     result = await tasks_col.insert_one(task)
     
-    # TODO: Send notification to assigned user
-    
     return {
         "id": str(result.inserted_id),
         "message": "Tạo task thành công"
     }
 
-@router.get("/tasks/my-tasks", response_model=List[dict])
+@router.get("/tasks/my-tasks")
 async def get_my_tasks(
     status: str = None,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Get tasks assigned to current user"""
+    """Get tasks assigned to current user (supports multi-assign list)"""
     tasks_col = get_tasks_collection()
     projects_col = get_projects_collection()
     
-    query = {"assigned_to": current_user["_id"]}
+    # Support both old string format and new list format
+    query = {"assigned_to": {"$in": [str(current_user["_id"])]}}
     if status:
         query["status"] = status
     
@@ -387,7 +478,10 @@ async def get_my_tasks(
     
     result = []
     for task in tasks:
-        project = await projects_col.find_one({"_id": ObjectId(task["project_id"])})
+        try:
+            project = await projects_col.find_one({"_id": ObjectId(task["project_id"])})
+        except:
+            project = None
         
         result.append({
             "id": str(task["_id"]),
@@ -397,6 +491,7 @@ async def get_my_tasks(
             "status": task.get("status"),
             "deadline": task.get("deadline"),
             "progress": task.get("progress", 0),
+            "rejection_reason": task.get("rejection_reason"),
             "project_name": project.get("name") if project else "Unknown",
             "project_id": task["project_id"],
             "created_at": task.get("created_at")
@@ -407,7 +502,7 @@ async def get_my_tasks(
 @router.get("/tasks/{task_id}")
 async def get_task(
     task_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get single task details"""
     tasks_col = get_tasks_collection()
@@ -418,17 +513,17 @@ async def get_task(
     if not task:
         raise HTTPException(status_code=404, detail="Không tìm thấy task")
     
-    # Get assignee info
-    assignee = None
-    if task.get("assigned_to"):
+    # Get all assignees info (multi-assign as list)
+    assignees = []
+    for uid in (task.get("assigned_to") or []):
         try:
-            user = await users_col.find_one({"_id": ObjectId(task["assigned_to"])})
+            user = await users_col.find_one({"_id": ObjectId(uid)})
             if user:
-                assignee = {
+                assignees.append({
                     "id": str(user["_id"]),
                     "full_name": user.get("full_name"),
                     "avatar": user.get("avatar")
-                }
+                })
         except:
             pass
     
@@ -442,9 +537,8 @@ async def get_task(
         "priority": task.get("priority"),
         "status": task.get("status"),
         "deadline": task.get("deadline"),
-        "estimated_hours": task.get("estimated_hours"),
         "progress": task.get("progress", 0),
-        "assigned_to": assignee,
+        "assigned_to": assignees,
         "assigned_by": task.get("assigned_by"),
         "rejection_reason": task.get("rejection_reason"),
         "project_id": task["project_id"],
@@ -459,15 +553,14 @@ class TaskUpdate(PydanticModel):
     description: Optional[str] = None
     priority: Optional[str] = None
     deadline: Optional[datetime] = None
-    estimated_hours: Optional[float] = None
-    assigned_to: Optional[str] = None
+    assigned_to: Optional[List[str]] = None  # Multi-assign list
     status: Optional[str] = None
 
 @router.put("/tasks/{task_id}")
 async def update_task(
     task_id: str,
     data: TaskUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Update task (Leader/Admin only)"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -485,20 +578,26 @@ async def update_task(
         update_doc["priority"] = data.priority
     if data.deadline is not None:
         update_doc["deadline"] = data.deadline
-    if data.estimated_hours is not None:
-        update_doc["estimated_hours"] = data.estimated_hours
     if data.status is not None:
         update_doc["status"] = data.status
         if data.status == "COMPLETED":
             update_doc["completed_at"] = datetime.utcnow()
             update_doc["progress"] = 100
+            # Auto-delete project when task is done
+            try:
+                projects_col = get_projects_collection()
+                task = await tasks_col.find_one({"_id": ObjectId(task_id)})
+                if task and "project_id" in task:
+                     await projects_col.delete_one({"_id": ObjectId(task["project_id"])})
+            except:
+                pass
     
-    # Handle reassignment
+    # Handle multi-assign reassignment
     if data.assigned_to is not None:
         update_doc["assigned_to"] = data.assigned_to
-        # If reassigning, set status to ASSIGNED
+        # If reassigning with people, set status to ASSIGNED
         if data.status is None:
-            update_doc["status"] = TaskStatus.ASSIGNED.value
+            update_doc["status"] = TaskStatus.ASSIGNED.value if data.assigned_to else TaskStatus.TODO.value
     
     await tasks_col.update_one(
         {"_id": ObjectId(task_id)},
@@ -510,7 +609,7 @@ async def update_task(
 @router.delete("/tasks/{task_id}")
 async def delete_task(
     task_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Delete a task (Leader/Admin only)"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
@@ -529,7 +628,7 @@ async def delete_task(
 async def respond_to_task(
     task_id: str,
     data: TaskAccept,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """
     Accept or reject assigned task.
@@ -539,7 +638,7 @@ async def respond_to_task(
     
     task = await tasks_col.find_one({
         "_id": ObjectId(task_id),
-        "assigned_to": current_user["_id"],
+        "assigned_to": {"$in": [str(current_user["_id"])]},
         "status": TaskStatus.ASSIGNED.value
     })
     
@@ -581,26 +680,35 @@ async def respond_to_task(
 async def update_task_progress(
     task_id: str,
     data: TaskProgressUpdate,
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
-    """Update task progress (0-100%)"""
+    """Update task progress (0-100%) and log history"""
     tasks_col = get_tasks_collection()
+    history_col = get_task_history_collection()
     
     task = await tasks_col.find_one({
         "_id": ObjectId(task_id),
-        "assigned_to": current_user["_id"]
+        "assigned_to": {"$in": [str(current_user["_id"])]}
     })
     
     if not task:
         raise HTTPException(status_code=404, detail="Task không tồn tại hoặc không phải của bạn")
     
+    old_progress = task.get("progress", 0)
     new_status = TaskStatus.IN_PROGRESS.value
     completed_at = None
     
     if data.progress == 100:
         new_status = TaskStatus.COMPLETED.value
         completed_at = datetime.utcnow()
-    
+        # Auto-delete project when task is done
+        try:
+            projects_col = get_projects_collection()
+            if "project_id" in task:
+                 await projects_col.delete_one({"_id": ObjectId(task["project_id"])})
+        except:
+            pass
+        
     await tasks_col.update_one(
         {"_id": ObjectId(task_id)},
         {"$set": {
@@ -611,14 +719,53 @@ async def update_task_progress(
         }}
     )
     
+    # Insert History Log
+    await history_col.insert_one({
+        "task_id": task_id,
+        "updated_by": str(current_user["_id"]),
+        "old_progress": old_progress,
+        "new_progress": data.progress,
+        "note": data.notes,
+        "created_at": datetime.utcnow()
+    })
+    
     return {
         "message": f"Cập nhật tiến độ: {data.progress}%",
         "status": new_status
     }
 
+@router.get("/tasks/{task_id}/history")
+async def get_task_history(
+    task_id: str,
+    current_user = Depends(get_current_user)
+):
+    """Get history tracking updates of a task"""
+    history_col = get_task_history_collection()
+    users_col = get_users_collection()
+    
+    logs = await history_col.find({"task_id": task_id}).sort("created_at", -1).to_list(None)
+    
+    result = []
+    for log in logs:
+        user = await users_col.find_one({"_id": ObjectId(log["updated_by"])})
+        result.append({
+            "id": str(log["_id"]),
+            "old_progress": log.get("old_progress", 0),
+            "new_progress": log.get("new_progress", 0),
+            "note": log.get("note"),
+            "created_at": log.get("created_at"),
+            "user": {
+                "id": log["updated_by"],
+                "full_name": user.get("full_name") if user else "Unknown User",
+                "avatar": user.get("avatar") if user else None
+            }
+        })
+        
+    return result
+
 @router.get("/stats/employee-performance")
 async def get_employee_performance(
-    current_user: dict = Depends(get_current_user)
+    current_user = Depends(get_current_user)
 ):
     """Get task completion statistics per employee (Leader/Admin only)"""
     if current_user.get("role") not in [UserRole.LEADER.value, UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:

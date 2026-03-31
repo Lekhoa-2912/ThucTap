@@ -39,6 +39,13 @@ class UserBase(BaseModel):
     position: Optional[str] = None
     avatar: Optional[str] = None
     employee_id: Optional[str] = None  # Auto-generated: DEPT-XXX
+    
+    # K-KYC & Identity Fields
+    identity_number: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    gender: Optional[str] = None
+    nationality: Optional[str] = None
+    
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
     bank_account_holder: Optional[str] = None
@@ -71,6 +78,13 @@ class UserProfileUpdate(BaseModel):
     department: Optional[str] = None
     position: Optional[str] = None
     avatar: Optional[str] = None
+    
+    # Identity Fields
+    identity_number: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    gender: Optional[str] = None
+    nationality: Optional[str] = None
+    
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
     bank_account_holder: Optional[str] = None
@@ -90,6 +104,13 @@ class UserResponse(BaseModel):
     position: Optional[str] = None
     avatar: Optional[str] = None
     employee_id: Optional[str] = None
+    
+    # Identity Fields
+    identity_number: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    gender: Optional[str] = None
+    nationality: Optional[str] = None
+    
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
     bank_account_holder: Optional[str] = None

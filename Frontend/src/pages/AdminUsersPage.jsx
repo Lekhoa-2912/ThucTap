@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { userAPI, authAPI } from '../api'
+import { userAPI, authAPI, departmentAPI } from '../api'
 import { useAuth } from '../context/AuthContext'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
@@ -24,14 +24,17 @@ export default function AdminUsersPage() {
     const [openDropdown, setOpenDropdown] = useState(null)
 
     const [creating, setCreating] = useState(false)
-    const [newUser, setNewUser] = useState({ email: '', password: '', role: 'EMPLOYEE' })
-    const [editData, setEditData] = useState({ full_name: '', phone: '', department: '', position: '' })
+    const [newUser, setNewUser] = useState({ emailPrefix: '', password: '123456', role: 'EMPLOYEE', department: '', position: '' })
+    const [editData, setEditData] = useState({ full_name: '', phone: '', department: '', position: '', base_salary: '' })
+    const [departmentsList, setDepartmentsList] = useState([])
 
     const isAdmin = hasRole(['SUPER_ADMIN'])
+    const isAdminOrHR = hasRole(['SUPER_ADMIN', 'HR_MANAGER'])
     const dropdownRef = useRef(null)
 
     useEffect(() => {
         loadUsers()
+        loadDepartments()
     }, [statusFilter, roleFilter])
 
     // Close dropdown when clicking outside
@@ -44,6 +47,15 @@ export default function AdminUsersPage() {
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
+    
+    const loadDepartments = async () => {
+        try {
+            const res = await departmentAPI.getDepartments()
+            setDepartmentsList(res.data)
+        } catch (error) {
+            console.error('Failed to load departments:', error)
+        }
+    }
 
     const loadUsers = async () => {
         try {
@@ -59,16 +71,17 @@ export default function AdminUsersPage() {
     }
 
     const handleCreateUser = async () => {
-        if (!newUser.email || !newUser.password) {
-            toast.error('Vui lòng nhập đầy đủ email và mật khẩu')
+        if (!newUser.emailPrefix || !newUser.password) {
+            toast.error('Vui lòng nhập đầy đủ tên tài khoản và mật khẩu')
             return
         }
         setCreating(true)
         try {
-            await authAPI.register(newUser)
+            const finalEmail = `${newUser.emailPrefix}@GZW.vn.com`
+            await authAPI.register({ ...newUser, email: finalEmail })
             toast.success('Tạo tài khoản thành công!')
             setShowCreateModal(false)
-            setNewUser({ email: '', password: '', role: 'EMPLOYEE' })
+            setNewUser({ emailPrefix: '', password: '123456', role: 'EMPLOYEE', department: '', position: '' })
             loadUsers()
         } catch (error) {
             toast.error(error.response?.data?.detail || 'Tạo tài khoản thất bại')
@@ -94,7 +107,8 @@ export default function AdminUsersPage() {
             full_name: user.full_name || '',
             phone: user.phone || '',
             department: user.department || '',
-            position: user.position || ''
+            position: user.position || '',
+            base_salary: user.base_salary || ''
         })
         setShowEditModal(true)
     }
@@ -131,6 +145,10 @@ export default function AdminUsersPage() {
                 case 'activate':
                     await userAPI.updateUserStatus(selectedUser.id, 'ACTIVE')
                     toast.success('Đã kích hoạt tài khoản')
+                    break
+                case 'delete':
+                    await userAPI.deleteUser(selectedUser.id)
+                    toast.success('Đã xóa tài khoản vĩnh viễn')
                     break
                 case 'reset':
                     const res = await userAPI.resetUserPassword(selectedUser.id)
@@ -202,7 +220,7 @@ export default function AdminUsersPage() {
                     <h1 className="text-2xl font-bold text-slate-800">Quản lý nhân viên</h1>
                     <p className="text-slate-500">Danh sách và thông tin nhân viên</p>
                 </div>
-                <button onClick={() => setShowCreateModal(true)} className="btn-primary">+ Tạo tài khoản</button>
+                {isAdminOrHR && <button onClick={() => setShowCreateModal(true)} className="btn-primary">+ Tạo tài khoản</button>}
             </div>
 
             {/* Filters */}
@@ -232,7 +250,7 @@ export default function AdminUsersPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="glass-card p-4 text-center">
                     <p className="text-2xl font-bold text-blue-600">{users.length}</p>
                     <p className="text-sm text-slate-500">Tổng số</p>
@@ -244,10 +262,6 @@ export default function AdminUsersPage() {
                 <div className="glass-card p-4 text-center">
                     <p className="text-2xl font-bold text-orange-600">{users.filter(u => u.status === 'PENDING').length}</p>
                     <p className="text-sm text-slate-500">Chờ duyệt</p>
-                </div>
-                <div className="glass-card p-4 text-center">
-                    <p className="text-2xl font-bold text-purple-600">{users.filter(u => u.face_registered).length}</p>
-                    <p className="text-sm text-slate-500">Đăng ký AI</p>
                 </div>
                 <div className="glass-card p-4 text-center">
                     <p className="text-2xl font-bold text-red-600">{users.filter(u => u.status === 'TERMINATED').length}</p>
@@ -337,6 +351,7 @@ export default function AdminUsersPage() {
                                                                     {['EMPLOYEE', 'LEADER', 'HR_MANAGER'].filter(r => r !== user.role).map(role => (
                                                                         <button key={role} onClick={() => handleChangeRole(user, role)} className="w-full text-left px-4 py-1.5 hover:bg-slate-100 text-xs text-slate-600">{role.replace('_', ' ')}</button>
                                                                     ))}
+                                                                    <button onClick={() => handleAction(user, 'delete')} className="w-full text-left px-4 py-2 hover:bg-red-50 text-sm text-red-600 font-medium border-t border-slate-100 mt-1">Xóa tài khoản</button>
                                                                 </div>
                                                             )}
                                                         </div>
@@ -359,12 +374,16 @@ export default function AdminUsersPage() {
                         <h3 className="text-lg font-semibold text-slate-800 mb-4">Tạo tài khoản mới</h3>
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Email *</label>
-                                <input type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" placeholder="email@company.com" />
+                                <label className="block text-sm font-medium text-slate-700 mb-2">Tên tài khoản (Email) *</label>
+                                <div className="flex items-center gap-2">
+                                    <input type="text" value={newUser.emailPrefix} onChange={(e) => setNewUser({ ...newUser, emailPrefix: e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '') })} className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" placeholder="nhanvien" />
+                                    <span className="bg-slate-100 border border-slate-300 rounded-xl px-4 py-3 text-slate-500 whitespace-nowrap">@GZW.vn.com</span>
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">Mật khẩu *</label>
                                 <input type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" placeholder="Tối thiểu 6 ký tự" />
+                                <p className="text-xs text-slate-500 mt-1">Mặc định: 123456</p>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">Vai trò</label>
@@ -374,6 +393,21 @@ export default function AdminUsersPage() {
                                     <option value="ACCOUNTANT">Kế toán</option>
                                     <option value="HR_MANAGER">HR Manager</option>
                                 </select>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Phòng ban</label>
+                                    <select value={newUser.department} onChange={(e) => setNewUser({ ...newUser, department: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3">
+                                        <option value="">Chưa xếp phòng</option>
+                                        {departmentsList.map(d => (
+                                            <option key={d.id} value={d.name}>{d.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Chức vụ</label>
+                                    <input type="text" value={newUser.position} onChange={(e) => setNewUser({ ...newUser, position: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" placeholder="Ví dụ: Lập trình viên" />
+                                </div>
                             </div>
                         </div>
                         <div className="flex gap-4 mt-6">
@@ -431,8 +465,11 @@ export default function AdminUsersPage() {
                         <div className="space-y-4">
                             <div><label className="block text-sm font-medium text-slate-700 mb-2">Họ và tên</label><input type="text" value={editData.full_name} onChange={(e) => setEditData({ ...editData, full_name: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" /></div>
                             <div><label className="block text-sm font-medium text-slate-700 mb-2">Điện thoại</label><input type="tel" value={editData.phone} onChange={(e) => setEditData({ ...editData, phone: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" /></div>
-                            <div><label className="block text-sm font-medium text-slate-700 mb-2">Phòng ban</label><select value={editData.department} onChange={(e) => setEditData({ ...editData, department: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3"><option value="">Chọn phòng ban</option><option value="IT">IT</option><option value="HR">HR</option><option value="Finance">Finance</option><option value="Marketing">Marketing</option><option value="Sales">Sales</option><option value="Operations">Operations</option></select></div>
+                            <div><label className="block text-sm font-medium text-slate-700 mb-2">Phòng ban</label><select value={editData.department} onChange={(e) => setEditData({ ...editData, department: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3"><option value="">Chọn phòng ban</option>{departmentsList.map(d => (<option key={d.id} value={d.name}>{d.name}</option>))}</select></div>
                             <div><label className="block text-sm font-medium text-slate-700 mb-2">Chức vụ</label><input type="text" value={editData.position} onChange={(e) => setEditData({ ...editData, position: e.target.value })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" /></div>
+                            {isAdmin && (
+                                <div><label className="block text-sm font-medium text-slate-700 mb-2">Lương cơ bản (VND)</label><input type="number" value={editData.base_salary} onChange={(e) => setEditData({ ...editData, base_salary: Number(e.target.value) || '' })} className="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3" /></div>
+                            )}
                         </div>
                         <div className="flex gap-4 mt-6">
                             <button onClick={() => setShowEditModal(false)} className="flex-1 btn-secondary">Hủy</button>
@@ -448,12 +485,14 @@ export default function AdminUsersPage() {
                     <div className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
                         <p className="text-4xl mb-4">
                             {actionType === 'suspend' ? 'Khóa' :
+                                actionType === 'delete' ? '🗑️' :
                                 actionType === 'terminate' ? 'Kết thúc' :
                                     actionType === 'activate' ? 'Kích hoạt' :
                                         actionType === 'delete_face' ? 'Xóa ID' : 'Mật khẩu'}
                         </p>
                         <h3 className="text-lg font-semibold text-slate-800 mb-2">
                             {actionType === 'suspend' && 'Tạm khóa tài khoản?'}
+                            {actionType === 'delete' && 'Xóa tài khoản vĩnh viễn?'}
                             {actionType === 'terminate' && 'Cho nhân viên nghỉ việc?'}
                             {actionType === 'activate' && 'Kích hoạt tài khoản?'}
                             {actionType === 'reset' && 'Reset mật khẩu?'}
@@ -461,9 +500,10 @@ export default function AdminUsersPage() {
                         </h3>
                         <p className="text-slate-500 mb-4">{selectedUser.full_name || selectedUser.email}</p>
                         {actionType === 'reset' && <p className="text-sm text-amber-600 mb-4 bg-amber-50 rounded-lg px-3 py-2">Mật khẩu sẽ được reset về: 123456</p>}
+                        {actionType === 'delete' && <p className="text-sm text-red-600 mb-4 bg-red-50 rounded-lg px-3 py-2">Hành động này không thể hoàn tác!</p>}
                         <div className="flex gap-4">
                             <button onClick={() => setShowActionModal(false)} className="flex-1 btn-secondary">Hủy</button>
-                            <button onClick={confirmAction} className={`flex-1 ${actionType === 'terminate' ? 'btn-danger' : 'btn-primary'}`}>Xác nhận</button>
+                            <button onClick={confirmAction} className={`flex-1 ${actionType === 'terminate' || actionType === 'delete' ? 'btn-danger' : 'btn-primary'}`}>Xác nhận</button>
                         </div>
                     </div>
                 </div>

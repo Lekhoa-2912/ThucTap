@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from bson import ObjectId
+
+from ..services.gridfs_service import GridFSService
 
 from ..database import get_projects_collection, get_tasks_collection, get_users_collection, get_task_history_collection, get_phases_collection
 from ..models.project import (
@@ -420,6 +422,8 @@ async def get_project_tasks(
             "assigned_to": assignees,
             "assigned_by": task.get("assigned_by"),
             "rejection_reason": task.get("rejection_reason"),
+            "completion_file_id": task.get("completion_file_id"),
+            "completion_file_name": task.get("completion_file_name"),
             "created_at": task.get("created_at")
         })
     
@@ -492,6 +496,8 @@ async def get_my_tasks(
             "deadline": task.get("deadline"),
             "progress": task.get("progress", 0),
             "rejection_reason": task.get("rejection_reason"),
+            "completion_file_id": task.get("completion_file_id"),
+            "completion_file_name": task.get("completion_file_name"),
             "project_name": project.get("name") if project else "Unknown",
             "project_id": task["project_id"],
             "created_at": task.get("created_at")
@@ -541,6 +547,8 @@ async def get_task(
         "assigned_to": assignees,
         "assigned_by": task.get("assigned_by"),
         "rejection_reason": task.get("rejection_reason"),
+        "completion_file_id": task.get("completion_file_id"),
+        "completion_file_name": task.get("completion_file_name"),
         "project_id": task["project_id"],
         "project_name": project.get("name") if project else "Unknown",
         "created_at": task.get("created_at"),
@@ -732,6 +740,75 @@ async def update_task_progress(
     return {
         "message": f"Cập nhật tiến độ: {data.progress}%",
         "status": new_status
+    }
+
+@router.post("/tasks/{task_id}/complete")
+async def complete_task_with_file(
+    task_id: str,
+    file: UploadFile = File(...),
+    notes: Optional[str] = Form(None),
+    current_user = Depends(get_current_user)
+):
+    """Mark a task as 100% complete and upload a completion file"""
+    tasks_col = get_tasks_collection()
+    history_col = get_task_history_collection()
+    
+    task = await tasks_col.find_one({
+        "_id": ObjectId(task_id),
+        "assigned_to": {"$in": [str(current_user["_id"])]}
+    })
+    
+    if not task:
+        raise HTTPException(status_code=404, detail="Task không tồn tại hoặc không phải của bạn")
+        
+    old_progress = task.get("progress", 0)
+    
+    # Upload file
+    contents = await file.read()
+    file_id = await GridFSService.upload_file(
+        contents,
+        file.filename,
+        file.content_type or "application/octet-stream",
+        {"category": "task_completion", "task_id": task_id}
+    )
+    
+    completed_at = datetime.utcnow()
+    new_status = TaskStatus.COMPLETED.value
+    
+    await tasks_col.update_one(
+        {"_id": ObjectId(task_id)},
+        {"$set": {
+            "progress": 100,
+            "status": new_status,
+            "completed_at": completed_at,
+            "completion_file_id": str(file_id),
+            "completion_file_name": file.filename,
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
+    # Auto-delete project when task is done (standalone task projects)
+    try:
+        projects_col = get_projects_collection()
+        if "project_id" in task:
+             await projects_col.delete_one({"_id": ObjectId(task["project_id"])})
+    except:
+        pass
+        
+    # Insert History Log
+    await history_col.insert_one({
+        "task_id": task_id,
+        "updated_by": str(current_user["_id"]),
+        "old_progress": old_progress,
+        "new_progress": 100,
+        "note": f"Đã hoàn thành và đính kèm file: {file.filename}. \n{notes or ''}",
+        "created_at": datetime.utcnow()
+    })
+    
+    return {
+        "message": "Đã lưu tệp tin và hoàn thành công việc",
+        "status": new_status,
+        "file_id": str(file_id)
     }
 
 @router.get("/tasks/{task_id}/history")

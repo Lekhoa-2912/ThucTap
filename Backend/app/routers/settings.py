@@ -28,7 +28,10 @@ async def get_company_settings(current_user = Depends(get_current_user)):
             work_start_time="08:00",
             work_end_time="17:00",
             late_threshold_minutes=15,
-            early_leave_threshold_minutes=30
+            early_leave_threshold_minutes=30,
+            late_penalty=50000,
+            early_leave_penalty=50000,
+            absent_penalty=200000
         )
     
     return CompanySettings(
@@ -41,6 +44,9 @@ async def get_company_settings(current_user = Depends(get_current_user)):
         work_end_time=settings.get("work_end_time", "17:00"),
         late_threshold_minutes=settings.get("late_threshold_minutes", 15),
         early_leave_threshold_minutes=settings.get("early_leave_threshold_minutes", 30),
+        late_penalty=settings.get("late_penalty", 50000),
+        early_leave_penalty=settings.get("early_leave_penalty", 50000),
+        absent_penalty=settings.get("absent_penalty", 200000),
         updated_at=settings.get("updated_at"),
         updated_by=settings.get("updated_by")
     )
@@ -82,6 +88,9 @@ async def update_company_settings(
             "work_end_time": "17:00",
             "late_threshold_minutes": 15,
             "early_leave_threshold_minutes": 30,
+            "late_penalty": 50000,
+            "early_leave_penalty": 50000,
+            "absent_penalty": 200000,
             **update_dict
         }
         await settings_col.insert_one(new_settings)

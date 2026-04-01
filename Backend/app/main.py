@@ -119,6 +119,8 @@ app.include_router(departments.router)
 app.include_router(files.router)
 
 # Mount static files for uploads (backward compat for old avatar URLs)
+# Ensure the directory exists before mounting (StaticFiles crashes if dir is missing)
+os.makedirs(settings_config.UPLOADS_PATH, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=settings_config.UPLOADS_PATH), name="uploads")
 
 # Mount Socket.IO

@@ -84,6 +84,7 @@ async def get_current_profile(current_user = Depends(get_current_user)):
         "bank_name": current_user.get("bank_name"),
         "bank_account_number": current_user.get("bank_account_number"),
         "bank_account_holder": current_user.get("bank_account_holder"),
+        "base_salary": current_user.get("base_salary", 0),
         "role": current_user.get("role"),
         "status": current_user.get("status"),
         "face_registered": current_user.get("face_registered", False),
@@ -391,8 +392,9 @@ async def list_users(
     role: str = None,
     current_user = Depends(get_current_user)
 ):
-    """Get list of all users (HR/Admin only)"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    """Get list of all users (HR/Admin/Leader)"""
+    user_role = current_user.get("role")
+    if user_role not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value, UserRole.LEADER.value, UserRole.ACCOUNTANT.value]:
         raise HTTPException(status_code=403, detail="Không có quyền truy cập")
     
     users_col = get_users_collection()
@@ -402,6 +404,9 @@ async def list_users(
         query["status"] = status
     if role:
         query["role"] = role
+        
+    if user_role == UserRole.LEADER.value:
+        query["department"] = current_user.get("department")
     
     users = await users_col.find(query).to_list(None)
     
@@ -418,6 +423,7 @@ async def list_users(
             "role": user.get("role"),
             "status": user.get("status"),
             "face_registered": user.get("face_registered", False),
+            "base_salary": user.get("base_salary", 0),
             "created_at": user.get("created_at")
         })
     
@@ -449,6 +455,7 @@ async def get_user(
         "bank_name": user.get("bank_name"),
         "bank_account_number": user.get("bank_account_number"),
         "bank_account_holder": user.get("bank_account_holder"),
+        "base_salary": user.get("base_salary", 0),
         "face_registered": user.get("face_registered", False),
         "created_at": user.get("created_at")
     }
@@ -464,8 +471,9 @@ async def update_user_status(
     data: UpdateStatusRequest,
     current_user = Depends(get_current_user)
 ):
-    """Update user status (suspend/terminate/activate) - HR/Admin only"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    """Update user status (suspend/terminate/activate) - HR/Admin/Leader"""
+    user_role = current_user.get("role")
+    if user_role not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value, UserRole.LEADER.value]:
         raise HTTPException(status_code=403, detail="Không có quyền thay đổi trạng thái")
     
     valid_statuses = ["ACTIVE", "SUSPENDED", "TERMINATED", "INACTIVE"]
@@ -473,6 +481,13 @@ async def update_user_status(
         raise HTTPException(status_code=400, detail=f"Trạng thái không hợp lệ. Chọn: {valid_statuses}")
     
     users_col = get_users_collection()
+    
+    target_user = await users_col.find_one({"_id": ObjectId(user_id)})
+    if not target_user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+    if user_role == UserRole.LEADER.value and target_user.get("department") != current_user.get("department"):
+        raise HTTPException(status_code=403, detail="Bạn chỉ có thể quản lý nhân viên trong phòng ban của mình")
     
     result = await users_col.update_one(
         {"_id": ObjectId(user_id)},
@@ -537,11 +552,19 @@ async def reset_user_password(
     user_id: str,
     current_user = Depends(get_current_user)
 ):
-    """Reset user password to default - HR/Admin only"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    """Reset user password to default - HR/Admin/Leader"""
+    user_role = current_user.get("role")
+    if user_role not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value, UserRole.LEADER.value]:
         raise HTTPException(status_code=403, detail="Không có quyền reset mật khẩu")
     
     users_col = get_users_collection()
+    
+    target_user = await users_col.find_one({"_id": ObjectId(user_id)})
+    if not target_user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+    if user_role == UserRole.LEADER.value and target_user.get("department") != current_user.get("department"):
+        raise HTTPException(status_code=403, detail="Bạn chỉ có thể quản lý nhân viên trong phòng ban của mình")
     
     # Default password: 123456
     default_password = "123456"
@@ -568,6 +591,7 @@ class AdminUpdateUserRequest(PydanticBaseModel):
     phone: str = None
     department: str = None
     position: str = None
+    base_salary: float = None
 
 @router.put("/{user_id}")
 async def admin_update_user(
@@ -575,11 +599,19 @@ async def admin_update_user(
     data: AdminUpdateUserRequest,
     current_user = Depends(get_current_user)
 ):
-    """Update user info by admin - HR/Admin only"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    """Update user info by admin - HR/Admin/Leader"""
+    user_role = current_user.get("role")
+    if user_role not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value, UserRole.LEADER.value]:
         raise HTTPException(status_code=403, detail="Không có quyền chỉnh sửa thông tin")
     
     users_col = get_users_collection()
+    
+    target_user = await users_col.find_one({"_id": ObjectId(user_id)})
+    if not target_user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+    if user_role == UserRole.LEADER.value and target_user.get("department") != current_user.get("department"):
+        raise HTTPException(status_code=403, detail="Bạn chỉ có thể quản lý nhân viên trong phòng ban của mình")
     
     update_doc = {"updated_at": datetime.utcnow()}
     if data.full_name is not None:
@@ -590,6 +622,8 @@ async def admin_update_user(
         update_doc["department"] = data.department
     if data.position is not None:
         update_doc["position"] = data.position
+    if data.base_salary is not None:
+        update_doc["base_salary"] = data.base_salary
     
     result = await users_col.update_one(
         {"_id": ObjectId(user_id)},
@@ -608,8 +642,9 @@ async def delete_user_face_data(
     user_id: str,
     current_user = Depends(get_current_user)
 ):
-    """Delete user face data from GridFS - HR/Admin only"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    """Delete user face data from GridFS - HR/Admin/Leader"""
+    user_role = current_user.get("role")
+    if user_role not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value, UserRole.LEADER.value]:
         raise HTTPException(status_code=403, detail="Không có quyền xóa dữ liệu khuôn mặt")
     
     users_col = get_users_collection()
@@ -617,6 +652,9 @@ async def delete_user_face_data(
     
     if not user:
         raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+    if user_role == UserRole.LEADER.value and user.get("department") != current_user.get("department"):
+        raise HTTPException(status_code=403, detail="Bạn chỉ có thể quản lý nhân viên trong phòng ban của mình")
     
     # Delete face images from GridFS
     face_image_ids = user.get("face_image_ids", [])
@@ -636,3 +674,30 @@ async def delete_user_face_data(
     )
     
     return {"message": "Đã xóa dữ liệu khuôn mặt thành công"}
+
+@router.delete("/{user_id}")
+async def delete_user(
+    user_id: str,
+    current_user = Depends(get_current_user)
+):
+    """Hard delete a user (SUPER_ADMIN only)"""
+    if current_user.get("role") != UserRole.SUPER_ADMIN.value:
+        raise HTTPException(status_code=403, detail="Chỉ Super Admin được quyền xóa tài khoản")
+    
+    users_col = get_users_collection()
+    user = await users_col.find_one({"_id": ObjectId(user_id)})
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+    # Delete face images from GridFS
+    face_image_ids = user.get("face_image_ids", [])
+    if face_image_ids:
+        await face_service.delete_user_faces(user_id, face_image_ids)
+        
+    # Delete user document
+    result = await users_col.delete_one({"_id": ObjectId(user_id)})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=400, detail="Xóa tài khoản thất bại")
+        
+    return {"message": "Đã xóa tài khoản vĩnh viễn"}

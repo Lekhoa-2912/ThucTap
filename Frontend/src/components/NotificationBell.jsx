@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
+import { useNavigate } from 'react-router-dom'
 import { notificationAPI } from '../api'
 import { formatDistanceToNow } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -41,6 +43,9 @@ const NOTIFICATION_COLORS = {
 }
 
 export default function NotificationBell() {
+    const navigate = useNavigate()
+    const bellRef = useRef(null)
+    const [dropdownPos, setDropdownPos] = useState({ top: 0, right: 0 })
     const [notifications, setNotifications] = useState([])
     const [unreadCount, setUnreadCount] = useState(0)
     const [isOpen, setIsOpen] = useState(false)
@@ -55,9 +60,14 @@ export default function NotificationBell() {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false)
-            }
+            // Check if click is inside the bell button
+            if (bellRef.current && bellRef.current.contains(event.target)) return
+            
+            // Check if click is inside the portal dropdown
+            const dropdownEl = document.getElementById('notification-dropdown-portal')
+            if (dropdownEl && dropdownEl.contains(event.target)) return
+
+            setIsOpen(false)
         }
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
@@ -96,16 +106,22 @@ export default function NotificationBell() {
     }
 
     const handleToggle = () => {
-        setIsOpen(!isOpen)
-        if (!isOpen) {
+        if (!isOpen && bellRef.current) {
+            const rect = bellRef.current.getBoundingClientRect()
+            setDropdownPos({
+                top: rect.bottom + 8,
+                left: rect.left, // Anchor to left edge of bell button
+            })
             loadNotifications()
         }
+        setIsOpen(!isOpen)
     }
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div ref={dropdownRef}>
             {/* Bell Button */}
             <button
+                ref={bellRef}
                 onClick={handleToggle}
                 className="relative p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-600"
                 title="Thông báo"
@@ -118,9 +134,13 @@ export default function NotificationBell() {
                 )}
             </button>
 
-            {/* Dropdown */}
-            {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
+            {/* Dropdown rendered via Portal to escape sidebar z-index */}
+            {isOpen && createPortal(
+                <div
+                    id="notification-dropdown-portal"
+                    style={{ top: dropdownPos.top, left: dropdownPos.left }}
+                    className="fixed w-80 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-slate-200 z-[9999] overflow-hidden"
+                >
                     {/* Header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
                         <h3 className="font-semibold text-slate-800">Thông báo</h3>
@@ -145,12 +165,24 @@ export default function NotificationBell() {
                             notifications.map(notification => {
                                 const Icon = NOTIFICATION_ICONS[notification.type] || Bell
                                 const color = NOTIFICATION_COLORS[notification.type] || 'text-slate-500'
+
+                                const handleNotificationClick = () => {
+                                    if (!notification.read) {
+                                        handleMarkAsRead(notification.id)
+                                    }
+                                    setIsOpen(false)
+                                    if (notification.link) {
+                                        navigate(notification.link)
+                                    }
+                                }
+
                                 return (
                                     <div
                                         key={notification.id}
-                                        onClick={() => !notification.read && handleMarkAsRead(notification.id)}
-                                        className={`px-4 py-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50' : ''
-                                            }`}
+                                        onClick={handleNotificationClick}
+                                        className={`px-4 py-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors ${
+                                            !notification.read ? 'bg-blue-50' : ''
+                                        }`}
                                     >
                                         <div className="flex items-start gap-3">
                                             <Icon size={20} className={color} />
@@ -166,7 +198,7 @@ export default function NotificationBell() {
                                                 </p>
                                             </div>
                                             {!notification.read && (
-                                                <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-2"></span>
+                                                <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 mt-2" />
                                             )}
                                         </div>
                                     </div>
@@ -183,7 +215,8 @@ export default function NotificationBell() {
                             </a>
                         </div>
                     )}
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     )

@@ -1,0 +1,99 @@
+﻿d:\DU_AN\ThucTap\backen
+d\venv\Scripts\python.e
+xe : Server 
+initialized for asgi.
+At line:1 char:73
++ ... ONUTF8="1"; d:\DU
+_AN\ThucTap\backend\ven
+v\Scripts\python.exe 
+-m uvico ...
++                 ~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Server initia   
+ lized for asgi.:St    
+ring) [], RemoteEx    
+ception
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+[33mConnectivity 
+check to the model 
+hoster has been 
+skipped because `PADDLE
+_PDX_DISABLE_MODEL_SOUR
+CE_CHECK` is 
+enabled.[0m
+INFO:     Started 
+server process [21856]
+INFO:     Waiting for 
+application startup.
+2026-04-01 
+13:24:19.619137: I tens
+orflow/core/util/port.c
+c:113] oneDNN custom 
+operations are on. You 
+may see slightly 
+different numerical 
+results due to 
+floating-point 
+round-off errors from 
+different computation 
+orders. To turn them 
+off, set the 
+environment variable `T
+F_ENABLE_ONEDNN_OPTS=0`
+.
+AttributeError: 
+'MessageFactory' 
+object has no 
+attribute 
+'GetPrototype'
+AttributeError: 
+'MessageFactory' 
+object has no 
+attribute 
+'GetPrototype'
+AttributeError: 
+'MessageFactory' 
+object has no 
+attribute 
+'GetPrototype'
+AttributeError: 
+'MessageFactory' 
+object has no 
+attribute 
+'GetPrototype'
+AttributeError: 
+'MessageFactory' 
+object has no 
+attribute 
+'GetPrototype'
+INFO:     Application 
+startup complete.
+ERROR:    [Errno 
+10048] error while 
+attempting to bind on 
+address ('127.0.0.1', 
+8000): only one usage 
+of each socket address 
+(protocol/network 
+address/port) is 
+normally permitted
+INFO:     Waiting for 
+application shutdown.
+INFO:     Application 
+shutdown complete.
+Γ£¿ Starting GoodZWork API...
+Γ£à ─É├ú kß║┐t nß╗æi tß╗¢i MongoDB: GoodZWork
+Γ£à GridFS storage initialized
+≡ƒôü Verifying database indexes...
+Γ£à MongoDB indexes verified/created
+≡ƒöä Pre-loading face recognition models (ArcFace + RetinaFace)...
+ΓÜá∩╕Å Model warm-up had issues (will load on first request): No module named 'tensorflow.keras'
+≡ƒÜÇ GoodZWork API is ready and running successfully!
+Γ¥î ─É├ú ngß║»t kß║┐t nß╗æi MongoDB

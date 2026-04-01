@@ -10,10 +10,17 @@ class PayrollService:
     Automatically calculates salary based on attendance logs.
     """
     
-    # Deduction rates
-    LATE_DEDUCTION_RATE = 50000  # 50,000 VND per late day
-    EARLY_LEAVE_DEDUCTION_RATE = 50000
-    ABSENT_DEDUCTION_RATE = 200000  # 200,000 VND per absent day
+    async def _get_penalty_rates(self):
+        from ..database import get_database
+        db = get_database()
+        settings = await db["settings"].find_one({"type": "company"})
+        if settings:
+            return {
+                "late": settings.get("late_penalty", 50000),
+                "early_leave": settings.get("early_leave_penalty", 50000),
+                "absent": settings.get("absent_penalty", 200000)
+            }
+        return {"late": 50000, "early_leave": 50000, "absent": 200000}
     
     async def calculate_working_days(self, user_id: str, month: int, year: int) -> dict:
         """Calculate working statistics for a user in a specific month"""
@@ -92,6 +99,9 @@ class PayrollService:
         # Get working statistics
         stats = await self.calculate_working_days(user_id, month, year)
         
+        # Get dynamic penalty rates
+        penalties = await self._get_penalty_rates()
+        
         # Calculate deductions
         deductions = []
         
@@ -99,21 +109,21 @@ class PayrollService:
             deductions.append(PayrollDeduction(
                 type="late",
                 description=f"Đi muộn {stats['late_days']} ngày",
-                amount=stats["late_days"] * self.LATE_DEDUCTION_RATE
+                amount=stats["late_days"] * penalties["late"]
             ))
         
         if stats["early_leave_days"] > 0:
             deductions.append(PayrollDeduction(
                 type="early_leave",
                 description=f"Về sớm {stats['early_leave_days']} ngày",
-                amount=stats["early_leave_days"] * self.EARLY_LEAVE_DEDUCTION_RATE
+                amount=stats["early_leave_days"] * penalties["early_leave"]
             ))
         
         if stats["absent_days"] > 0:
             deductions.append(PayrollDeduction(
                 type="absent",
                 description=f"Vắng mặt {stats['absent_days']} ngày",
-                amount=stats["absent_days"] * self.ABSENT_DEDUCTION_RATE
+                amount=stats["absent_days"] * penalties["absent"]
             ))
         
         total_deductions = sum(d.amount for d in deductions)

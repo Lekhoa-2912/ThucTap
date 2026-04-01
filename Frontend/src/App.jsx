@@ -33,6 +33,7 @@ const AdminPendingPage = lazy(() => import('./pages/AdminPendingPage'))
 const AdminFaceEnrollPage = lazy(() => import('./pages/AdminFaceEnrollPage'))
 const AdminAttendancePage = lazy(() => import('./pages/AdminAttendancePage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
+const DepartmentsPage = lazy(() => import('./pages/DepartmentsPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'))
 const LeavesPage = lazy(() => import('./pages/LeavesPage'))
@@ -117,7 +118,7 @@ export default function App() {
                 <Route
                     path="/attendance"
                     element={
-                        <ProtectedRoute roles={['SUPER_ADMIN', 'LEADER', 'EMPLOYEE']}>
+                        <ProtectedRoute roles={['LEADER', 'EMPLOYEE']}>
                             <MainLayout><AttendancePage /></MainLayout>
                         </ProtectedRoute>
                     }
@@ -149,7 +150,7 @@ export default function App() {
                 <Route
                     path="/tasks"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute roles={['EMPLOYEE']}>
                             <MainLayout><TasksPage /></MainLayout>
                         </ProtectedRoute>
                     }
@@ -179,30 +180,6 @@ export default function App() {
                     }
                 />
                 <Route
-                    path="/overtime"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout><OvertimePage /></MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/kpi"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout><KPIPage /></MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/contracts"
-                    element={
-                        <ProtectedRoute>
-                            <MainLayout><ContractsPage /></MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
                     path="/payroll"
                     element={
                         <ProtectedRoute>
@@ -223,7 +200,7 @@ export default function App() {
                 <Route
                     path="/admin/users"
                     element={
-                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER', 'LEADER']}>
                             <MainLayout><AdminUsersPage /></MainLayout>
                         </ProtectedRoute>
                     }
@@ -257,6 +234,14 @@ export default function App() {
                     element={
                         <ProtectedRoute roles={['SUPER_ADMIN']}>
                             <MainLayout><SettingsPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/departments"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN']}>
+                            <MainLayout><DepartmentsPage /></MainLayout>
                         </ProtectedRoute>
                     }
                 />

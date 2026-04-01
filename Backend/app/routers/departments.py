@@ -9,31 +9,40 @@ from .auth import get_current_user
 
 router = APIRouter(prefix="/api/departments", tags=["Departments"])
 
+@router.get("")
 @router.get("/")
 async def get_departments(current_user = Depends(get_current_user)):
     """Get all departments with member count"""
-    dept_col = get_departments_collection()
-    users_col = get_users_collection()
-    
-    depts = await dept_col.find({}).to_list(None)
-    result = []
-    
-    for d in depts:
-        dept_name = d.get("name")
-        # Count users in department
-        member_count = await users_col.count_documents({"department": dept_name}) if dept_name else 0
+    try:
+        dept_col = get_departments_collection()
+        users_col = get_users_collection()
         
-        result.append({
-            "id": str(d["_id"]),
-            "name": dept_name,
-            "description": d.get("description"),
-            "manager_id": d.get("manager_id"),
-            "member_count": member_count,
-            "created_at": d.get("created_at")
-        })
+        depts = await dept_col.find({}).to_list(None)
+        result = []
         
-    return result
+        for d in depts:
+            dept_name = d.get("name")
+            # Count users in department
+            member_count = await users_col.count_documents({"department": dept_name}) if dept_name else 0
+            
+            manager_id = d.get("manager_id")
+            
+            result.append({
+                "id": str(d["_id"]),
+                "name": dept_name,
+                "description": d.get("description"),
+                "manager_id": str(manager_id) if manager_id else None,
+                "member_count": member_count,
+                "created_at": d.get("created_at")
+            })
+            
+        return result
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("")
 @router.post("/")
 async def create_department(data: DepartmentCreate, current_user = Depends(get_current_user)):
     """Create a new department (SUPER_ADMIN or HR_MANAGER only)"""
@@ -55,6 +64,24 @@ async def create_department(data: DepartmentCreate, current_user = Depends(get_c
     }
     
     result = await dept_col.insert_one(dept)
+    
+    # Auto-promote new manager to LEADER if they are an EMPLOYEE
+    if data.manager_id:
+        try:
+            users_col = get_users_collection()
+            user = await users_col.find_one({"_id": ObjectId(data.manager_id)})
+            if user and user.get("role") == "EMPLOYEE":
+                await users_col.update_one(
+                    {"_id": ObjectId(data.manager_id)},
+                    {"$set": {
+                        "role": "LEADER",
+                        "role_updated_at": datetime.utcnow(),
+                        "role_updated_by": current_user["_id"]
+                    }}
+                )
+        except Exception as e:
+            print(f"Failed to auto-promote manager: {e}")
+
     return {"id": str(result.inserted_id), "message": "Tạo phòng ban thành công"}
 
 @router.get("/{id}")
@@ -113,6 +140,25 @@ async def update_department(id: str, data: DepartmentUpdate, current_user = Depe
 
     if update_doc:
          await dept_col.update_one({"_id": ObjectId(id)}, {"$set": update_doc})
+         
+         # Auto-promote new manager to LEADER if they are an EMPLOYEE
+         if "manager_id" in update_doc and update_doc["manager_id"]:
+             new_manager_id = update_doc["manager_id"]
+             if new_manager_id != existing.get("manager_id"):
+                 try:
+                     users_col = get_users_collection()
+                     user = await users_col.find_one({"_id": ObjectId(new_manager_id)})
+                     if user and user.get("role") == "EMPLOYEE":
+                         await users_col.update_one(
+                             {"_id": ObjectId(new_manager_id)},
+                             {"$set": {
+                                 "role": "LEADER",
+                                 "role_updated_at": datetime.utcnow(),
+                                 "role_updated_by": current_user["_id"]
+                             }}
+                         )
+                 except Exception as e:
+                     print(f"Failed to auto-promote manager: {e}")
 
     return {"message": "Cập nhật phòng ban thành công"}
 

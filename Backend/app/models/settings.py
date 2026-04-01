@@ -13,6 +13,9 @@ class CompanySettings(BaseModel):
     work_end_time: str = "17:00"
     late_threshold_minutes: int = 15
     early_leave_threshold_minutes: int = 30
+    late_penalty: int = 50000
+    early_leave_penalty: int = 50000
+    absent_penalty: int = 200000
     updated_at: Optional[datetime] = None
     updated_by: Optional[str] = None
 
@@ -27,3 +30,6 @@ class CompanySettingsUpdate(BaseModel):
     work_end_time: Optional[str] = None
     late_threshold_minutes: Optional[int] = None
     early_leave_threshold_minutes: Optional[int] = None
+    late_penalty: Optional[int] = None
+    early_leave_penalty: Optional[int] = None
+    absent_penalty: Optional[int] = None

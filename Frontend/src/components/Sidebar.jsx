@@ -22,26 +22,25 @@ import {
     Timer,
     Target,
     FileText,
-    KeyRound
+    KeyRound,
+    Building2
 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'LEADER', 'EMPLOYEE'] },
-    { path: '/attendance', label: 'Chấm công', icon: Clock, roles: ['SUPER_ADMIN', 'LEADER', 'EMPLOYEE'] },
+    { path: '/attendance', label: 'Chấm công', icon: Clock, roles: ['LEADER', 'EMPLOYEE'] },
     { path: '/chat', label: 'Chat', icon: MessageCircle, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'LEADER', 'EMPLOYEE'] },
     { path: '/projects', label: 'Dự án', icon: FolderKanban, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'] },
-    { path: '/tasks', label: 'Công việc', icon: CheckSquare, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
+    { path: '/tasks', label: 'Công việc', icon: CheckSquare, roles: ['EMPLOYEE'] },
     { path: '/leaves', label: 'Nghỉ phép', icon: Palmtree, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
-    { path: '/overtime', label: 'OT', icon: Timer, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
-    { path: '/kpi', label: 'KPI', icon: Target, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
-    { path: '/contracts', label: 'Hợp đồng', icon: FileText, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'EMPLOYEE'] },
     { path: '/calendar', label: 'Lịch', icon: CalendarDays, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER', 'EMPLOYEE'] },
     { path: '/reports', label: 'Báo cáo', icon: BarChart3, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'LEADER', 'EMPLOYEE'] },
     { path: '/payroll', label: 'Bảng lương', icon: Wallet, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'EMPLOYEE'] },
-    { path: '/admin/users', label: 'Quản lý NV', icon: Users, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
+    { path: '/admin/users', label: 'Quản lý NV', icon: Users, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'] },
     { path: '/admin/pending', label: 'Duyệt hồ sơ', icon: ClipboardList, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
+    { path: '/admin/departments', label: 'Phòng ban', icon: Building2, roles: ['SUPER_ADMIN'] },
     { path: '/admin/password-reset', label: 'Cấp lại mật khẩu', icon: KeyRound, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
     { path: '/settings', label: 'Cấu hình', icon: Settings, roles: ['SUPER_ADMIN'] },
 ]

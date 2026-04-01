@@ -85,6 +85,8 @@ class Task(TaskBase):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     completed_at: Optional[datetime] = None
+    completion_file_id: Optional[str] = None
+    completion_file_name: Optional[str] = None
     
     class Config:
         populate_by_name = True

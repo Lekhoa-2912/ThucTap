@@ -80,9 +80,15 @@ export default function ProjectDetailPage() {
 
     const canManage = hasRole(['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'])
 
-    useEffect(() => { loadData() }, [projectId])
+    useEffect(() => {
+        if (projectId && projectId !== 'null') loadData()
+    }, [projectId])
 
     const loadData = async () => {
+        if (!projectId || projectId === 'null') {
+            setLoading(false)
+            return
+        }
         try {
             const [projRes, tasksRes, membersRes] = await Promise.all([
                 projectAPI.getProject(projectId),

@@ -469,7 +469,7 @@ async def get_team_report(
     last_day = datetime(year, month, monthrange(year, month)[1], 23, 59, 59)
     
     # Get all users (filter by department for Leaders)
-    user_query = {"status": "ACTIVE"}
+    user_query = {"status": {"$ne": "INIT"}}
     if current_user.get("role") == UserRole.LEADER.value:
         user_query["department"] = current_user.get("department")
     
@@ -481,23 +481,47 @@ async def get_team_report(
         "attendance_type": "CHECK_IN"
     }).to_list(10000)
     
+    # Get all approved leaves for the month
+    from .leaves import get_leaves_collection
+    leaves_col = get_leaves_collection()
+    
+    first_day_str = first_day.strftime('%Y-%m-%d')
+    last_day_str = last_day.strftime('%Y-%m-%d')
+    
+    leaves = await leaves_col.find({
+        "status": "APPROVED",
+        "$or": [
+            {"start_date": {"$lte": last_day_str}, "end_date": {"$gte": first_day_str}}
+        ]
+    }).to_list(1000)
+    
     # Aggregate by user
     user_stats = {}
     for user in users:
         user_id = str(user["_id"])
-        user_logs = [l for l in logs if l["user_id"] == user_id]
+        user_logs = [l for l in logs if str(l["user_id"]) == user_id]
         
         on_time = sum(1 for l in user_logs if l["status"] == "ON_TIME")
         late = sum(1 for l in user_logs if l["status"] == "LATE")
         total = len(user_logs)
         
+        # Calculate leave days within this month
+        leave_days_this_month = 0
+        user_leaves = [l for l in leaves if str(l["user_id"]) == user_id]
+        for l in user_leaves:
+            # Simple approximation of leave days
+            # For exact intersection, we would need to calculate overlapping dates
+            leave_days_this_month += l.get("days", 0)
+        
         user_stats[user_id] = {
             "id": user_id,
             "name": user.get("full_name"),
             "department": user.get("department"),
+            "status": user.get("status"),
             "total_days": total,
             "on_time": on_time,
             "late": late,
+            "leave_days": leave_days_this_month,
             "on_time_rate": round(on_time / total * 100, 1) if total > 0 else 0
         }
     

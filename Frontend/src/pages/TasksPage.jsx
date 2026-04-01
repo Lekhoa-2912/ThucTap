@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { projectAPI } from '../api'
 import { useAuth } from '../context/AuthContext'
 import { format, differenceInDays } from 'date-fns'
+import { Upload, FileText, X, Download } from 'lucide-react'
 
 const PRIORITY_CONFIG = {
     URGENT: { label: 'Khẩn cấp', color: 'bg-red-500/20 text-red-400 border-red-500/40',       dot: 'bg-red-500' },
@@ -50,6 +51,13 @@ export default function TasksPage() {
     const [progressInput, setProgressInput] = useState({})
     const [savingProgress, setSavingProgress] = useState({})
 
+    // Completion modal state
+    const [showCompleteModal, setShowCompleteModal] = useState(false)
+    const [taskToComplete, setTaskToComplete] = useState(null)
+    const [completeFile, setCompleteFile] = useState(null)
+    const [completeNotes, setCompleteNotes] = useState('')
+    const [completing, setCompleting] = useState(false)
+
     useEffect(() => { loadTasks() }, [filter])
 
     const loadTasks = async () => {
@@ -90,6 +98,11 @@ export default function TasksPage() {
     }
 
     const handleUpdateProgress = async (taskId, progress) => {
+        if (Number(progress) === 100) {
+            setTaskToComplete(tasks.find(t => t.id === taskId))
+            setShowCompleteModal(true)
+            return
+        }
         setSavingProgress(p => ({ ...p, [taskId]: true }))
         try {
             await projectAPI.updateTaskProgress(taskId, Number(progress))
@@ -99,6 +112,29 @@ export default function TasksPage() {
             toast.error('Cập nhật thất bại')
         } finally {
             setSavingProgress(p => ({ ...p, [taskId]: false }))
+        }
+    }
+
+    const handleCompleteTask = async (e) => {
+        e.preventDefault()
+        if (!completeFile) {
+            toast.error("Vui lòng đính kèm tập tin kết quả công việc")
+            return
+        }
+        
+        setCompleting(true)
+        try {
+            await projectAPI.completeTask(taskToComplete.id, completeFile, completeNotes)
+            toast.success("Đã nộp bài và hoàn thành công việc")
+            setShowCompleteModal(false)
+            setCompleteFile(null)
+            setCompleteNotes('')
+            setTaskToComplete(null)
+            loadTasks()
+        } catch (error) {
+            toast.error(error.response?.data?.detail || 'Lỗi nộp bài')
+        } finally {
+            setCompleting(false)
         }
     }
 
@@ -189,12 +225,14 @@ export default function TasksPage() {
                                             <p className="text-slate-400 text-sm line-clamp-2 mb-2">{task.description}</p>
                                         )}
                                         <div className="flex flex-wrap items-center gap-3 text-sm">
-                                            <button
-                                                onClick={() => navigate(`/projects/${task.project_id}`)}
-                                                className="text-blue-400 hover:text-blue-300 hover:underline text-xs transition-colors"
-                                            >
-                                                📁 {task.project_name}
-                                            </button>
+                                            {task.project_id && (
+                                                <button
+                                                    onClick={() => navigate(`/projects/${task.project_id}`)}
+                                                    className="text-blue-400 hover:text-blue-300 hover:underline text-xs transition-colors"
+                                                >
+                                                    📁 {task.project_name}
+                                                </button>
+                                            )}
                                             <DeadlineLabel deadline={task.deadline} />
                                         </div>
                                     </div>
@@ -281,6 +319,27 @@ export default function TasksPage() {
                                         </p>
                                     </div>
                                 )}
+
+                                {/* Show uploaded file if completed */}
+                                {task.status === 'COMPLETED' && task.completion_file_name && (
+                                    <div className="mt-4 pt-4 border-t border-slate-700/50">
+                                        <p className="text-sm text-slate-400 mb-2">Tập tin nộp bài:</p>
+                                        <div className="flex items-center gap-2 p-3 bg-slate-800/50 rounded-xl border border-slate-700">
+                                            <FileText className="text-blue-400" size={18} />
+                                            <span className="text-sm text-slate-300 truncate font-medium flex-1">
+                                                {task.completion_file_name}
+                                            </span>
+                                            <a
+                                                href={`http://localhost:8000/api/files/${task.completion_file_id}`}
+                                                target="_blank" rel="noopener noreferrer"
+                                                className="p-1.5 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
+                                                title="Tải xuống"
+                                            >
+                                                <Download size={18} />
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )
                     })
@@ -289,25 +348,92 @@ export default function TasksPage() {
 
             {/* Reject Modal */}
             {showRejectModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl p-6">
-                        <h3 className="text-lg font-semibold mb-2">Từ chối công việc</h3>
-                        <p className="text-slate-400 text-sm mb-4">
-                            Bạn đang từ chối: <strong className="text-white">{selectedTask?.title}</strong>
-                        </p>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6 border border-slate-700">
+                        <h2 className="text-xl font-bold mb-4">Từ chối nhận việc</h2>
                         <textarea
-                            autoFocus
                             value={rejectReason}
-                            onChange={e => setRejectReason(e.target.value)}
-                            placeholder="Nhập lý do từ chối (bắt buộc)..."
-                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 h-28 resize-none text-white placeholder-slate-400 focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                        />
-                        <div className="flex gap-3 mt-4">
-                            <button onClick={() => { setShowRejectModal(false); setRejectReason(''); setSelectedTask(null) }} className="flex-1 btn-secondary">Hủy</button>
-                            <button onClick={handleRejectTask} className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors">
-                                Xác nhận từ chối
+                            onChange={(e) => setRejectReason(e.target.value)}
+                            placeholder="Nhập lý do từ chối..."
+                            className="w-full h-32 bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-300 focus:outline-none focus:border-blue-500 mb-4 resize-none"
+                        ></textarea>
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={() => {
+                                    setShowRejectModal(false)
+                                    setRejectReason('')
+                                }}
+                                className="px-4 py-2 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors"
+                            >Hủy</button>
+                            <button
+                                onClick={handleRejectTask}
+                                disabled={!rejectReason.trim()}
+                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors disabled:opacity-50"
+                            >Xác nhận từ chối</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Complete Task File Upload Modal */}
+            {showCompleteModal && taskToComplete && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="bg-slate-800 rounded-2xl w-full max-w-md border border-slate-700 flex flex-col my-8">
+                        <div className="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/80 rounded-t-2xl sticky top-0 z-10">
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-100">Nộp bài & Hoàn thành</h2>
+                                <p className="text-sm text-slate-400 mt-1 truncate max-w-[300px]">Task: {taskToComplete.title}</p>
+                            </div>
+                            <button onClick={() => setShowCompleteModal(false)} className="text-slate-400 hover:text-white hover:bg-slate-700 p-2 rounded-xl transition-all">
+                                <X size={20} />
                             </button>
                         </div>
+
+                        <form onSubmit={handleCompleteTask} className="p-5 space-y-5">
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-2">
+                                    Tập tin nộp bài <span className="text-red-400">*</span>
+                                </label>
+                                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-600 border-dashed rounded-xl hover:border-blue-500 hover:bg-slate-800/50 transition-all group relative">
+                                    <div className="space-y-2 text-center">
+                                        <Upload className={`mx-auto h-10 w-10 ${completeFile ? 'text-blue-400' : 'text-slate-500 group-hover:text-blue-400'} transition-colors`} />
+                                        <div className="flex text-sm text-slate-400 justify-center">
+                                            <label className="relative cursor-pointer rounded-md font-medium text-blue-400 hover:text-blue-300 focus-within:outline-none">
+                                                <span>{completeFile ? 'Chọn tệp khác' : 'Tải tệp lên'}</span>
+                                                <input required type="file" className="sr-only" onChange={(e) => setCompleteFile(e.target.files[0])} />
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {completeFile && (
+                                    <div className="mt-3 flex items-center gap-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400 text-sm">
+                                        <FileText size={18} className="flex-shrink-0" />
+                                        <span className="truncate">{completeFile.name}</span>
+                                        <span className="flex-shrink-0 opacity-70">({(completeFile.size / 1024 / 1024).toFixed(2)} MB)</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-slate-300 mb-2">Ghi chú (Tùy chọn)</label>
+                                <textarea
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-300 h-24 focus:outline-none focus:border-blue-500 transition-colors"
+                                    placeholder="Ghi chú thêm về kết quả công việc..."
+                                    value={completeNotes}
+                                    onChange={(e) => setCompleteNotes(e.target.value)}
+                                ></textarea>
+                            </div>
+
+                            <div className="pt-2 flex gap-3">
+                                <button type="button" onClick={() => setShowCompleteModal(false)} className="flex-1 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium transition-colors border border-slate-600">
+                                    Hủy
+                                </button>
+                                <button type="submit" disabled={completing} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-xl text-white font-medium shadow-lg shadow-blue-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                                    {completing ? <div className="spinner border-2 border-white w-4 h-4"></div> : <Upload size={18} />}
+                                    Nộp bài
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

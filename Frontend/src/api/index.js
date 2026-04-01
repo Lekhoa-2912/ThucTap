@@ -117,6 +117,11 @@ export const userAPI = {
     deleteUserFace: (userId) => {
         cacheManager.invalidatePattern('/api/users')
         return api.delete(`/api/users/${userId}/face`)
+    },
+
+    deleteUser: (userId) => {
+        cacheManager.invalidatePattern('/api/users')
+        return api.delete(`/api/users/${userId}`)
     }
 }
 
@@ -266,6 +271,15 @@ export const projectAPI = {
     updateTaskProgress: (taskId, progress, notes) =>
         api.put(`/api/projects/tasks/${taskId}/progress`, { progress, notes }),
 
+    completeTask: (taskId, file, notes) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        if (notes) formData.append('notes', notes)
+        return api.post(`/api/projects/tasks/${taskId}/complete`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    },
+
     getEmployeePerformance: () =>
         api.get('/api/projects/stats/employee-performance'),
 
@@ -364,7 +378,11 @@ export const leaveAPI = {
 
     // Get stats
     getLeaveStats: (year) =>
-        api.get('/api/leaves/stats', { params: { year } })
+        api.get('/api/leaves/stats', { params: { year } }),
+
+    // Get all leaves for admin
+    getAllLeaves: (status, department, year) =>
+        api.get('/api/leaves/all', { params: { status, department, year } })
 }
 
 // ============ NOTIFICATION APIs ============

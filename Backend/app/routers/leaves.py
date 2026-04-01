@@ -311,6 +311,53 @@ async def cancel_leave(
     
     return {"message": "Đã hủy đơn xin nghỉ phép"}
 
+@router.get("/all")
+async def get_all_leaves(
+    status: Optional[str] = None,
+    department: Optional[str] = None,
+    year: Optional[int] = None,
+    current_user = Depends(get_current_user)
+):
+    """Get all leave requests for admin management view"""
+    if current_user.get("role") not in [UserRole.SUPER_ADMIN.value, UserRole.HR_MANAGER.value, UserRole.LEADER.value]:
+        raise HTTPException(status_code=403, detail="Không có quyền xem tất cả đơn")
+    
+    leaves_col = get_leaves_collection()
+    
+    query = {}
+    if status:
+        query["status"] = status
+    if department:
+        query["user_department"] = department
+    if year:
+        query["start_date"] = {"$regex": f"^{year}"}
+    
+    # Leaders only see their department
+    if current_user.get("role") == UserRole.LEADER.value:
+        query["user_department"] = current_user.get("department")
+    
+    cursor = leaves_col.find(query).sort("created_at", -1)
+    leaves = await cursor.to_list(500)
+    
+    return [{
+        "id": str(l["_id"]),
+        "user": {
+            "id": str(l["user_id"]),
+            "name": l.get("user_name"),
+            "department": l.get("user_department"),
+        },
+        "leave_type": l["leave_type"],
+        "start_date": l["start_date"],
+        "end_date": l["end_date"],
+        "days": l["days"],
+        "half_day": l.get("half_day", False),
+        "reason": l["reason"],
+        "status": l["status"],
+        "approved_by": l.get("approved_by"),
+        "rejected_reason": l.get("rejected_reason"),
+        "created_at": l["created_at"],
+    } for l in leaves]
+
 @router.get("/calendar")
 async def get_leave_calendar(
     month: int = Query(..., ge=1, le=12),

@@ -20,7 +20,7 @@ async def calculate_payroll(
     current_user = Depends(get_current_user)
 ):
     """Calculate payroll for an employee (HR/Admin only)"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    if current_user.get("role") not in [UserRole.ACCOUNTANT.value, UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền tính lương")
     
     payrolls_col = get_payrolls_collection()
@@ -69,7 +69,6 @@ async def get_payrolls(
 ):
     """Get payroll list (HR/Accountant/Admin)"""
     if current_user.get("role") not in [
-        UserRole.HR_MANAGER.value, 
         UserRole.ACCOUNTANT.value, 
         UserRole.SUPER_ADMIN.value
     ]:
@@ -157,7 +156,6 @@ async def get_payroll_detail(
     # Check access: own payroll or HR/Accountant/Admin
     if payroll["user_id"] != current_user["_id"]:
         if current_user.get("role") not in [
-            UserRole.HR_MANAGER.value,
             UserRole.ACCOUNTANT.value,
             UserRole.SUPER_ADMIN.value
         ]:
@@ -195,7 +193,7 @@ async def approve_payrolls(
     current_user = Depends(get_current_user)
 ):
     """Approve payrolls (HR only) - Draft -> Approved"""
-    if current_user.get("role") not in [UserRole.HR_MANAGER.value, UserRole.SUPER_ADMIN.value]:
+    if current_user.get("role") not in [UserRole.SUPER_ADMIN.value]:
         raise HTTPException(status_code=403, detail="Không có quyền duyệt lương")
     
     payrolls_col = get_payrolls_collection()
@@ -294,7 +292,6 @@ async def get_payroll_summary(
 ):
     """Get payroll summary for a month"""
     if current_user.get("role") not in [
-        UserRole.HR_MANAGER.value,
         UserRole.ACCOUNTANT.value,
         UserRole.SUPER_ADMIN.value
     ]:

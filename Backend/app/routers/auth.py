@@ -83,6 +83,8 @@ async def register_user(user_data: UserCreate, current_user = Depends(get_curren
         "email": user_data.email,
         "hashed_password": get_password_hash(user_data.password),
         "role": user_data.role.value,
+        "department": user_data.department,
+        "position": user_data.position,
         "status": UserStatus.INIT.value,
         "face_registered": False,
         "created_at": datetime.utcnow(),

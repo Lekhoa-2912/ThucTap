@@ -49,6 +49,7 @@ class UserBase(BaseModel):
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
     bank_account_holder: Optional[str] = None
+    base_salary: Optional[float] = 0
     role: UserRole = UserRole.EMPLOYEE
     status: UserStatus = UserStatus.INIT
     
@@ -70,6 +71,8 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     role: UserRole = UserRole.EMPLOYEE
+    department: Optional[str] = None
+    position: Optional[str] = None
 
 # Update Profile Request (by Employee)
 class UserProfileUpdate(BaseModel):
@@ -114,6 +117,7 @@ class UserResponse(BaseModel):
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
     bank_account_holder: Optional[str] = None
+    base_salary: Optional[float] = 0
     role: str  # Changed to str for MongoDB compatibility
     status: str  # Changed to str for MongoDB compatibility
     face_registered: bool = False

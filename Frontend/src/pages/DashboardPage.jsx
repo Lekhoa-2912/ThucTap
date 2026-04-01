@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { useAuth } from '../context/AuthContext'
-import { attendanceAPI, projectAPI, leaveAPI } from '../api'
+import { attendanceAPI, projectAPI, leaveAPI, userAPI } from '../api'
 import { format } from 'date-fns'
 import { vi } from 'date-fns/locale'
 
@@ -13,6 +13,8 @@ export default function DashboardPage() {
     const [performance, setPerformance] = useState([])
     const [pendingLeaves, setPendingLeaves] = useState(0)
     const [leaveSummary, setLeaveSummary] = useState({ remaining: 0 })
+    const [totalEmployees, setTotalEmployees] = useState(0)
+    const [taskStats, setTaskStats] = useState({ total: 0, completed: 0, pending: 0 })
     const [loading, setLoading] = useState(true)
 
     const isManager = hasRole(['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'])
@@ -43,7 +45,35 @@ export default function DashboardPage() {
                 // Load employee performance
                 try {
                     const perfRes = await projectAPI.getEmployeePerformance()
-                    setPerformance(perfRes.data || [])
+                    const perfData = perfRes.data || []
+                    setPerformance(perfData)
+
+                    // Aggregate for admin's task stats widget
+                    const totalT = perfData.reduce((sum, emp) => sum + (emp.total_tasks || 0), 0)
+                    const completedT = perfData.reduce((sum, emp) => sum + (emp.completed_tasks || 0), 0)
+                    setTaskStats({
+                        total: totalT,
+                        completed: completedT,
+                        pending: totalT - completedT
+                    })
+                } catch (e) { }
+
+                // Load total active employees
+                try {
+                    const usersRes = await userAPI.listUsers('ACTIVE')
+                    setTotalEmployees(usersRes.data.length || 0)
+                } catch (e) { }
+            } else {
+                // Not a manager -> Load personal tasks
+                try {
+                    const tasksRes = await projectAPI.getMyTasks()
+                    const tasks = tasksRes.data || []
+                    const completed = tasks.filter(t => t.status === 'COMPLETED' || t.status === 'APPROVED').length
+                    setTaskStats({
+                        total: tasks.length,
+                        completed,
+                        pending: tasks.length - completed
+                    })
                 } catch (e) { }
             }
         } catch (error) {
@@ -89,13 +119,15 @@ export default function DashboardPage() {
                     {/* Quick Actions */}
                     <div className="flex gap-2">
                         {!isManager && (
-                            <button onClick={() => navigate('/attendance')} className="btn-primary text-sm">
-                                Chấm công
-                            </button>
+                            <>
+                                <button onClick={() => navigate('/attendance')} className="btn-primary text-sm">
+                                    Chấm công
+                                </button>
+                                <button onClick={() => navigate('/leaves')} className="btn-secondary text-sm">
+                                    Xin nghỉ
+                                </button>
+                            </>
                         )}
-                        <button onClick={() => navigate('/leaves')} className="btn-secondary text-sm">
-                            Xin nghỉ
-                        </button>
                     </div>
                 </div>
             </div>
@@ -120,22 +152,41 @@ export default function DashboardPage() {
                     </div>
                 )}
 
-                {/* Leave Balance */}
-                <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>
-                    <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl font-bold text-blue-600">{leaveSummary.remaining}</span>
+                {/* Leave Balance / Total Employees */}
+                {isManager ? (
+                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/admin/users')}>
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-2xl font-bold text-blue-600">{totalEmployees}</span>
+                        </div>
+                        <h3 className="text-base font-semibold text-slate-700">Tổng số nhân viên</h3>
+                        <p className="text-slate-500 text-sm mt-1">Đang hoạt động trong công ty</p>
                     </div>
-                    <h3 className="text-base font-semibold text-slate-700">Ngày phép còn lại</h3>
-                    <p className="text-slate-500 text-sm mt-1">Đã dùng: {leaveSummary.total_used || 0}/{leaveSummary.annual_quota || 12} ngày</p>
-                </div>
+                ) : (
+                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>
+                        <div className="flex items-center justify-between mb-3">
+                            <span className="text-2xl font-bold text-blue-600">{leaveSummary.remaining}</span>
+                        </div>
+                        <h3 className="text-base font-semibold text-slate-700">Ngày phép còn lại</h3>
+                        <p className="text-slate-500 text-sm mt-1">Đã dùng: {leaveSummary.total_used || 0}/{leaveSummary.annual_quota || 12} ngày</p>
+                    </div>
+                )}
 
                 {/* Tasks Widget */}
-                <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/tasks')}>
+                <div 
+                    className="glass-card p-5 card-hover cursor-pointer" 
+                    onClick={() => navigate(isManager ? '/projects' : '/tasks')}
+                >
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl font-bold text-purple-600">—</span>
+                        <span className="text-2xl font-bold text-purple-600">
+                            {taskStats.completed}<span className="text-lg text-slate-400">/{taskStats.total}</span>
+                        </span>
                     </div>
-                    <h3 className="text-base font-semibold text-slate-700">Công việc của tôi</h3>
-                    <p className="text-slate-500 text-sm mt-1">Xem danh sách tasks</p>
+                    <h3 className="text-base font-semibold text-slate-700">
+                        {isManager ? 'Thống kê công việc' : 'Công việc cá nhân'}
+                    </h3>
+                    <p className="text-slate-500 text-sm mt-1">
+                        Hoàn thành: {taskStats.completed} | Đang XL: {taskStats.pending}
+                    </p>
                 </div>
 
                 {/* HR Widget - Pending Leaves */}

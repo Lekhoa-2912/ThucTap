@@ -220,10 +220,12 @@ export default function ReportsPage() {
                                     <tr className="bg-slate-100">
                                         <th className="text-left py-3 px-4 font-semibold text-slate-700">#</th>
                                         <th className="text-left py-3 px-4 font-semibold text-slate-700">Nhân viên</th>
-                                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Số ngày</th>
+                                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Trạng thái</th>
+                                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Ngày đi làm</th>
                                         <th className="text-center py-3 px-4 font-semibold text-slate-700">Đúng giờ</th>
                                         <th className="text-center py-3 px-4 font-semibold text-slate-700">Muộn</th>
-                                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Tỷ lệ</th>
+                                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Nghỉ phép</th>
+                                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Tỷ lệ đúng giờ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -234,9 +236,15 @@ export default function ReportsPage() {
                                                 <p className="font-medium text-slate-800">{emp.name}</p>
                                                 <p className="text-xs text-slate-500">{emp.department}</p>
                                             </td>
+                                            <td className="py-3 px-4 text-center">
+                                                {emp.status === 'TERMINATED' ? <span className="px-2 py-0.5 rounded text-xs text-red-600 bg-red-100">Đã thôi việc</span> :
+                                                 emp.status === 'SUSPENDED' ? <span className="px-2 py-0.5 rounded text-xs text-amber-600 bg-amber-100">Tạm khóa</span> :
+                                                 <span className="px-2 py-0.5 rounded text-xs text-slate-600 bg-slate-100 border border-slate-200">Đang làm</span>}
+                                            </td>
                                             <td className="py-3 px-4 text-center text-slate-700">{emp.total_days}</td>
                                             <td className="py-3 px-4 text-center text-green-600 font-medium">{emp.on_time}</td>
                                             <td className="py-3 px-4 text-center text-orange-600">{emp.late}</td>
+                                            <td className="py-3 px-4 text-center text-slate-600 font-medium">{emp.leave_days || 0}</td>
                                             <td className="py-3 px-4 text-center">
                                                 <span className={`px-2 py-1 rounded text-xs font-medium ${emp.on_time_rate >= 90 ? 'bg-green-100 text-green-700' :
                                                     emp.on_time_rate >= 70 ? 'bg-yellow-100 text-yellow-700' :

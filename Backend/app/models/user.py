@@ -45,6 +45,8 @@ class UserBase(BaseModel):
     date_of_birth: Optional[str] = None
     gender: Optional[str] = None
     nationality: Optional[str] = None
+    place_of_origin: Optional[str] = None
+    permanent_address: Optional[str] = None
     
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
@@ -87,6 +89,8 @@ class UserProfileUpdate(BaseModel):
     date_of_birth: Optional[str] = None
     gender: Optional[str] = None
     nationality: Optional[str] = None
+    place_of_origin: Optional[str] = None
+    permanent_address: Optional[str] = None
     
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None
@@ -113,6 +117,8 @@ class UserResponse(BaseModel):
     date_of_birth: Optional[str] = None
     gender: Optional[str] = None
     nationality: Optional[str] = None
+    place_of_origin: Optional[str] = None
+    permanent_address: Optional[str] = None
     
     bank_name: Optional[str] = None
     bank_account_number: Optional[str] = None

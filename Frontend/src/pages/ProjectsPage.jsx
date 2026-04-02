@@ -8,11 +8,11 @@ import { format, differenceInDays } from 'date-fns'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const STATUS_CONFIG = {
-    PLANNING:    { label: 'Lên kế hoạch', color: 'bg-slate-500/20 text-slate-300 border-slate-500/30' },
+    PLANNING: { label: 'Lên kế hoạch', color: 'bg-slate-500/20 text-slate-300 border-slate-500/30' },
     IN_PROGRESS: { label: 'Đang thực hiện', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-    ON_HOLD:     { label: 'Tạm dừng',       color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    COMPLETED:   { label: 'Hoàn thành',     color: 'bg-green-500/20 text-green-400 border-green-500/30' },
-    CANCELLED:   { label: 'Đã hủy',         color: 'bg-red-500/20 text-red-400 border-red-500/30' },
+    ON_HOLD: { label: 'Tạm dừng', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
+    COMPLETED: { label: 'Hoàn thành', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
+    CANCELLED: { label: 'Đã hủy', color: 'bg-red-500/20 text-red-400 border-red-500/30' },
 }
 
 const EMPTY_PROJECT = {
@@ -248,17 +248,17 @@ export default function ProjectsPage() {
 
             {/* ===== CREATE PROJECT MODAL ===== */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="glass-card border border-slate-200 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
                         {/* Modal Header */}
-                        <div className="px-6 pt-6 pb-4 border-b border-slate-700">
+                        <div className="px-6 pt-6 pb-4 border-b border-slate-200/60">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-white">
+                                <h3 className="text-lg font-semibold text-slate-800">
                                     {modalStep === 1 ? '📋 Tạo dự án mới' : '👥 Chọn thành viên'}
                                 </h3>
                                 <button
                                     onClick={() => setShowCreateModal(false)}
-                                    className="text-slate-400 hover:text-white text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-700"
+                                    className="text-slate-400 hover:text-red-500 text-xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors"
                                 >✕</button>
                             </div>
                             {/* Step indicator */}
@@ -266,11 +266,11 @@ export default function ProjectsPage() {
                                 {[1, 2].map(step => (
                                     <div
                                         key={step}
-                                        className={`flex-1 h-1.5 rounded-full transition-all ${step <= modalStep ? 'bg-blue-500' : 'bg-slate-600'}`}
+                                        className={`flex-1 h-1.5 rounded-full transition-all ${step <= modalStep ? 'bg-blue-500' : 'bg-slate-200'}`}
                                     />
                                 ))}
                             </div>
-                            <p className="text-xs text-slate-400 mt-2">
+                            <p className="text-xs text-slate-500 mt-2">
                                 Bước {modalStep}/2: {modalStep === 1 ? 'Thông tin dự án' : 'Thêm thành viên (tuỳ chọn)'}
                             </p>
                         </div>
@@ -279,8 +279,8 @@ export default function ProjectsPage() {
                         {modalStep === 1 && (
                             <div className="p-6 space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                                        Tên dự án <span className="text-red-400">*</span>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                                        Tên dự án <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -288,41 +288,41 @@ export default function ProjectsPage() {
                                         onChange={e => setNewProject({ ...newProject, name: e.target.value })}
                                         onKeyDown={e => e.key === 'Enter' && handleNextStep()}
                                         autoFocus
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="VD: Website thương mại điện tử"
+                                        className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm"
+
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">Mô tả</label>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Mô tả</label>
                                     <textarea
                                         value={newProject.description}
                                         onChange={e => setNewProject({ ...newProject, description: e.target.value })}
-                                        className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 h-24 resize-none text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="Mô tả chi tiết về dự án..."
+                                        className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 h-24 resize-none text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm"
+
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-300 mb-2">Ngày bắt đầu</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Ngày bắt đầu</label>
                                         <input
                                             type="date"
                                             value={newProject.start_date}
                                             onChange={e => setNewProject({ ...newProject, start_date: e.target.value })}
-                                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-300 mb-2">Ngày kết thúc</label>
+                                        <label className="block text-sm font-medium text-slate-700 mb-2">Ngày kết thúc</label>
                                         <input
                                             type="date"
                                             value={newProject.end_date}
                                             onChange={e => setNewProject({ ...newProject, end_date: e.target.value })}
-                                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm"
                                         />
                                     </div>
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <button onClick={() => setShowCreateModal(false)} className="flex-1 btn-secondary">Hủy</button>
+                                    <button onClick={() => setShowCreateModal(false)} className="flex-1 btn-secondary bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm">Hủy</button>
                                     <button onClick={handleNextStep} className="flex-1 btn-primary">
                                         Tiếp theo →
                                     </button>
@@ -340,33 +340,33 @@ export default function ProjectsPage() {
                                     value={userSearch}
                                     onChange={e => setUserSearch(e.target.value)}
                                     placeholder="🔍 Tìm theo tên, email, phòng ban..."
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-3"
+                                    className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm mb-3"
                                 />
 
                                 {/* Selected members chips */}
                                 {selectedUsers.length > 0 && (
-                                    <div className="flex flex-wrap gap-2 mb-3 p-3 bg-slate-700/30 rounded-xl border border-slate-600/50">
+                                    <div className="flex flex-wrap gap-2 mb-3 p-3 bg-white/80 rounded-xl border border-slate-200 shadow-sm">
                                         {selectedUsers.map(u => (
-                                            <div key={u.id} className="flex items-center gap-1.5 bg-blue-500/20 border border-blue-500/30 text-blue-300 rounded-full px-2 py-1 text-xs">
-                                                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-bold overflow-hidden flex-shrink-0">
+                                            <div key={u.id} className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-full px-2 py-1 text-xs">
+                                                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-[10px] font-bold overflow-hidden flex-shrink-0 shadow-sm">
                                                     {u.avatar
                                                         ? <img src={`${API_URL}${u.avatar}`} className="w-full h-full object-cover" alt="" />
                                                         : u.full_name?.[0]
                                                     }
                                                 </div>
-                                                <span>{u.full_name}</span>
-                                                <button onClick={() => toggleMember(u.id)} className="text-blue-400 hover:text-red-400 ml-0.5">✕</button>
+                                                <span className="font-medium">{u.full_name}</span>
+                                                <button onClick={() => toggleMember(u.id)} className="text-blue-500 hover:text-red-500 ml-0.5">✕</button>
                                             </div>
                                         ))}
                                     </div>
                                 )}
 
                                 {/* User list */}
-                                <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
+                                <div className="max-h-60 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
                                     {loadingUsers ? (
-                                        <div className="text-center py-8 text-slate-400">Đang tải...</div>
+                                        <div className="text-center py-8 text-slate-500 font-medium">Đang tải...</div>
                                     ) : filteredUsers.length === 0 ? (
-                                        <div className="text-center py-8 text-slate-500">Không tìm thấy nhân viên</div>
+                                        <div className="text-center py-8 text-slate-500 font-medium">Không tìm thấy nhân viên</div>
                                     ) : filteredUsers.map(user => {
                                         const isSelected = newProject.team_members.includes(user.id)
                                         return (
@@ -374,21 +374,21 @@ export default function ProjectsPage() {
                                                 key={user.id}
                                                 onClick={() => toggleMember(user.id)}
                                                 className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${isSelected
-                                                    ? 'bg-blue-500/20 border border-blue-500/40'
-                                                    : 'hover:bg-slate-700/50 border border-transparent'
-                                                }`}
+                                                    ? 'bg-blue-50 border border-blue-200 shadow-sm'
+                                                    : 'hover:bg-slate-50 border border-transparent'
+                                                    }`}
                                             >
-                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden">
+                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 overflow-hidden shadow-sm">
                                                     {user.avatar
                                                         ? <img src={`${API_URL}${user.avatar}`} className="w-full h-full object-cover" alt="" />
                                                         : user.full_name?.[0] || '?'
                                                     }
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-medium text-sm text-white truncate">{user.full_name}</p>
-                                                    <p className="text-xs text-slate-400 truncate">{user.department || user.position || user.email}</p>
+                                                    <p className="font-semibold text-sm text-slate-800 truncate">{user.full_name}</p>
+                                                    <p className="text-xs text-slate-500 truncate">{user.department || user.position || user.email}</p>
                                                 </div>
-                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-500'}`}>
+                                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${isSelected ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-300'}`}>
                                                     {isSelected && <span className="text-xs">✓</span>}
                                                 </div>
                                             </div>
@@ -396,12 +396,12 @@ export default function ProjectsPage() {
                                     })}
                                 </div>
 
-                                <p className="text-xs text-slate-500 mt-3 text-center">
+                                <p className="text-xs text-slate-500 mt-3 text-center font-medium">
                                     Đã chọn {newProject.team_members.length} người
                                 </p>
 
                                 <div className="flex gap-3 mt-4">
-                                    <button onClick={() => setModalStep(1)} className="flex-1 btn-secondary">← Quay lại</button>
+                                    <button onClick={() => setModalStep(1)} className="flex-1 btn-secondary bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-sm">← Quay lại</button>
                                     <button onClick={handleCreateProject} className="flex-1 btn-primary">
                                         ✓ Tạo dự án
                                     </button>

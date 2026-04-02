@@ -32,7 +32,6 @@ const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage'))
 const AdminPendingPage = lazy(() => import('./pages/AdminPendingPage'))
 const AdminFaceEnrollPage = lazy(() => import('./pages/AdminFaceEnrollPage'))
 const AdminAttendancePage = lazy(() => import('./pages/AdminAttendancePage'))
-const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const DepartmentsPage = lazy(() => import('./pages/DepartmentsPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'))
@@ -230,18 +229,18 @@ export default function App() {
                     }
                 />
                 <Route
-                    path="/settings"
-                    element={
-                        <ProtectedRoute roles={['SUPER_ADMIN']}>
-                            <MainLayout><SettingsPage /></MainLayout>
-                        </ProtectedRoute>
-                    }
-                />
-                <Route
                     path="/admin/departments"
                     element={
                         <ProtectedRoute roles={['SUPER_ADMIN']}>
                             <MainLayout><DepartmentsPage /></MainLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/admin/attendance"
+                    element={
+                        <ProtectedRoute roles={['SUPER_ADMIN', 'HR_MANAGER']}>
+                            <MainLayout><AdminAttendancePage /></MainLayout>
                         </ProtectedRoute>
                     }
                 />

@@ -7,31 +7,31 @@ import { format, differenceInDays } from 'date-fns'
 import { Upload, FileText, X, Download } from 'lucide-react'
 
 const PRIORITY_CONFIG = {
-    URGENT: { label: 'Khẩn cấp', color: 'bg-red-500/20 text-red-400 border-red-500/40',       dot: 'bg-red-500' },
-    HIGH:   { label: 'Cao',      color: 'bg-orange-500/20 text-orange-400 border-orange-500/40', dot: 'bg-orange-500' },
-    MEDIUM: { label: 'Trung bình',color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40',dot: 'bg-yellow-500' },
-    LOW:    { label: 'Thấp',     color: 'bg-green-500/20 text-green-400 border-green-500/40',  dot: 'bg-green-500' },
+    URGENT: { label: 'Khẩn cấp', color: 'bg-red-50 text-red-700 border-red-200',       dot: 'bg-red-500' },
+    HIGH:   { label: 'Cao',      color: 'bg-orange-50 text-orange-700 border-orange-200', dot: 'bg-orange-500' },
+    MEDIUM: { label: 'Trung bình',color: 'bg-amber-50 text-amber-700 border-amber-200',dot: 'bg-amber-500' },
+    LOW:    { label: 'Thấp',     color: 'bg-emerald-50 text-emerald-700 border-emerald-200',  dot: 'bg-emerald-500' },
 }
 
 const STATUS_CONFIG = {
-    ASSIGNED:    { label: 'Chờ nhận',   color: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
-    IN_PROGRESS: { label: 'Đang làm',   color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-    COMPLETED:   { label: 'Hoàn thành', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
-    REJECTED:    { label: 'Từ chối',    color: 'bg-red-500/20 text-red-400 border-red-500/30' },
-    TODO:        { label: 'Mới',        color: 'bg-slate-500/20 text-slate-400 border-slate-500/30' },
+    ASSIGNED:    { label: 'Chờ nhận',   color: 'bg-amber-50 text-amber-700 border-amber-200' },
+    IN_PROGRESS: { label: 'Đang làm',   color: 'bg-blue-50 text-blue-700 border-blue-200' },
+    COMPLETED:   { label: 'Hoàn thành', color: 'bg-green-50 text-green-700 border-green-200' },
+    REJECTED:    { label: 'Từ chối',    color: 'bg-red-50 text-red-700 border-red-200' },
+    TODO:        { label: 'Mới',        color: 'bg-slate-50 text-slate-700 border-slate-200' },
 }
 
 function DeadlineLabel({ deadline }) {
     if (!deadline) return null
     const d = new Date(deadline)
     const days = differenceInDays(d, new Date())
-    let cls = 'text-slate-400 bg-slate-700/50'
+    let cls = 'text-slate-600 bg-slate-50 border border-slate-200'
     let icon = '📅'
     let extra = ''
-    if (days < 0)       { cls = 'text-red-400 bg-red-500/10 border border-red-500/30'; icon = '⚠️'; extra = ' (Quá hạn)' }
-    else if (days === 0){ cls = 'text-red-400 bg-red-500/10 border border-red-500/30'; icon = '🔥'; extra = ' (Hôm nay)' }
-    else if (days <= 2) { cls = 'text-red-400 bg-red-500/10 border border-red-500/30'; icon = '🔴'; extra = ` (${days} ngày)` }
-    else if (days <= 7) { cls = 'text-orange-400 bg-orange-500/10 border border-orange-500/30'; icon = '🟠'; extra = ` (${days} ngày)` }
+    if (days < 0)       { cls = 'text-red-700 bg-red-50 border border-red-200'; icon = '⚠️'; extra = ' (Quá hạn)' }
+    else if (days === 0){ cls = 'text-red-600 bg-red-50 border border-red-200'; icon = '🔥'; extra = ' (Hôm nay)' }
+    else if (days <= 2) { cls = 'text-orange-700 bg-orange-50 border border-orange-200'; icon = '🔴'; extra = ` (${days} ngày)` }
+    else if (days <= 7) { cls = 'text-amber-700 bg-amber-50 border border-amber-200'; icon = '🟠'; extra = ` (${days} ngày)` }
     return (
         <span className={`text-xs px-2 py-1 rounded-lg font-medium ${cls}`}>
             {icon} {format(d, 'dd/MM/yyyy')}{extra}
@@ -156,21 +156,21 @@ export default function TasksPage() {
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold">Công việc của tôi</h1>
-                <p className="text-slate-400">Theo dõi và cập nhật tiến độ công việc</p>
+                <h1 className="text-2xl font-bold text-slate-800">Công việc của tôi</h1>
+                <p className="text-slate-500">Theo dõi và cập nhật tiến độ công việc</p>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: 'Tổng', value: stats.total, color: 'bg-slate-700/50' },
-                    { label: 'Chờ nhận', value: stats.assigned, color: 'bg-amber-500/10 border border-amber-500/20' },
-                    { label: 'Đang làm', value: stats.inProgress, color: 'bg-blue-500/10 border border-blue-500/20' },
-                    { label: 'Hoàn thành', value: stats.completed, color: 'bg-green-500/10 border border-green-500/20' },
+                    { label: 'Tổng', value: stats.total, color: 'bg-white border border-slate-200 text-slate-800 shadow-sm' },
+                    { label: 'Chờ nhận', value: stats.assigned, color: 'bg-amber-50 border border-amber-200 text-amber-800 shadow-sm' },
+                    { label: 'Đang làm', value: stats.inProgress, color: 'bg-blue-50 border border-blue-200 text-blue-800 shadow-sm' },
+                    { label: 'Hoàn thành', value: stats.completed, color: 'bg-green-50 border border-green-200 text-green-800 shadow-sm' },
                 ].map(s => (
-                    <div key={s.label} className={`${s.color} rounded-xl p-4 text-center`}>
-                        <p className="text-2xl font-bold">{s.value}</p>
-                        <p className="text-xs text-slate-400 mt-1">{s.label}</p>
+                    <div key={s.label} className={`${s.color} rounded-2xl p-5 text-center transition-transform hover:-translate-y-1 duration-300`}>
+                        <p className="text-3xl font-extrabold">{s.value}</p>
+                        <p className="text-sm font-medium opacity-80 mt-1">{s.label}</p>
                     </div>
                 ))}
             </div>
@@ -181,9 +181,9 @@ export default function TasksPage() {
                     <button
                         key={status}
                         onClick={() => setFilter(status)}
-                        className={`px-4 py-2 rounded-xl text-sm transition-all ${filter === status
+                        className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === status
                             ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                            : 'bg-slate-700/50 text-slate-300 hover:bg-slate-600'}`}
+                            : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 shadow-sm'}`}
                     >
                         {status === 'all' ? 'Tất cả' : STATUS_CONFIG[status]?.label || status}
                         {status === 'ASSIGNED' && stats.assigned > 0 && (
@@ -196,11 +196,13 @@ export default function TasksPage() {
             </div>
 
             {/* Task List */}
-            <div className="space-y-4">
+            <div className="space-y-4 pt-2">
                 {tasks.length === 0 ? (
-                    <div className="glass-card p-12 text-center">
-                        <p className="text-5xl mb-4">✅</p>
-                        <p className="text-slate-400 text-lg">Không có công việc nào</p>
+                    <div className="glass-card p-16 text-center border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                            <span className="text-3xl">✅</span>
+                        </div>
+                        <p className="text-slate-500 text-lg font-medium">Không có công việc nào</p>
                     </div>
                 ) : (
                     tasks.map(task => {
@@ -220,15 +222,15 @@ export default function TasksPage() {
                                             </span>
                                             <span className={`text-xs px-2 py-0.5 rounded-full border ${sCfg.color}`}>{sCfg.label}</span>
                                         </div>
-                                        <h3 className="text-base font-semibold mb-1">{task.title}</h3>
+                                        <h3 className="text-base font-bold text-slate-800 mb-1">{task.title}</h3>
                                         {task.description && (
-                                            <p className="text-slate-400 text-sm line-clamp-2 mb-2">{task.description}</p>
+                                            <p className="text-slate-500 text-sm line-clamp-2 mb-3">{task.description}</p>
                                         )}
                                         <div className="flex flex-wrap items-center gap-3 text-sm">
                                             {task.project_id && (
                                                 <button
                                                     onClick={() => navigate(`/projects/${task.project_id}`)}
-                                                    className="text-blue-400 hover:text-blue-300 hover:underline text-xs transition-colors"
+                                                    className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-500 hover:underline text-xs font-medium bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-lg transition-colors"
                                                 >
                                                     📁 {task.project_name}
                                                 </button>
@@ -252,64 +254,86 @@ export default function TasksPage() {
                                     )}
                                 </div>
 
-                                {/* Progress section for IN_PROGRESS tasks */}
-                                {task.status === 'IN_PROGRESS' && (
-                                    <div className="mt-4 pt-4 border-t border-slate-700/50">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <span className="text-sm text-slate-400 font-medium">Tiến độ</span>
-                                            <span className="text-sm font-bold text-blue-400">{curProgress}%</span>
-                                        </div>
+                                 {/* Progress section for IN_PROGRESS tasks */}
+                                 {task.status === 'IN_PROGRESS' && (
+                                     <div className="mt-5 pt-5 border-t border-slate-100">
+                                         <div className="flex items-center justify-between mb-4">
+                                             <div className="flex flex-col">
+                                                 <span className="text-sm text-slate-500 font-medium">Tiến độ hiện tại</span>
+                                                 <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 leading-none mt-1 drop-shadow-sm">{curProgress}%</span>
+                                             </div>
+                                             
+                                             <button
+                                                 onClick={() => handleUpdateProgress(task.id, curProgress)}
+                                                 disabled={savingProgress[task.id] || (curProgress === task.progress && curProgress !== 100)}
+                                                 className={`text-sm px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${
+                                                     savingProgress[task.id] || (curProgress === task.progress && curProgress !== 100) 
+                                                     ? 'opacity-50 cursor-not-allowed bg-slate-100 text-slate-400 border border-slate-200' 
+                                                     : curProgress === 100
+                                                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/20 hover:scale-[1.02] hover:-translate-y-0.5 ring-2 ring-emerald-500/30 ring-offset-1'
+                                                        : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20 hover:scale-[1.02] hover:-translate-y-0.5'
+                                                 }`}
+                                             >
+                                                 {savingProgress[task.id] ? <div className="spinner w-4 h-4 border-2 border-slate-400"></div> : curProgress === 100 ? '⬆️ Nộp báo cáo' : '💾 Cập nhật'}
+                                             </button>
+                                         </div>
 
-                                        {/* Slider */}
-                                        <div className="mb-3">
-                                            <input
-                                                type="range"
-                                                min="0" max="100" step="5"
-                                                value={curProgress}
-                                                onChange={e => setProgressInput(p => ({ ...p, [task.id]: Number(e.target.value) }))}
-                                                className="w-full accent-blue-500"
-                                            />
-                                            <div className="bg-slate-700 rounded-full h-1.5 mt-1">
-                                                <div
-                                                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all"
-                                                    style={{ width: `${curProgress}%` }}
-                                                />
-                                            </div>
-                                        </div>
+                                         {/* Custom Visual Progress Bar */}
+                                         <div className="relative pt-1 mb-6">
+                                             <div className="flex h-3 overflow-hidden bg-slate-100/80 rounded-full shadow-inner ring-1 ring-slate-200/50">
+                                                 <div
+                                                     style={{ width: `${curProgress}%` }}
+                                                     className="flex flex-col justify-center bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 shadow-[inset_0_1px_3px_rgba(255,255,255,0.3)] transition-all duration-500 ease-out"
+                                                 ></div>
+                                             </div>
+                                         </div>
 
-                                        {/* Quick buttons + save */}
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            {quickProgress.map(p => (
-                                                <button
-                                                    key={p}
-                                                    onClick={() => setProgressInput(prev => ({ ...prev, [task.id]: p }))}
-                                                    className={`text-xs px-2.5 py-1 rounded-lg transition-all ${curProgress >= p
-                                                        ? 'bg-blue-600 text-white'
-                                                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
-                                                >{p}%</button>
-                                            ))}
-                                            <button
-                                                onClick={() => handleUpdateProgress(task.id, curProgress)}
-                                                disabled={savingProgress[task.id] || curProgress === task.progress}
-                                                className="ml-auto btn-primary text-xs px-3 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            >
-                                                {savingProgress[task.id] ? '...' : '💾 Lưu'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
+                                         {/* Quick Segmented Stepper */}
+                                         <div className="flex items-center justify-between gap-1.5 p-1.5 bg-slate-50/80 rounded-xl border border-slate-200/60 shadow-sm backdrop-blur-sm">
+                                             {[0, 25, 50, 75, 100].map(p => {
+                                                 const isActive = curProgress >= p;
+                                                 const isExact = curProgress === p;
+                                                 return (
+                                                     <button
+                                                         key={p}
+                                                         onClick={() => setProgressInput(prev => ({ ...prev, [task.id]: p }))}
+                                                         className={`flex-1 relative py-2.5 text-xs font-bold rounded-lg transition-all duration-300 outline-none ${
+                                                             isExact 
+                                                                 ? 'bg-white text-blue-600 shadow-[0_2px_8px_rgba(0,0,0,0.08)] ring-1 ring-slate-200/80 z-10 scale-[1.02] transform' 
+                                                                 : isActive 
+                                                                     ? 'text-blue-500 hover:text-blue-600 hover:bg-white/50' 
+                                                                     : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'
+                                                         }`}
+                                                     >
+                                                         {p}%
+                                                         {isActive && !isExact && (
+                                                            <div className="absolute inset-x-2 bottom-0 h-0.5 bg-blue-200/50 rounded-t-sm"></div> 
+                                                         )}
+                                                     </button>
+                                                 )
+                                             })}
+                                         </div>
+                                     </div>
+                                 )}
 
-                                {/* Completed progress display */}
-                                {task.status === 'COMPLETED' && (
-                                    <div className="mt-3 pt-3 border-t border-slate-700/50">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex-1 bg-slate-700 rounded-full h-2">
-                                                <div className="bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full" style={{ width: '100%' }} />
-                                            </div>
-                                            <span className="text-xs text-green-400 font-medium">100% ✓</span>
-                                        </div>
-                                    </div>
-                                )}
+                                 {/* Completed progress display */}
+                                 {task.status === 'COMPLETED' && (
+                                     <div className="mt-5 pt-5 border-t border-slate-100">
+                                         <div className="flex items-center justify-between mb-3">
+                                             <span className="text-sm font-semibold text-emerald-600 flex items-center gap-1.5">
+                                                <span className="relative flex h-2.5 w-2.5 mt-0.5">
+                                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                                </span>
+                                                Hoàn thành
+                                             </span>
+                                             <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600">100%</span>
+                                         </div>
+                                         <div className="flex h-3 overflow-hidden bg-slate-100 rounded-full shadow-inner ring-1 ring-slate-200/50">
+                                             <div className="w-full bg-gradient-to-r from-emerald-400 to-teal-500 shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)]" />
+                                         </div>
+                                     </div>
+                                 )}
 
                                 {/* Rejection reason */}
                                 {task.status === 'REJECTED' && task.rejection_reason && (
@@ -320,26 +344,28 @@ export default function TasksPage() {
                                     </div>
                                 )}
 
-                                {/* Show uploaded file if completed */}
-                                {task.status === 'COMPLETED' && task.completion_file_name && (
-                                    <div className="mt-4 pt-4 border-t border-slate-700/50">
-                                        <p className="text-sm text-slate-400 mb-2">Tập tin nộp bài:</p>
-                                        <div className="flex items-center gap-2 p-3 bg-slate-800/50 rounded-xl border border-slate-700">
-                                            <FileText className="text-blue-400" size={18} />
-                                            <span className="text-sm text-slate-300 truncate font-medium flex-1">
-                                                {task.completion_file_name}
-                                            </span>
-                                            <a
-                                                href={`http://localhost:8000/api/files/${task.completion_file_id}`}
-                                                target="_blank" rel="noopener noreferrer"
-                                                className="p-1.5 hover:bg-slate-700 rounded-lg transition-colors text-slate-400 hover:text-white"
-                                                title="Tải xuống"
-                                            >
-                                                <Download size={18} />
-                                            </a>
-                                        </div>
-                                    </div>
-                                )}
+                                 {/* Show uploaded file if completed */}
+                                 {task.status === 'COMPLETED' && task.completion_file_name && (
+                                     <div className="mt-4 pt-4 border-t border-slate-100">
+                                         <p className="text-sm font-medium text-slate-600 mb-2">Tệp kết quả nghiệm thu:</p>
+                                         <div className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-xl shadow-sm hover:border-blue-300 transition-colors">
+                                             <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+                                                <FileText size={18} />
+                                             </div>
+                                             <span className="text-sm text-slate-700 truncate font-semibold flex-1">
+                                                 {task.completion_file_name}
+                                             </span>
+                                             <a
+                                                 href={`http://localhost:8000/api/files/${task.completion_file_id}`}
+                                                 target="_blank" rel="noopener noreferrer"
+                                                 className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-blue-600"
+                                                 title="Tải xuống"
+                                             >
+                                                 <Download size={18} />
+                                             </a>
+                                         </div>
+                                     </div>
+                                 )}
                             </div>
                         )
                     })
@@ -348,14 +374,14 @@ export default function TasksPage() {
 
             {/* Reject Modal */}
             {showRejectModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6 border border-slate-700">
-                        <h2 className="text-xl font-bold mb-4">Từ chối nhận việc</h2>
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="glass-card rounded-2xl w-full max-w-md p-6 border border-slate-200">
+                        <h2 className="text-xl font-bold mb-4 text-slate-800">Từ chối nhận việc</h2>
                         <textarea
                             value={rejectReason}
                             onChange={(e) => setRejectReason(e.target.value)}
-                            placeholder="Nhập lý do từ chối..."
-                            className="w-full h-32 bg-slate-900 border border-slate-700 rounded-xl p-3 text-slate-300 focus:outline-none focus:border-blue-500 mb-4 resize-none"
+                            placeholder="Nhập lý do từ chối (bắt buộc)..."
+                            className="w-full h-32 bg-white/60 border border-slate-200 rounded-xl p-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all mb-4 resize-none shadow-sm"
                         ></textarea>
                         <div className="flex gap-3 justify-end">
                             <button
@@ -363,12 +389,12 @@ export default function TasksPage() {
                                     setShowRejectModal(false)
                                     setRejectReason('')
                                 }}
-                                className="px-4 py-2 hover:bg-slate-700 text-slate-300 rounded-xl transition-colors"
+                                className="px-5 py-2 hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-xl transition-colors font-medium"
                             >Hủy</button>
                             <button
                                 onClick={handleRejectTask}
                                 disabled={!rejectReason.trim()}
-                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors disabled:opacity-50"
+                                className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors disabled:opacity-50 font-medium shadow-md shadow-red-500/20"
                             >Xác nhận từ chối</button>
                         </div>
                     </div>
@@ -377,60 +403,60 @@ export default function TasksPage() {
 
             {/* Complete Task File Upload Modal */}
             {showCompleteModal && taskToComplete && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-                    <div className="bg-slate-800 rounded-2xl w-full max-w-md border border-slate-700 flex flex-col my-8">
-                        <div className="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/80 rounded-t-2xl sticky top-0 z-10">
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="glass-card rounded-2xl w-full max-w-md border border-slate-200 flex flex-col my-8">
+                        <div className="p-5 border-b border-slate-200/60 flex justify-between items-center bg-white/50 rounded-t-2xl sticky top-0 z-10">
                             <div>
-                                <h2 className="text-xl font-bold text-slate-100">Nộp bài & Hoàn thành</h2>
-                                <p className="text-sm text-slate-400 mt-1 truncate max-w-[300px]">Task: {taskToComplete.title}</p>
+                                <h2 className="text-xl font-bold text-slate-800">Nộp bài & Hoàn thành</h2>
+                                <p className="text-sm text-slate-500 mt-1 truncate max-w-[300px]">Task: {taskToComplete.title}</p>
                             </div>
-                            <button onClick={() => setShowCompleteModal(false)} className="text-slate-400 hover:text-white hover:bg-slate-700 p-2 rounded-xl transition-all">
+                            <button onClick={() => setShowCompleteModal(false)} className="text-slate-400 hover:text-red-500 hover:bg-slate-50 p-2 rounded-xl transition-all">
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleCompleteTask} className="p-5 space-y-5">
+                        <form onSubmit={handleCompleteTask} className="p-6 space-y-5">
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    Tập tin nộp bài <span className="text-red-400">*</span>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                    Tập tin nộp bài <span className="text-red-500">*</span>
                                 </label>
-                                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-600 border-dashed rounded-xl hover:border-blue-500 hover:bg-slate-800/50 transition-all group relative">
-                                    <div className="space-y-2 text-center">
-                                        <Upload className={`mx-auto h-10 w-10 ${completeFile ? 'text-blue-400' : 'text-slate-500 group-hover:text-blue-400'} transition-colors`} />
-                                        <div className="flex text-sm text-slate-400 justify-center">
-                                            <label className="relative cursor-pointer rounded-md font-medium text-blue-400 hover:text-blue-300 focus-within:outline-none">
-                                                <span>{completeFile ? 'Chọn tệp khác' : 'Tải tệp lên'}</span>
-                                                <input required type="file" className="sr-only" onChange={(e) => setCompleteFile(e.target.files[0])} />
-                                            </label>
+                                <label htmlFor={`file-upload-complete-${taskToComplete.id}`} className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl hover:border-blue-500 hover:bg-blue-50/50 transition-all group relative bg-white/60 cursor-pointer w-full">
+                                    <div className="space-y-2 text-center pointer-events-none">
+                                        <Upload className={`mx-auto h-12 w-12 ${completeFile ? 'text-blue-500' : 'text-slate-400 group-hover:text-blue-500'} transition-colors`} />
+                                        <div className="flex text-sm text-slate-500 justify-center">
+                                            <span className="relative font-medium text-blue-600 group-hover:text-blue-700">
+                                                {completeFile ? 'Chọn tệp khác' : 'Tải file kết quả lên'}
+                                            </span>
                                         </div>
                                     </div>
-                                </div>
+                                </label>
+                                <input id={`file-upload-complete-${taskToComplete.id}`} required type="file" className="sr-only" onChange={(e) => setCompleteFile(e.target.files[0])} />
                                 {completeFile && (
-                                    <div className="mt-3 flex items-center gap-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400 text-sm">
+                                    <div className="mt-3 flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-700 text-sm shadow-sm">
                                         <FileText size={18} className="flex-shrink-0" />
-                                        <span className="truncate">{completeFile.name}</span>
+                                        <span className="truncate font-medium">{completeFile.name}</span>
                                         <span className="flex-shrink-0 opacity-70">({(completeFile.size / 1024 / 1024).toFixed(2)} MB)</span>
                                     </div>
                                 )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">Ghi chú (Tùy chọn)</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Ghi chú (Tùy chọn)</label>
                                 <textarea
-                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-300 h-24 focus:outline-none focus:border-blue-500 transition-colors"
-                                    placeholder="Ghi chú thêm về kết quả công việc..."
+                                    className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm"
+                                    placeholder="Ghi chú thêm về kết quả công việc, link tham khảo..."
                                     value={completeNotes}
                                     onChange={(e) => setCompleteNotes(e.target.value)}
                                 ></textarea>
                             </div>
 
                             <div className="pt-2 flex gap-3">
-                                <button type="button" onClick={() => setShowCompleteModal(false)} className="flex-1 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium transition-colors border border-slate-600">
+                                <button type="button" onClick={() => setShowCompleteModal(false)} className="flex-1 px-4 py-2.5 bg-white hover:bg-slate-50 rounded-xl text-slate-700 font-medium transition-colors border border-slate-200 shadow-sm">
                                     Hủy
                                 </button>
-                                <button type="submit" disabled={completing} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 rounded-xl text-white font-medium shadow-lg shadow-blue-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                                <button type="submit" disabled={completing} className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-white font-medium shadow-md shadow-blue-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                                     {completing ? <div className="spinner border-2 border-white w-4 h-4"></div> : <Upload size={18} />}
-                                    Nộp bài
+                                    Hoàn tất & Nộp bài
                                 </button>
                             </div>
                         </form>

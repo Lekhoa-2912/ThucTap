@@ -31,6 +31,7 @@ tensorflow==2.15.0
 keras==2.15.0
 
 # ===== OCR =====
+easyocr==1.7.2
 paddleocr>=2.7.0.3
 paddlepaddle>=2.5.0
 pillow==10.2.0

@@ -4,7 +4,7 @@ import { format, parse, startOfWeek, getDay, addMonths, subMonths } from 'date-f
 import { vi } from 'date-fns/locale'
 import { calendarAPI } from '../api'
 import { useAuth } from '../context/AuthContext'
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Palmtree, ClipboardList, Cake } from 'lucide-react'
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Palmtree, ClipboardList, Cake, MapPin } from 'lucide-react'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 const locales = { 'vi': vi }
@@ -18,6 +18,7 @@ const localizer = dateFnsLocalizer({
 })
 
 const EVENT_TYPES = {
+    attendance: { label: 'Chấm công', icon: MapPin, color: 'bg-emerald-500' },
     leave: { label: 'Nghỉ phép', icon: Palmtree, color: 'bg-green-500' },
     task: { label: 'Công việc', icon: ClipboardList, color: 'bg-blue-500' },
     birthday: { label: 'Sinh nhật', icon: Cake, color: 'bg-pink-500' }
@@ -164,6 +165,7 @@ export default function CalendarPage() {
                     <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: selectedEvent.color }}>
+                                {selectedEvent.type === 'attendance' && <MapPin size={20} className="text-white" />}
                                 {selectedEvent.type === 'leave' && <Palmtree size={20} className="text-white" />}
                                 {selectedEvent.type === 'task' && <ClipboardList size={20} className="text-white" />}
                                 {selectedEvent.type === 'birthday' && <Cake size={20} className="text-white" />}

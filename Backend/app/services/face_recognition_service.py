@@ -6,6 +6,18 @@ from typing import List, Tuple, Optional, Dict, Any
 from datetime import datetime
 from ..config import settings
 
+# --- TF/Keras compatibility hack ---
+import sys
+try:
+    import tensorflow.keras
+except ImportError:
+    try:
+        import keras
+        sys.modules['tensorflow.keras'] = keras
+    except Exception:
+        pass
+# -----------------------------------
+
 # Lazy import - DeepFace is heavy, only import when needed
 _deepface = None
 
@@ -28,7 +40,7 @@ class FaceRecognitionService:
     def __init__(self):
         # Configuration
         self.model_name = "ArcFace"
-        self.detector_backend = "retinaface"
+        self.detector_backend = "opencv"  # Changed from retinaface to opencv for stability
         self.distance_metric = "cosine"
         self.threshold = 0.68
         self._model_warmed = False
@@ -111,6 +123,8 @@ class FaceRecognitionService:
             
         except Exception as e:
             print(f"Error getting embedding: {e}")
+            import traceback
+            traceback.print_exc()
             return None
 
     def calculate_cosine_distance(self, source_representation: List[float], test_representation: List[float]) -> float:

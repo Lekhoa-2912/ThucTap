@@ -17,6 +17,10 @@ export default function DashboardPage() {
     const [taskStats, setTaskStats] = useState({ total: 0, completed: 0, pending: 0 })
     const [loading, setLoading] = useState(true)
 
+    // Dynamic Chart Data
+    const [chartPieData, setChartPieData] = useState([])
+    const [chartBarData, setChartBarData] = useState([])
+
     const isManager = hasRole(['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'])
 
     useEffect(() => {
@@ -32,23 +36,23 @@ export default function DashboardPage() {
             // Load leave summary
             try {
                 const leaveRes = await leaveAPI.getMyLeaves()
-                setLeaveSummary(leaveRes.data.summary)
+                if (leaveRes.data?.summary) {
+                    setLeaveSummary(leaveRes.data.summary)
+                }
             } catch (e) { }
 
-            // Load pending leaves count (for managers)
+            // Load Employee or Manager specific stats
             if (isManager) {
                 try {
                     const pendingRes = await leaveAPI.getPendingLeaves()
-                    setPendingLeaves(pendingRes.data.length)
+                    setPendingLeaves(pendingRes.data?.length || 0)
                 } catch (e) { }
 
-                // Load employee performance
                 try {
                     const perfRes = await projectAPI.getEmployeePerformance()
                     const perfData = perfRes.data || []
                     setPerformance(perfData)
 
-                    // Aggregate for admin's task stats widget
                     const totalT = perfData.reduce((sum, emp) => sum + (emp.total_tasks || 0), 0)
                     const completedT = perfData.reduce((sum, emp) => sum + (emp.completed_tasks || 0), 0)
                     setTaskStats({
@@ -58,13 +62,11 @@ export default function DashboardPage() {
                     })
                 } catch (e) { }
 
-                // Load total active employees
                 try {
                     const usersRes = await userAPI.listUsers('ACTIVE')
-                    setTotalEmployees(usersRes.data.length || 0)
+                    setTotalEmployees(usersRes.data?.length || 0)
                 } catch (e) { }
             } else {
-                // Not a manager -> Load personal tasks
                 try {
                     const tasksRes = await projectAPI.getMyTasks()
                     const tasks = tasksRes.data || []
@@ -76,6 +78,64 @@ export default function DashboardPage() {
                     })
                 } catch (e) { }
             }
+
+            // --- LOAD REAL DYNAMIC CHART DATA ---
+            try {
+                const today = new Date()
+                const currMonth = today.getMonth() + 1
+                const currYear = today.getFullYear()
+                
+                // Generate last 6 months list
+                const last6Months = []
+                for (let i = 5; i >= 0; i--) {
+                    let m = currMonth - i
+                    let y = currYear
+                    if (m <= 0) {
+                        m += 12
+                        y -= 1
+                    }
+                    last6Months.push({ month: m, year: y })
+                }
+
+                if (isManager) {
+                    const reports = await Promise.all(last6Months.map(d => attendanceAPI.getTeamReport(d.month, d.year)))
+                    const pBar = reports.map((res, idx) => {
+                        const data = res.data
+                        const total = data.total_checkins || 0
+                        const onTimeRate = data.overall_on_time_rate || 0
+                        const onTime = total > 0 ? Math.round((onTimeRate * total) / 100) : 0
+                        const late = total - onTime
+                        return { month: `T${last6Months[idx].month}`, onTime, late, absent: 0 } // Absent metric requires complex days integration
+                    })
+                    setChartBarData(pBar)
+                    
+                    const currData = pBar[5]
+                    setChartPieData([
+                        { name: 'Đúng giờ', value: currData.onTime || 0, color: '#22c55e' },
+                        { name: 'Đi muộn', value: currData.late || 0, color: '#f59e0b' },
+                        { name: 'Vắng mặt', value: currData.absent || 0, color: '#ef4444' }
+                    ])
+                } else {
+                    const reports = await Promise.all(last6Months.map(d => attendanceAPI.getMonthlyReport(d.month, d.year)))
+                    const pBar = reports.map((res, idx) => {
+                        const data = res.data
+                        return { month: `T${last6Months[idx].month}`, onTime: data.on_time_days || 0, late: data.late_days || 0, absent: 0 }
+                    })
+                    setChartBarData(pBar)
+                    
+                    const currData = pBar[5]
+                    setChartPieData([
+                        { name: 'Đúng giờ', value: currData.onTime || 0, color: '#22c55e' },
+                        { name: 'Đi muộn', value: currData.late || 0, color: '#f59e0b' },
+                        { name: 'Vắng mặt', value: currData.absent || 0, color: '#ef4444' }
+                    ])
+                }
+            } catch(e) {
+                console.error("Failed to load chart data:", e)
+                // Fallback zero state
+                setChartPieData([{ name: 'Đang tải', value: 1, color: '#cbd5e1' }])
+            }
+
         } catch (error) {
             console.error('Failed to load dashboard data:', error)
         } finally {
@@ -83,25 +143,13 @@ export default function DashboardPage() {
         }
     }
 
-    // Sample data for charts
-    const attendanceData = [
-        { name: 'Đúng giờ', value: 85, color: '#22c55e' },
-        { name: 'Đi muộn', value: 10, color: '#f59e0b' },
-        { name: 'Vắng mặt', value: 5, color: '#ef4444' },
-    ]
-
-    const monthlyData = [
-        { month: 'T1', onTime: 90, late: 8, absent: 2 },
-        { month: 'T2', onTime: 88, late: 10, absent: 2 },
-        { month: 'T3', onTime: 85, late: 12, absent: 3 },
-        { month: 'T4', onTime: 87, late: 10, absent: 3 },
-        { month: 'T5', onTime: 92, late: 6, absent: 2 },
-        { month: 'T6', onTime: 89, late: 8, absent: 3 },
-    ]
-
     if (loading) {
         return <div className="flex items-center justify-center h-64"><div className="spinner"></div></div>
     }
+
+    // Check if pie chart is fully empty (0 records)
+    const emptyPieData = chartPieData.every(d => d.value === 0)
+    const pieDataToRender = emptyPieData ? [{ name: 'Chưa có dl', value: 1, color: '#cbd5e1' }] : chartPieData
 
     return (
         <div className="space-y-6">
@@ -136,17 +184,17 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Today Status */}
                 {!isManager && (
-                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/attendance')}>
+                    <div className="glass-card p-5 card-hover cursor-pointer border border-slate-200" onClick={() => navigate('/attendance')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className={`px-3 py-1 rounded-full text-xs ${todayStatus?.checked_in ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${todayStatus?.checked_in ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
                                 {todayStatus?.checked_in ? 'Đã chấm công' : 'Chưa chấm công'}
                             </span>
                         </div>
                         <h3 className="text-base font-semibold text-slate-700">Chấm công hôm nay</h3>
                         {todayStatus?.checkin_time && (
-                            <p className="text-slate-500 text-sm mt-1">
-                                In: {format(new Date(todayStatus.checkin_time), 'HH:mm')}
-                                {todayStatus?.checkout_time && ` → Out: ${format(new Date(todayStatus.checkout_time), 'HH:mm')}`}
+                            <p className="text-slate-500 text-sm mt-1 font-mono">
+                                Vào: {format(new Date(todayStatus.checkin_time), 'HH:mm')}
+                                {todayStatus?.checkout_time && ` → Ra: ${format(new Date(todayStatus.checkout_time), 'HH:mm')}`}
                             </p>
                         )}
                     </div>
@@ -154,17 +202,17 @@ export default function DashboardPage() {
 
                 {/* Leave Balance / Total Employees */}
                 {isManager ? (
-                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/admin/users')}>
+                    <div className="glass-card p-5 card-hover cursor-pointer border border-slate-200" onClick={() => navigate('/admin/users')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-2xl font-bold text-blue-600">{totalEmployees}</span>
+                            <span className="text-3xl font-extrabold text-blue-600">{totalEmployees}</span>
                         </div>
-                        <h3 className="text-base font-semibold text-slate-700">Tổng số nhân viên</h3>
-                        <p className="text-slate-500 text-sm mt-1">Đang hoạt động trong công ty</p>
+                        <h3 className="text-base font-semibold text-slate-700">Tổng nhân viên</h3>
+                        <p className="text-slate-500 text-sm mt-1">Đang làm việc</p>
                     </div>
                 ) : (
-                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>
+                    <div className="glass-card p-5 card-hover cursor-pointer border border-slate-200" onClick={() => navigate('/leaves')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-2xl font-bold text-blue-600">{leaveSummary.remaining}</span>
+                            <span className="text-3xl font-extrabold text-blue-600">{leaveSummary.remaining}</span>
                         </div>
                         <h3 className="text-base font-semibold text-slate-700">Ngày phép còn lại</h3>
                         <p className="text-slate-500 text-sm mt-1">Đã dùng: {leaveSummary.total_used || 0}/{leaveSummary.annual_quota || 12} ngày</p>
@@ -173,42 +221,42 @@ export default function DashboardPage() {
 
                 {/* Tasks Widget */}
                 <div 
-                    className="glass-card p-5 card-hover cursor-pointer" 
+                    className="glass-card p-5 card-hover cursor-pointer border border-slate-200" 
                     onClick={() => navigate(isManager ? '/projects' : '/tasks')}
                 >
                     <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl font-bold text-purple-600">
-                            {taskStats.completed}<span className="text-lg text-slate-400">/{taskStats.total}</span>
+                        <span className="text-3xl font-extrabold text-purple-600">
+                            {taskStats.completed}<span className="text-xl text-slate-400">/{taskStats.total}</span>
                         </span>
                     </div>
                     <h3 className="text-base font-semibold text-slate-700">
-                        {isManager ? 'Thống kê công việc' : 'Công việc cá nhân'}
+                        {isManager ? 'Tổng tiến độ dự án' : 'Tiến độ cá nhân'}
                     </h3>
                     <p className="text-slate-500 text-sm mt-1">
-                        Hoàn thành: {taskStats.completed} | Đang XL: {taskStats.pending}
+                        Hoàn thành: {taskStats.completed} | Đang chờ: {taskStats.pending}
                     </p>
                 </div>
 
                 {/* HR Widget - Pending Leaves */}
                 {isManager ? (
-                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/leaves')}>
+                    <div className="glass-card p-5 card-hover cursor-pointer border border-slate-200" onClick={() => navigate('/leaves')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className={`text-2xl font-bold ${pendingLeaves > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                            <span className={`text-3xl font-extrabold ${pendingLeaves > 0 ? 'text-red-500' : 'text-emerald-500'}`}>
                                 {pendingLeaves}
                             </span>
                         </div>
-                        <h3 className="text-base font-semibold text-slate-700">Đơn chờ duyệt</h3>
+                        <h3 className="text-base font-semibold text-slate-700">Yêu cầu xin nghỉ</h3>
                         <p className="text-slate-500 text-sm mt-1">
-                            {pendingLeaves > 0 ? 'Cần xem xét ngay' : 'Không có đơn mới'}
+                            {pendingLeaves > 0 ? 'Có đơn đang đợi duyệt' : 'Chưa có đơn mới'}
                         </p>
                     </div>
                 ) : (
-                    <div className="glass-card p-5 card-hover cursor-pointer" onClick={() => navigate('/projects')}>
+                    <div className="glass-card p-5 card-hover cursor-pointer border border-slate-200" onClick={() => navigate('/projects')}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-2xl font-bold text-orange-600">—</span>
+                            <span className="text-3xl font-extrabold text-orange-500">—</span>
                         </div>
-                        <h3 className="text-base font-semibold text-slate-700">Dự án</h3>
-                        <p className="text-slate-500 text-sm mt-1">Xem các dự án</p>
+                        <h3 className="text-base font-semibold text-slate-700">Khám phá nội bộ</h3>
+                        <p className="text-slate-500 text-sm mt-1">Xem dự án của công ty</p>
                     </div>
                 )}
             </div>
@@ -216,48 +264,126 @@ export default function DashboardPage() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Attendance Pie Chart */}
-                <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-4">Tỷ lệ chấm công tháng này</h3>
-                    <ResponsiveContainer width="100%" height={280}>
+                <div className="glass-card p-6 border border-slate-200">
+                    <div className="mb-6">
+                        <h3 className="text-lg font-bold text-slate-800">Tỷ lệ chấm công tháng này</h3>
+                        <p className="text-sm text-slate-500 mt-1">Dữ liệu thời gian thực được tính toán từ các lượt quét khuôn mặt</p>
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
+                            <defs>
+                                <linearGradient id="colorOnTime" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#34d399" stopOpacity={1} />
+                                    <stop offset="100%" stopColor="#059669" stopOpacity={1} />
+                                </linearGradient>
+                                <linearGradient id="colorLate" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#fcd34d" stopOpacity={1} />
+                                    <stop offset="100%" stopColor="#d97706" stopOpacity={1} />
+                                </linearGradient>
+                                <linearGradient id="colorAbsent" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#fca5a5" stopOpacity={1} />
+                                    <stop offset="100%" stopColor="#dc2626" stopOpacity={1} />
+                                </linearGradient>
+                                <filter id="shadowPie" x="-20%" y="-20%" width="140%" height="140%">
+                                    <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.15" />
+                                </filter>
+                            </defs>
                             <Pie
-                                data={attendanceData}
+                                data={pieDataToRender}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={60}
-                                outerRadius={100}
-                                paddingAngle={5}
+                                innerRadius={75}
+                                outerRadius={105}
+                                paddingAngle={6}
                                 dataKey="value"
+                                stroke="none"
+                                cornerRadius={8}
+                                filter="url(#shadowPie)"
                             >
-                                {attendanceData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
+                                {pieDataToRender.map((entry, index) => {
+                                    let fillId = entry.color
+                                    if (entry.name === 'Đúng giờ') fillId = 'url(#colorOnTime)';
+                                    else if (entry.name === 'Đi muộn') fillId = 'url(#colorLate)';
+                                    else if (entry.name === 'Vắng mặt') fillId = 'url(#colorAbsent)';
+                                    return <Cell key={`cell-${index}`} fill={fillId} />
+                                })}
                             </Pie>
-                            <Tooltip />
-                            <Legend />
+                            {!emptyPieData && (
+                                <Tooltip 
+                                    contentStyle={{ 
+                                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                        borderRadius: '12px', 
+                                        border: 'none', 
+                                        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                                        padding: '12px'
+                                    }}
+                                    itemStyle={{ color: '#1e293b', fontWeight: 600 }}
+                                />
+                            )}
+                            <Legend 
+                                verticalAlign="bottom" 
+                                height={36} 
+                                iconType="circle"
+                                wrapperStyle={{ fontSize: '14px', fontWeight: 600, color: '#475569' }}
+                            />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
 
                 {/* Monthly Bar Chart */}
-                <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-4">Thống kê chấm công theo tháng</h3>
-                    <ResponsiveContainer width="100%" height={280}>
-                        <BarChart data={monthlyData}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                            <XAxis dataKey="month" stroke="#64748b" />
-                            <YAxis stroke="#64748b" />
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: '#ffffff',
-                                    border: '1px solid #e2e8f0',
-                                    borderRadius: '8px'
-                                }}
+                <div className="glass-card p-6 border border-slate-200">
+                    <div className="mb-6">
+                        <h3 className="text-lg font-bold text-slate-800">Thống kê 6 tháng gần nhất</h3>
+                        <p className="text-sm text-slate-500 mt-1">Lịch sử tình trạng chuyên cần thực tế</p>
+                    </div>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={chartBarData} barGap={6} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id="barOnTime" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#34d399" stopOpacity={1} />
+                                    <stop offset="100%" stopColor="#059669" stopOpacity={1} />
+                                </linearGradient>
+                                <linearGradient id="barLate" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#fcd34d" stopOpacity={1} />
+                                    <stop offset="100%" stopColor="#d97706" stopOpacity={1} />
+                                </linearGradient>
+                                <linearGradient id="barAbsent" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="#fca5a5" stopOpacity={1} />
+                                    <stop offset="100%" stopColor="#dc2626" stopOpacity={1} />
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#e2e8f0" />
+                            <XAxis 
+                                dataKey="month" 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ fill: '#64748b', fontSize: 13, fontWeight: 600 }} 
+                                dy={10} 
                             />
-                            <Legend />
-                            <Bar dataKey="onTime" name="Đúng giờ" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="late" name="Đi muộn" fill="#f59e0b" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="absent" name="Vắng" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                            <YAxis 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ fill: '#64748b', fontSize: 13, fontWeight: 600 }} 
+                            />
+                            <Tooltip
+                                cursor={{ fill: '#f8fafc' }}
+                                contentStyle={{
+                                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                    border: 'none',
+                                    borderRadius: '12px',
+                                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                                    padding: '12px'
+                                }}
+                                itemStyle={{ fontWeight: 600 }}
+                            />
+                            <Legend 
+                                iconType="circle" 
+                                wrapperStyle={{ paddingTop: '20px', fontSize: '13px', fontWeight: 600, color: '#475569' }}
+                            />
+                            <Bar dataKey="onTime" name="Đúng giờ" fill="url(#barOnTime)" maxBarSize={16} radius={[6, 6, 0, 0]} />
+                            <Bar dataKey="late" name="Đi muộn" fill="url(#barLate)" maxBarSize={16} radius={[6, 6, 0, 0]} />
+                            {/* Absent counts are not reliably calculated per month right now, but left here for future */}
+                            {/* <Bar dataKey="absent" name="Vắng" fill="url(#barAbsent)" maxBarSize={16} radius={[6, 6, 0, 0]} /> */}
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
@@ -265,40 +391,40 @@ export default function DashboardPage() {
 
             {/* Employee Performance (Leaders/Admins only) */}
             {isManager && performance.length > 0 && (
-                <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-4">Hiệu suất nhân viên</h3>
-                    <div className="overflow-x-auto">
+                <div className="glass-card p-6 border border-slate-200">
+                    <h3 className="text-lg font-bold text-slate-800 mb-4">Top hiệu suất nhân viên</h3>
+                    <div className="overflow-x-auto rounded-xl border border-slate-100">
                         <table className="w-full">
                             <thead>
-                                <tr className="bg-slate-100">
-                                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Nhân viên</th>
-                                    <th className="text-center py-3 px-4 text-slate-700 font-semibold">Tổng task</th>
-                                    <th className="text-center py-3 px-4 text-slate-700 font-semibold">Hoàn thành</th>
-                                    <th className="text-center py-3 px-4 text-slate-700 font-semibold">Đang làm</th>
-                                    <th className="text-center py-3 px-4 text-slate-700 font-semibold">Tỷ lệ</th>
+                                <tr className="bg-slate-50 border-b border-slate-200">
+                                    <th className="text-left py-4 px-5 text-slate-600 font-bold tracking-wide uppercase text-xs">Nhân viên</th>
+                                    <th className="text-center py-4 px-5 text-slate-600 font-bold tracking-wide uppercase text-xs">Tổng task</th>
+                                    <th className="text-center py-4 px-5 text-slate-600 font-bold tracking-wide uppercase text-xs">Hoàn thành</th>
+                                    <th className="text-center py-4 px-5 text-slate-600 font-bold tracking-wide uppercase text-xs">Đang xử lý</th>
+                                    <th className="text-center py-4 px-5 text-slate-600 font-bold tracking-wide uppercase text-xs">Tỷ lệ</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {performance.slice(0, 5).map((emp) => (
-                                    <tr key={emp.user_id} className="border-t border-slate-200 hover:bg-slate-50">
-                                        <td className="py-3 px-4">
+                                    <tr key={emp.user_id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td className="py-4 px-5">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white text-sm font-bold shadow-sm">
                                                     {emp.full_name?.[0] || '?'}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-slate-800">{emp.full_name}</p>
-                                                    <p className="text-xs text-slate-500">{emp.department}</p>
+                                                    <p className="font-bold text-slate-800">{emp.full_name}</p>
+                                                    <p className="text-xs font-semibold text-slate-500">{emp.department}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="text-center py-3 px-4 text-slate-700">{emp.total_tasks}</td>
-                                        <td className="text-center py-3 px-4 text-green-600 font-medium">{emp.completed_tasks}</td>
-                                        <td className="text-center py-3 px-4 text-blue-600">{emp.in_progress_tasks}</td>
-                                        <td className="text-center py-3 px-4">
-                                            <span className={`px-2 py-1 rounded-full text-xs ${emp.completion_rate >= 80 ? 'bg-green-100 text-green-700' :
-                                                emp.completion_rate >= 50 ? 'bg-yellow-100 text-yellow-700' :
-                                                    'bg-red-100 text-red-700'
+                                        <td className="text-center py-4 px-5 font-bold text-slate-700">{emp.total_tasks}</td>
+                                        <td className="text-center py-4 px-5 font-bold text-emerald-600">{emp.completed_tasks}</td>
+                                        <td className="text-center py-4 px-5 font-bold text-blue-600">{emp.in_progress_tasks}</td>
+                                        <td className="text-center py-4 px-5">
+                                            <span className={`px-3 py-1.5 rounded-full text-xs font-bold tracking-wider ${emp.completion_rate >= 80 ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' :
+                                                emp.completion_rate >= 50 ? 'bg-amber-50 text-amber-600 border border-amber-100' :
+                                                    'bg-rose-50 text-rose-600 border border-rose-100'
                                                 }`}>
                                                 {emp.completion_rate}%
                                             </span>

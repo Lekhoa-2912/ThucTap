@@ -36,6 +36,36 @@ async def get_calendar_events(
     
     events = []
     
+    # 0. Get own attendance logs
+    from datetime import datetime as dt
+    attendance_col = get_attendance_collection()
+    att_logs = await attendance_col.find({
+        "user_id": current_user["_id"],
+        "timestamp": {
+            "$gte": dt(year, month, 1),
+            "$lte": dt(year, month, last_day_num, 23, 59, 59)
+        }
+    }).to_list(100)
+    
+    for log in att_logs:
+        att_type = "Check-in" if log.get("attendance_type") == "CHECK_IN" else "Check-out"
+        is_late = log.get("status") in ["LATE", "EARLY_LEAVE"]
+        color = "#10b981" if not is_late else "#f59e0b" # emerald for ontime, amber for late/early
+        
+        events.append({
+            "id": str(log["_id"]),
+            "title": f"📍 {att_type}: {log['timestamp'].strftime('%H:%M')}",
+            "start": log["timestamp"].isoformat(),
+            "end": log["timestamp"].isoformat(),
+            "type": "attendance",
+            "color": color,
+            "allDay": False,
+            "data": {
+                "status": log.get("status"),
+                "type": log.get("attendance_type")
+            }
+        })
+    
     # 1. Get approved leaves
     leaves_col = get_leaves_collection()
     

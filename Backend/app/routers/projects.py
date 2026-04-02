@@ -141,17 +141,10 @@ async def get_project(
         "end_date": proj.get("deadline"),
         "team_members": members_info,
         "team_count": len(members_raw),
-        "created_by": proj.get("assigned_by"),
-        "created_at": proj.get("created_at")
-    }
-    return {
-        "id": str(proj["_id"]),
-        "name": proj.get("title"),
-        "description": proj.get("description"),
-        "status": proj.get("status"),
-        "end_date": proj.get("deadline"),
-        "team_members": members_info,
-        "team_count": len(members_raw),
+        "progress": proj.get("progress", 0),
+        "completion_file_id": proj.get("completion_file_id"),
+        "completion_file_name": proj.get("completion_file_name"),
+        "completed_at": proj.get("completed_at"),
         "created_by": proj.get("assigned_by"),
         "created_at": proj.get("created_at")
     }
@@ -591,14 +584,6 @@ async def update_task(
         if data.status == "COMPLETED":
             update_doc["completed_at"] = datetime.utcnow()
             update_doc["progress"] = 100
-            # Auto-delete project when task is done
-            try:
-                projects_col = get_projects_collection()
-                task = await tasks_col.find_one({"_id": ObjectId(task_id)})
-                if task and "project_id" in task:
-                     await projects_col.delete_one({"_id": ObjectId(task["project_id"])})
-            except:
-                pass
     
     # Handle multi-assign reassignment
     if data.assigned_to is not None:
@@ -709,13 +694,6 @@ async def update_task_progress(
     if data.progress == 100:
         new_status = TaskStatus.COMPLETED.value
         completed_at = datetime.utcnow()
-        # Auto-delete project when task is done
-        try:
-            projects_col = get_projects_collection()
-            if "project_id" in task:
-                 await projects_col.delete_one({"_id": ObjectId(task["project_id"])})
-        except:
-            pass
         
     await tasks_col.update_one(
         {"_id": ObjectId(task_id)},
@@ -786,14 +764,6 @@ async def complete_task_with_file(
             "updated_at": datetime.utcnow()
         }}
     )
-    
-    # Auto-delete project when task is done (standalone task projects)
-    try:
-        projects_col = get_projects_collection()
-        if "project_id" in task:
-             await projects_col.delete_one({"_id": ObjectId(task["project_id"])})
-    except:
-        pass
         
     # Insert History Log
     await history_col.insert_one({
@@ -801,7 +771,7 @@ async def complete_task_with_file(
         "updated_by": str(current_user["_id"]),
         "old_progress": old_progress,
         "new_progress": 100,
-        "note": f"Đã hoàn thành và đính kèm file: {file.filename}. \n{notes or ''}",
+        "note": notes,
         "created_at": datetime.utcnow()
     })
     

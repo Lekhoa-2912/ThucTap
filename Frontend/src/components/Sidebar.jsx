@@ -40,9 +40,9 @@ const menuItems = [
     { path: '/payroll', label: 'Bảng lương', icon: Wallet, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'ACCOUNTANT', 'EMPLOYEE'] },
     { path: '/admin/users', label: 'Quản lý NV', icon: Users, roles: ['SUPER_ADMIN', 'HR_MANAGER', 'LEADER'] },
     { path: '/admin/pending', label: 'Duyệt hồ sơ', icon: ClipboardList, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
+    { path: '/admin/attendance', label: 'Quản lý chấm công', icon: Timer, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
     { path: '/admin/departments', label: 'Phòng ban', icon: Building2, roles: ['SUPER_ADMIN'] },
-    { path: '/admin/password-reset', label: 'Cấp lại mật khẩu', icon: KeyRound, roles: ['SUPER_ADMIN', 'HR_MANAGER'] },
-    { path: '/settings', label: 'Cấu hình', icon: Settings, roles: ['SUPER_ADMIN'] },
+    { path: '/admin/password-reset', label: 'Cấp lại mật khẩu', icon: KeyRound, roles: ['SUPER_ADMIN', 'HR_MANAGER'] }
 ]
 
 export default function Sidebar() {

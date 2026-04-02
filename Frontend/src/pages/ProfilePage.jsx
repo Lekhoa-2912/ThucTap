@@ -129,19 +129,19 @@ export default function ProfilePage() {
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             {/* Header */}
-            <div className="glass-card p-6">
-                <h1 className="text-2xl font-bold">Hồ sơ cá nhân</h1>
-                <p className="text-slate-400">Xem và quản lý thông tin cá nhân của bạn</p>
+            <div className="glass-card p-6 border border-slate-200 shadow-sm">
+                <h1 className="text-2xl font-bold text-slate-800">Hồ sơ cá nhân</h1>
+                <p className="text-slate-500 mt-1 font-medium">Xem và quản lý thông tin cá nhân của bạn</p>
             </div>
 
             {/* Profile Card */}
-            <div className="glass-card p-6">
-                <div className="flex flex-col md:flex-row gap-6">
+            <div className="glass-card p-6 border border-slate-200 shadow-sm">
+                <div className="flex flex-col md:flex-row gap-8">
                     {/* Avatar Section */}
-                    <div className="flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center gap-5 md:min-w-[200px]">
                         <div
                             onClick={handleAvatarClick}
-                            className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group border-4 border-blue-500/30 hover:border-blue-500 transition-all"
+                            className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer group shadow-lg border-4 border-white ring-4 ring-blue-500/20 hover:ring-blue-500/40 transition-all"
                         >
                             {profile?.avatar ? (
                                 <img
@@ -174,8 +174,8 @@ export default function ProfilePage() {
                         )}
 
                         {/* Role Badge */}
-                        <span className={`text-xs px-3 py-1 rounded-full ${profile?.status === 'ACTIVE' ? 'status-active' :
-                            profile?.status === 'PENDING' ? 'status-pending' : 'status-init'
+                        <span className={`text-xs px-3 py-1 font-semibold rounded-full border shadow-sm ${profile?.status === 'ACTIVE' ? 'bg-green-50 text-green-700 border-green-200' :
+                            profile?.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-50 text-slate-600 border-slate-200'
                             }`}>
                             {profile?.role?.replace('_', ' ')} • {profile?.status}
                         </span>
@@ -195,8 +195,8 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Bank Info */}
-                                <div className="border-t border-slate-600 pt-4 mt-4">
-                                    <h3 className="text-lg font-semibold mb-3">Thông tin ngân hàng</h3>
+                                <div className="border-t border-slate-200 pt-6 mt-6">
+                                    <h3 className="text-lg font-bold text-slate-800 mb-4">Thông tin ngân hàng</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <InfoField label="Ngân hàng" value={profile?.bank_name} />
                                         <InfoField label="Số tài khoản" value={profile?.bank_account_number} />
@@ -205,14 +205,14 @@ export default function ProfilePage() {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="flex flex-wrap gap-3 pt-4">
-                                    <button onClick={() => setIsEditing(true)} className="btn-primary">
-                                        Chỉnh sửa
+                                <div className="flex flex-wrap gap-3 pt-6">
+                                    <button onClick={() => setIsEditing(true)} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/30 transition-all font-medium">
+                                        Chỉnh sửa hồ sơ
                                     </button>
-                                    <button onClick={() => setShowPasswordModal(true)} className="btn-secondary">
+                                    <button onClick={() => setShowPasswordModal(true)} className="px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl shadow-sm transition-all font-medium">
                                         Đổi mật khẩu
                                     </button>
-                                    <button onClick={() => navigate('/face-enrollment')} className="btn-secondary border-blue-500/50 text-blue-400 hover:bg-blue-500/10">
+                                    <button onClick={() => navigate('/face-enrollment')} className="px-5 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl shadow-sm transition-all font-medium">
                                         {profile?.face_registered ? 'Cập nhật khuôn mặt' : 'Đăng ký khuôn mặt'}
                                     </button>
                                 </div>
@@ -220,34 +220,34 @@ export default function ProfilePage() {
                         ) : (
                             /* Edit Mode */
                             <>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Họ và tên *</label>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Họ và tên <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             name="full_name"
                                             value={formData.full_name}
                                             onChange={handleChange}
-                                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                            className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Số điện thoại</label>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Số điện thoại</label>
                                         <input
                                             type="tel"
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                            className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Phòng ban</label>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Phòng ban</label>
                                         <select
                                             name="department"
                                             value={formData.department}
                                             onChange={handleChange}
-                                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                            className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all"
                                         >
                                             <option value="">Chọn phòng ban</option>
                                             <option value="IT">Công nghệ thông tin</option>
@@ -259,28 +259,28 @@ export default function ProfilePage() {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium mb-2">Chức vụ</label>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Chức vụ</label>
                                         <input
                                             type="text"
                                             name="position"
                                             value={formData.position}
                                             onChange={handleChange}
-                                            className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                            className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all"
                                         />
                                     </div>
                                 </div>
 
                                 {/* Bank Info Edit */}
-                                <div className="border-t border-slate-600 pt-4 mt-4">
-                                    <h3 className="text-lg font-semibold mb-3">Thông tin ngân hàng</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="border-t border-slate-200 pt-6 mt-6">
+                                    <h3 className="text-lg font-bold text-slate-800 mb-4">Thông tin ngân hàng</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                                         <div>
-                                            <label className="block text-sm font-medium mb-2">Ngân hàng</label>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Ngân hàng</label>
                                             <select
                                                 name="bank_name"
                                                 value={formData.bank_name}
                                                 onChange={handleChange}
-                                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                                className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
                                             >
                                                 <option value="">Chọn ngân hàng</option>
                                                 <option value="Vietcombank">Vietcombank</option>
@@ -296,34 +296,34 @@ export default function ProfilePage() {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium mb-2">Số tài khoản</label>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Số tài khoản</label>
                                             <input
                                                 type="text"
                                                 name="bank_account_number"
                                                 value={formData.bank_account_number}
                                                 onChange={handleChange}
-                                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                                className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium mb-2">Chủ tài khoản</label>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Chủ tài khoản</label>
                                             <input
                                                 type="text"
                                                 name="bank_account_holder"
                                                 value={formData.bank_account_holder}
                                                 onChange={handleChange}
-                                                className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                                className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Save/Cancel Buttons */}
-                                <div className="flex gap-3 pt-4">
-                                    <button onClick={handleSave} disabled={saving} className="btn-primary">
+                                <div className="flex gap-3 pt-6">
+                                    <button onClick={handleSave} disabled={saving} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-500/30 transition-all font-medium disabled:opacity-50">
                                         {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
                                     </button>
-                                    <button onClick={() => setIsEditing(false)} className="btn-secondary">
+                                    <button onClick={() => setIsEditing(false)} className="px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl shadow-sm transition-all font-medium">
                                         Hủy
                                     </button>
                                 </div>
@@ -335,44 +335,44 @@ export default function ProfilePage() {
 
             {/* Password Modal */}
             {showPasswordModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="glass-card p-6 w-full max-w-md">
-                        <h2 className="text-xl font-bold mb-4">Đổi mật khẩu</h2>
-                        <div className="space-y-4">
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="glass-card p-8 w-full max-w-md border border-slate-200 rounded-2xl shadow-xl">
+                        <h2 className="text-xl font-bold mb-6 text-slate-800">Đổi mật khẩu</h2>
+                        <div className="space-y-5">
                             <div>
-                                <label className="block text-sm font-medium mb-2">Mật khẩu hiện tại</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Mật khẩu hiện tại</label>
                                 <input
                                     type="password"
                                     value={passwordData.current_password}
                                     onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                    className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2">Mật khẩu mới</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Mật khẩu mới</label>
                                 <input
                                     type="password"
                                     value={passwordData.new_password}
                                     onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                    className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-2">Xác nhận mật khẩu</label>
+                                <label className="block text-sm font-semibold text-slate-700 mb-2">Xác nhận mật khẩu</label>
                                 <input
                                     type="password"
                                     value={passwordData.confirm_password}
                                     onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
-                                    className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3"
+                                    className="w-full bg-white/60 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:ring-2 focus:ring-blue-500 shadow-sm transition-all"
                                 />
                             </div>
                         </div>
-                        <div className="flex gap-3 mt-6">
-                            <button onClick={handleChangePassword} className="btn-primary flex-1">
-                                Xác nhận
-                            </button>
-                            <button onClick={() => setShowPasswordModal(false)} className="btn-secondary flex-1">
+                        <div className="flex gap-3 mt-8">
+                            <button onClick={() => setShowPasswordModal(false)} className="flex-1 px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl shadow-sm transition-all font-medium">
                                 Hủy
+                            </button>
+                            <button onClick={handleChangePassword} className="flex-1 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md flex items-center justify-center shadow-blue-500/30 transition-all font-medium">
+                                Đổi mật khẩu
                             </button>
                         </div>
                     </div>
@@ -385,9 +385,9 @@ export default function ProfilePage() {
 // Helper component for displaying info fields
 function InfoField({ label, value, icon }) {
     return (
-        <div className="bg-slate-700/30 rounded-xl p-3">
-            <p className="text-xs text-slate-400 mb-1">{icon} {label}</p>
-            <p className="font-medium">{value || '—'}</p>
+        <div className="bg-slate-50/70 border border-slate-100 rounded-xl p-4 shadow-sm hover:bg-slate-50 transition-colors">
+            <p className="text-xs text-slate-500 font-medium mb-1.5">{icon} {label}</p>
+            <p className="font-semibold text-slate-800 text-[15px]">{value || '—'}</p>
         </div>
     )
 }

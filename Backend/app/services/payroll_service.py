@@ -93,8 +93,12 @@ class PayrollService:
         - Early leave days * EARLY_LEAVE_DEDUCTION_RATE
         - Absent days * ABSENT_DEDUCTION_RATE
         """
+        from bson import ObjectId
         users_col = get_users_collection()
-        user = await users_col.find_one({"_id": user_id})
+        try:
+            user = await users_col.find_one({"_id": ObjectId(user_id)})
+        except Exception:
+            user = await users_col.find_one({"_id": user_id})
         
         # Get working statistics
         stats = await self.calculate_working_days(user_id, month, year)
